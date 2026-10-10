@@ -1,0 +1,30 @@
+Script iniciado en 2026-10-10 14:51:42+02:00 [COMMAND="mkdir -p ~/PKI_root/private ~/PKI_root/DB ~/PKI_root/certs ~/PKI_root/solicitudes ~/PKI_root/certs.p12 ~/PKI_root/PKI_sub/private ~/PKI_root/PKI_sub/DB ~/PKI_root/PKI_sub/certs ~/PKI_root/PKI_sub/certs.p12 ~/PKI_root/PKI_sub/solicitudes ~/PKI_scripts && ls -R ~/PKI_root ~/PKI_scripts" <no ejecutado en terminal>]
+/home/user1/PKI_root:
+certs  certs.p12  DB  PKI_sub  private	solicitudes
+
+/home/user1/PKI_root/certs:
+
+/home/user1/PKI_root/certs.p12:
+
+/home/user1/PKI_root/DB:
+
+/home/user1/PKI_root/PKI_sub:
+certs  certs.p12  DB  private  solicitudes
+
+/home/user1/PKI_root/PKI_sub/certs:
+
+/home/user1/PKI_root/PKI_sub/certs.p12:
+
+/home/user1/PKI_root/PKI_sub/DB:
+
+/home/user1/PKI_root/PKI_sub/private:
+
+/home/user1/PKI_root/PKI_sub/solicitudes:
+
+/home/user1/PKI_root/private:
+
+/home/user1/PKI_root/solicitudes:
+
+/home/user1/PKI_scripts:
+
+Script terminado en 2026-10-10 14:51:42+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

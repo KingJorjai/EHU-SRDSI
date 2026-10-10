@@ -1,0 +1,81 @@
++ KEY_PASS=... CA_PASS=... ~/PKI_scripts/emitir_cert.sh ~/PKI_root/PKI_sub/solicitudes/solicitud-Paco_Antonio_Gutierrez.csr user_ext
+Using configuration from /home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf
+Check that the request matches the signature
+Signature ok
+Certificate Details:
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number:
+            c9:fb:68:26:58:0d:25:b8:e2:1f:03:35:4d:d2:31:7b
+        Issuer:
+            countryName               = ES
+            stateOrProvinceName       = GP
+            organizationName          = Bocata de Jamon
+            organizationalUnitName    = PKI
+            commonName                = bocata_jamon_subCA
+        Validity
+            Not Before: Oct 10 12:54:39 2026 GMT
+            Not After : Oct  7 12:54:39 2036 GMT
+        Subject:
+            countryName               = ES
+            organizationName          = Bocata de Jamon
+            commonName                = Paco Antonio Gutierrez
+            emailAddress              = paco@bocata-jamon.srdsi.lab
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (3072 bit)
+                Modulus:
+                    00:f7:49:1c:05:5a:80:37:d8:bf:2a:44:48:ef:94:
+                    97:9a:45:b4:9a:58:5e:a4:b3:98:c3:95:d9:14:d8:
+                    1c:4f:93:01:4e:b5:41:53:25:ef:e0:ed:db:78:b9:
+                    c8:7f:3f:80:86:cf:6f:7c:c1:b6:9d:23:98:33:22:
+                    10:bb:15:43:c1:a8:8e:ac:49:33:2a:08:0e:c7:02:
+                    49:78:f0:34:fa:97:43:d0:db:25:fb:59:7b:04:3d:
+                    04:a3:96:99:c2:ab:eb:8b:19:1a:12:5f:99:bb:ed:
+                    de:53:3d:3e:8d:6e:2f:e2:05:72:0c:2a:b0:d8:84:
+                    81:b7:f1:3e:95:be:da:1f:36:a7:6d:c0:b3:c2:2a:
+                    3b:d6:5c:af:56:10:59:f2:a5:f2:a8:33:b1:88:b6:
+                    75:7d:de:b5:8a:38:a1:0d:3e:42:53:20:28:99:1a:
+                    7c:c9:91:d7:de:1e:54:06:f6:fa:8b:ba:e4:2c:fd:
+                    c6:43:f2:19:b6:0b:06:13:75:c6:ca:cd:82:70:bc:
+                    77:a7:b7:92:ac:93:2a:85:79:28:d6:9f:02:f7:a5:
+                    bc:69:92:11:1c:3b:be:02:de:f5:79:65:5e:f5:42:
+                    37:9f:bd:81:07:37:47:5d:c3:c8:15:1d:a8:97:0b:
+                    a5:5a:a3:f0:81:c0:aa:10:b7:a2:3e:4f:e0:88:c7:
+                    24:97:7d:38:82:18:9a:70:a4:ee:77:e5:50:66:53:
+                    38:c8:08:1b:22:eb:b9:74:8f:b6:36:a1:85:ff:8e:
+                    35:b3:be:57:f7:f0:b7:61:0b:74:c3:24:7f:db:24:
+                    af:da:f0:49:b5:02:16:34:04:d1:e6:83:5e:9d:02:
+                    29:43:10:00:b5:16:03:78:6e:d2:de:9f:54:79:60:
+                    2f:db:be:52:82:61:67:de:2e:5e:19:3e:03:47:5e:
+                    b8:88:77:fd:a4:ab:80:29:36:51:46:53:f0:82:f9:
+                    10:c4:34:27:b6:1b:b6:0c:9a:6b:da:0a:0a:ee:53:
+                    70:5c:1d:58:a0:0f:8e:22:df:bf
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            Authority Information Access: 
+                CA Issuers - URI:http://subCA.bocata-jamon.srdsi.lab/subCA.crt
+                OCSP - URI:http://ocsp.bocata-jamon.srdsi.lab:4747
+            X509v3 Subject Key Identifier: 
+                87:71:EB:6B:5D:45:BE:40:B8:23:0A:C9:32:80:7E:DB:3F:42:DF:07
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 CRL Distribution Points: 
+                Full Name:
+                  URI:http://subCA.bocata-jamon.srdsi.lab/subCA.crl
+
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Key Usage: critical
+                Digital Signature
+            X509v3 Authority Key Identifier: 
+                A5:BA:64:AA:B8:4E:09:1D:E6:F4:17:3A:82:0D:C4:E0:CB:4C:38:66
+            X509v3 Subject Alternative Name: 
+                email:paco@bocata-jamon.srdsi.lab
+Certificate is to be certified until Oct  7 12:54:39 2036 GMT (3650 days)
+
+Write out database with 1 new entries
+Database updated
+Certificado emitido: /home/user1/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
+PKCS#12 generado:    /home/user1/PKI_root/PKI_sub/certs.p12/certificado-Paco_Antonio_Gutierrez.p12

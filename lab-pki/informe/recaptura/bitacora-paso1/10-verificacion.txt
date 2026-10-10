@@ -1,0 +1,43 @@
+Script iniciado en 2026-10-10 14:53:14+02:00 [COMMAND="echo "== rootCA =="; openssl x509 -in ~/PKI_root/certificado-rootCA.crt -noout -subject -issuer -serial -dates; echo; echo "== subCA =="; openssl x509 -in ~/PKI_root/PKI_sub/certificado-subCA.crt -noout -subject -issuer -serial -dates; echo; echo "== verify chain =="; openssl verify -CAfile ~/PKI_root/certificado-rootCA.crt ~/PKI_root/PKI_sub/certificado-subCA.crt; echo; echo "== CRL =="; openssl crl -in ~/PKI_root/DB/crl-CA.pem -noout -text | head -12; echo; echo "== index.txt root =="; cat ~/PKI_root/DB/index.txt; echo "== index.txt sub =="; cat ~/PKI_root/PKI_sub/DB/index.txt; echo "(vacio = sin emisiones aun en subCA)"; echo; ls -l ~/PKI_root/certificado-rootCA.crt ~/PKI_root/PKI_sub/certificado-subCA.crt ~/PKI_root/DB/crl-CA.pem" <no ejecutado en terminal>]
+== rootCA ==
+subject=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+serial=852AF8743232FAA94D14B2A15C61AFA3
+notBefore=Oct 10 12:52:29 2026 GMT
+notAfter=Oct  7 12:52:29 2036 GMT
+
+== subCA ==
+subject=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+serial=852AF8743232FAA94D14B2A15C61AFA4
+notBefore=Oct 10 12:53:04 2026 GMT
+notAfter=Oct  7 12:53:04 2036 GMT
+
+== verify chain ==
+/home/user1/PKI_root/PKI_sub/certificado-subCA.crt: OK
+
+== CRL ==
+Certificate Revocation List (CRL):
+        Version 2 (0x1)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+        Last Update: Oct 10 12:52:47 2026 GMT
+        Next Update: Aug  6 12:52:47 2027 GMT
+        CRL extensions:
+            X509v3 CRL Number: 
+                54277083195206797539336716447109511568
+No Revoked Certificates.
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+
+== index.txt root ==
+V	361007125229Z		852AF8743232FAA94D14B2A15C61AFA3	unknown	/C=ES/ST=GP/O=Bocata de Jamon/OU=PKI/CN=bocata_jamon_rootCA
+V	361007125304Z		852AF8743232FAA94D14B2A15C61AFA4	unknown	/C=ES/ST=GP/O=Bocata de Jamon/OU=PKI/CN=bocata_jamon_subCA
+== index.txt sub ==
+(vacio = sin emisiones aun en subCA)
+
+-rw-rw-r-- 1 user1 user1 4359 oct 10 14:52 /home/user1/PKI_root/certificado-rootCA.crt
+-rw-rw-r-- 1 user1 user1  674 oct 10 14:52 /home/user1/PKI_root/DB/crl-CA.pem
+-rw-rw-r-- 1 user1 user1 5303 oct 10 14:53 /home/user1/PKI_root/PKI_sub/certificado-subCA.crt
+
+Script terminado en 2026-10-10 14:53:15+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

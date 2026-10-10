@@ -1,0 +1,60 @@
++ CA_PASS=... ~/PKI_scripts/revocar_cert.sh ~/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt cessationOfOperation
+Revocando certificado (motivo: cessationOfOperation):
+   serial=C9FB6826580D25B8E21F03354DD2317B
+   subject=C=ES, O=Bocata de Jamon, CN=Paco Antonio Gutierrez, emailAddress=paco@bocata-jamon.srdsi.lab
+Using configuration from /home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf
+Revoking Certificate C9FB6826580D25B8E21F03354DD2317B.
+Database updated
+Certificado revocado: /home/user1/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
+Recuerda regenerar y publicar la CRL (openssl ca -gencrl).
++ openssl ca -config ~/PKI_root/PKI_sub/ca-sub_openssl.cnf -gencrl -out ~/PKI_root/PKI_sub/DB/crl-sub.pem
+Using configuration from /home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf
+Enter pass phrase for /home/user1/PKI_root/PKI_sub/private/subCA.key:
+Could not find CA private key from /home/user1/PKI_root/PKI_sub/private/subCA.key
+40070F4DF47F0000:error:1400006B:UI routines:UI_process:processing error:../crypto/ui/ui_lib.c:553:while reading strings
+40070F4DF47F0000:error:07880028:common libcrypto routines:do_ui_passphrase:UI lib:../crypto/passphrase.c:181:
+40070F4DF47F0000:error:1C80009F:Provider routines:ossl_epki2pki_der_decode:unable to get passphrase:../providers/implementations/encode_decode/decode_epki2pki.c:136:
++ openssl crl -in ~/PKI_root/PKI_sub/DB/crl-sub.pem -text -noout | head -30
+Could not open file or uri for loading CRL from /home/user1/PKI_root/PKI_sub/DB/crl-sub.pem: No such file or directory
++ ls -l CRL
+ls: no se puede acceder a '/home/user1/PKI_root/PKI_sub/DB/crl-sub.pem': No existe el fichero o el directorio
+--- DIAGNOSTICO ---
+comando: openssl ca -config ... -gencrl -out ... (con CA_PASS en entorno pero SIN -passin)
+error: Could not find CA private key / Enter pass phrase ... UI_process error + CRL no creada
+causa: openssl ca -gencrl no lee CA_PASS automaticamente; falta -passin env:CA_PASS (revocar_cert.sh si lo usa, el comando manual de la spec lo omitia)
+solucion: reejecutar con -passin env:CA_PASS
++ openssl ca -config ~/PKI_root/PKI_sub/ca-sub_openssl.cnf -gencrl -passin env:CA_PASS -out ~/PKI_root/PKI_sub/DB/crl-sub.pem
+Using configuration from /home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf
++ openssl crl -in ~/PKI_root/PKI_sub/DB/crl-sub.pem -text -noout | head -30
+Certificate Revocation List (CRL):
+        Version 2 (0x1)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+        Last Update: Oct 10 12:55:03 2026 GMT
+        Next Update: Aug  6 12:55:03 2027 GMT
+        CRL extensions:
+            X509v3 CRL Number: 
+                73409087208658550906297269949660504292
+Revoked Certificates:
+    Serial Number: C9FB6826580D25B8E21F03354DD2317B
+        Revocation Date: Oct 10 12:54:58 2026 GMT
+        CRL entry extensions:
+            X509v3 CRL Reason Code: 
+                Cessation Of Operation
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        27:6f:de:d8:d4:ff:e4:af:c6:17:cf:60:4a:2b:30:21:d8:b6:
+        12:2d:dd:c5:df:94:ce:4c:0a:a2:90:f8:73:ef:a9:5c:95:cd:
+        91:c1:a1:f4:f6:3d:8b:42:a0:fb:a6:e3:cb:13:86:24:a4:ca:
+        b3:b0:a4:fe:3a:4b:1a:af:08:31:c8:1a:21:32:01:1f:10:35:
+        61:94:39:25:73:d8:fd:96:b5:e4:19:07:54:71:d1:61:70:72:
+        5a:43:3b:9c:6b:ac:1b:2d:56:5c:ba:6c:c7:ae:80:47:bb:f9:
+        b5:1e:65:67:4a:cc:d8:64:74:21:30:49:d7:4f:54:bd:27:4d:
+        32:25:cb:33:ab:b3:7f:9d:87:81:17:d5:75:c9:ab:91:34:c6:
+        9b:1a:d9:02:78:ef:49:23:b2:71:91:20:1b:9c:c9:4a:d1:5e:
+        98:19:65:09:95:17:5c:29:d7:f6:db:c1:8e:65:75:c8:12:a7:
+        16:51:d7:d3:98:f3:4b:41:24:d0:11:63:e3:96:7b:e1:34:68:
+        60:ab:15:dd:6b:9c:41:2b:b4:13:eb:96:85:04:cc:a1:b1:6a:
+        e9:21:1a:9a:5a:72:4b:89:ad:7d:3c:63:9a:7d:00:70:55:f6:
++ ls -l CRL
+-rw-rw-r-- 1 user1 user1 743 oct 10 14:55 /home/user1/PKI_root/PKI_sub/DB/crl-sub.pem

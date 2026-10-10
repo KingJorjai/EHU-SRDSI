@@ -1,0 +1,39 @@
+Script iniciado en 2026-10-10 14:52:47+02:00 [COMMAND="mv ~/PKI_root/certs/certificado-rootCA.crt ~/PKI_root/certificado-rootCA.crt && ls -l ~/PKI_root/certificado-rootCA.crt && export ROOT_PASS=user1Root_CA; openssl ca -gencrl -out ~/PKI_root/DB/crl-CA.pem -config ~/PKI_root/ca-root_openssl.cnf -passin env:ROOT_PASS && ls -l ~/PKI_root/DB/ && openssl crl -in ~/PKI_root/DB/crl-CA.pem -noout -text | head -25" <no ejecutado en terminal>]
+-rw-rw-r-- 1 user1 user1 4359 oct 10 14:52 /home/user1/PKI_root/certificado-rootCA.crt
+Using configuration from /home/user1/PKI_root/ca-root_openssl.cnf
+total 28
+-rw-rw-r-- 1 user1 user1 674 oct 10 14:52 crl-CA.pem
+-rw-rw-r-- 1 user1 user1 118 oct 10 14:52 index.txt
+-rw-rw-r-- 1 user1 user1  20 oct 10 14:52 index.txt.attr
+-rw-rw-r-- 1 user1 user1   0 oct 10 14:52 index.txt.old
+-rw-rw-r-- 1 user1 user1  33 oct 10 14:52 serie_emitidos.txt
+-rw-rw-r-- 1 user1 user1  33 oct 10 14:52 serie_emitidos.txt.old
+-rw-rw-r-- 1 user1 user1  33 oct 10 14:52 serie_revocados.txt
+-rw-rw-r-- 1 user1 user1  33 oct 10 14:52 serie_revocados.txt.old
+Certificate Revocation List (CRL):
+        Version 2 (0x1)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+        Last Update: Oct 10 12:52:47 2026 GMT
+        Next Update: Aug  6 12:52:47 2027 GMT
+        CRL extensions:
+            X509v3 CRL Number: 
+                54277083195206797539336716447109511568
+No Revoked Certificates.
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        85:fa:8d:27:88:9e:7c:3c:f7:53:94:64:57:27:ef:23:12:07:
+        75:9e:f6:c7:15:fc:72:ea:0d:d3:d3:64:43:e2:aa:a1:26:d4:
+        37:99:4b:43:ce:04:0f:64:da:b4:8b:ec:ed:3e:5d:8f:ff:3e:
+        6b:14:21:0a:57:50:6e:43:db:24:65:db:43:e4:47:9a:99:95:
+        d5:2d:f7:aa:0e:76:6b:90:90:e5:ed:f7:e3:6a:b0:35:41:3b:
+        5d:0d:95:a7:48:0c:15:2b:33:d1:ee:2d:ab:a6:dc:2b:4a:99:
+        8b:5f:d7:4c:a5:2f:2a:6a:98:b8:97:71:6c:c6:f1:30:85:4b:
+        58:cb:9d:71:4b:62:c4:65:bd:df:50:1b:f9:61:4f:26:67:8b:
+        e6:85:cd:6c:0c:0f:b3:10:33:c6:ee:4e:b0:ad:43:bb:bb:a9:
+        c5:dd:27:08:f0:d5:9e:ad:f8:99:69:6b:ae:07:1f:c3:5a:3f:
+        c8:6f:9c:12:12:c0:38:9b:73:06:8f:a5:88:8d:bf:f0:ae:3f:
+        8e:d3:0e:5e:51:a2:f5:12:fc:a4:2d:21:7a:70:f8:d0:e3:43:
+        b6:5f:44:23:04:45:5b:d9:65:38:9d:25:9f:c4:8f:3e:b6:e6:
+
+Script terminado en 2026-10-10 14:52:47+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

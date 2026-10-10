@@ -1,0 +1,21 @@
+Script iniciado en 2026-10-10 14:52:00+02:00 [COMMAND="touch ~/PKI_root/DB/index.txt ~/PKI_root/PKI_sub/DB/index.txt && openssl rand -hex 16 > ~/PKI_root/DB/serie_emitidos.txt && openssl rand -hex 16 > ~/PKI_root/DB/serie_revocados.txt && openssl rand -hex 16 > ~/PKI_root/PKI_sub/DB/serie_revocados.txt && openssl rand -hex 16 > ~/PKI_root/PKI_sub/DB/serie_emitidos.txt && ls -l ~/PKI_root/DB ~/PKI_root/PKI_sub/DB && cat ~/PKI_root/DB/serie_emitidos.txt ~/PKI_root/DB/serie_revocados.txt ~/PKI_root/PKI_sub/DB/serie_emitidos.txt ~/PKI_root/PKI_sub/DB/serie_revocados.txt && wc -c ~/PKI_root/DB/index.txt ~/PKI_root/PKI_sub/DB/index.txt" <no ejecutado en terminal>]
+/home/user1/PKI_root/DB:
+total 8
+-rw-rw-r-- 1 user1 user1  0 oct 10 14:52 index.txt
+-rw-rw-r-- 1 user1 user1 33 oct 10 14:52 serie_emitidos.txt
+-rw-rw-r-- 1 user1 user1 33 oct 10 14:52 serie_revocados.txt
+
+/home/user1/PKI_root/PKI_sub/DB:
+total 8
+-rw-rw-r-- 1 user1 user1  0 oct 10 14:52 index.txt
+-rw-rw-r-- 1 user1 user1 33 oct 10 14:52 serie_emitidos.txt
+-rw-rw-r-- 1 user1 user1 33 oct 10 14:52 serie_revocados.txt
+852af8743232faa94d14b2a15c61afa3
+28d562cfb6cacda9e0fdb6dba9aa7990
+c9fb6826580d25b8e21f03354dd2317b
+373a136fca38cf03c2dca1c67d91a0e4
+0 /home/user1/PKI_root/DB/index.txt
+0 /home/user1/PKI_root/PKI_sub/DB/index.txt
+0 total
+
+Script terminado en 2026-10-10 14:52:00+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

@@ -1,0 +1,76 @@
+Script iniciado en 2026-10-10 14:53:04+02:00 [COMMAND="export ROOT_PASS=user1Root_CA; openssl ca -batch -in ~/PKI_root/PKI_sub/solicitud-subCA.csr -out ~/PKI_root/PKI_sub/certificado-subCA.crt -config ~/PKI_root/ca-root_openssl.cnf -extensions subca_ext -passin env:ROOT_PASS && ls -l ~/PKI_root/PKI_sub/certificado-subCA.crt && openssl x509 -in ~/PKI_root/PKI_sub/certificado-subCA.crt -noout -subject -issuer -serial" <no ejecutado en terminal>]
+Using configuration from /home/user1/PKI_root/ca-root_openssl.cnf
+Check that the request matches the signature
+Signature ok
+Certificate Details:
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number:
+            85:2a:f8:74:32:32:fa:a9:4d:14:b2:a1:5c:61:af:a4
+        Issuer:
+            countryName               = ES
+            stateOrProvinceName       = GP
+            organizationName          = Bocata de Jamon
+            organizationalUnitName    = PKI
+            commonName                = bocata_jamon_rootCA
+        Validity
+            Not Before: Oct 10 12:53:04 2026 GMT
+            Not After : Oct  7 12:53:04 2036 GMT
+        Subject:
+            countryName               = ES
+            stateOrProvinceName       = GP
+            organizationName          = Bocata de Jamon
+            organizationalUnitName    = PKI
+            commonName                = bocata_jamon_subCA
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:d2:ee:fd:f2:95:3a:d3:cd:a1:9e:8a:a7:e1:7f:
+                    14:17:b4:8d:fc:c6:09:bc:7e:bc:17:14:53:94:65:
+                    5f:31:61:28:2f:cb:68:10:2f:f5:dd:40:35:15:15:
+                    b8:ab:2e:10:fd:f4:1f:c5:3e:91:64:17:1b:50:f5:
+                    4b:d1:15:75:40:cf:c7:ac:2a:28:d1:69:44:65:9b:
+                    3a:c8:31:20:7c:a9:e7:dc:b2:3d:96:d4:8b:d0:4a:
+                    3c:3e:be:1c:c3:bf:bf:3e:5f:4b:47:97:d9:60:62:
+                    e4:55:e6:79:91:b3:f8:51:a9:5c:53:e9:bd:04:8b:
+                    51:cf:62:51:aa:ad:2a:ba:4a:5d:d5:b5:e2:1a:c4:
+                    f5:7d:10:a0:27:b8:5b:fb:d8:d5:95:14:7c:f2:32:
+                    30:45:51:fd:71:a6:aa:11:51:8e:d5:10:ab:fa:88:
+                    4d:f9:7e:0b:36:4a:69:ab:78:47:75:2c:50:47:a4:
+                    a5:ce:63:8b:7e:d5:2f:5b:9d:42:43:dc:f5:24:0e:
+                    aa:81:1c:e3:8c:b9:f2:8f:02:9e:8b:c5:bb:e1:b3:
+                    69:27:ad:48:76:7b:a9:3b:8d:92:bd:06:03:e5:89:
+                    e0:2d:36:f0:3e:07:08:ae:55:5a:51:44:48:3c:66:
+                    c9:a4:d7:02:f5:38:01:dd:0b:51:bb:ed:bd:20:71:
+                    18:59
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            Authority Information Access: 
+                CA Issuers - URI:http://rootCA.bocata-jamon.srdsi.lab/rootCA.crt
+                OCSP - URI:http://ocsp.bocata-jamon.srdsi.lab:4747
+            X509v3 Subject Key Identifier: 
+                A5:BA:64:AA:B8:4E:09:1D:E6:F4:17:3A:82:0D:C4:E0:CB:4C:38:66
+            X509v3 Basic Constraints: critical
+                CA:TRUE, pathlen:0
+            X509v3 CRL Distribution Points: 
+                Full Name:
+                  URI:http://rootCA.bocata-jamon.srdsi.lab/rootCA.crl
+
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication, TLS Web Server Authentication
+            X509v3 Key Usage: critical
+                Certificate Sign, CRL Sign
+            X509v3 Authority Key Identifier: 
+                1C:CF:A1:6B:F2:E7:EB:10:E8:34:52:C2:BE:6D:9A:96:11:A3:E2:4E
+Certificate is to be certified until Oct  7 12:53:04 2036 GMT (3650 days)
+
+Write out database with 1 new entries
+Database updated
+-rw-rw-r-- 1 user1 user1 5303 oct 10 14:53 /home/user1/PKI_root/PKI_sub/certificado-subCA.crt
+subject=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+serial=852AF8743232FAA94D14B2A15C61AFA4
+
+Script terminado en 2026-10-10 14:53:04+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

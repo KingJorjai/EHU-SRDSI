@@ -1,0 +1,32 @@
+Script iniciado en 2026-10-10 14:52:12+02:00 [COMMAND="chmod +x ~/PKI_scripts/*.sh && ls -l ~/PKI_root/ca-root_openssl.cnf ~/PKI_root/PKI_sub/ca-sub_openssl.cnf ~/PKI_scripts/ && echo --- && grep -E "^[[:space:]]*\[" ~/PKI_root/ca-root_openssl.cnf ~/PKI_root/PKI_sub/ca-sub_openssl.cnf" <no ejecutado en terminal>]
+-rw-r--r-- 1 user1 user1 1958 oct 10 14:52 /home/user1/PKI_root/ca-root_openssl.cnf
+-rw-r--r-- 1 user1 user1 2170 oct 10 14:52 /home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf
+
+/home/user1/PKI_scripts/:
+total 24
+-rwxr-xr-x 1 user1 user1 7141 oct 10 14:52 emitir_cert.sh
+-rwxr-xr-x 1 user1 user1 8811 oct 10 14:52 gen_solicitud.sh
+-rwxr-xr-x 1 user1 user1 3373 oct 10 14:52 revocar_cert.sh
+---
+/home/user1/PKI_root/ca-root_openssl.cnf:[default]
+/home/user1/PKI_root/ca-root_openssl.cnf:[ca_dn]
+/home/user1/PKI_root/ca-root_openssl.cnf:[CA_default]
+/home/user1/PKI_root/ca-root_openssl.cnf:[policy_c_o_match]
+/home/user1/PKI_root/ca-root_openssl.cnf:[req]
+/home/user1/PKI_root/ca-root_openssl.cnf:[ca_ext]
+/home/user1/PKI_root/ca-root_openssl.cnf:[crl_info]
+/home/user1/PKI_root/ca-root_openssl.cnf:[issuer_info]
+/home/user1/PKI_root/ca-root_openssl.cnf:[ocsp_ext]
+/home/user1/PKI_root/ca-root_openssl.cnf:[subca_ext]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[default]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[ca_dn]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[CA_default]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[policy_c_o_match]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[req]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[crl_info]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[issuer_info]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[ocsp_ext]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[server_ext]
+/home/user1/PKI_root/PKI_sub/ca-sub_openssl.cnf:[user_ext]
+
+Script terminado en 2026-10-10 14:52:12+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

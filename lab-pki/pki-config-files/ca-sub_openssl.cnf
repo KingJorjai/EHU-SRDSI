@@ -1,0 +1,85 @@
+[default]
+name = subCA
+domain_suffix = bocata-jamon.srdsi.lab
+aia_url = http://$name.$domain_suffix/$name.crt
+crl_url = http://$name.$domain_suffix/$name.crl
+ocsp_url = http://ocsp.$domain_suffix:4747
+default_ca = CA_default # Seccion por defecto para CA
+name_opt = utf8,esc_ctrl,multiline,lname,align
+
+[ca_dn]
+countryName = ES
+stateOrProvinceName = GP
+localityName = Donostia
+organizationName = Bocata de Jamon
+organizationalUnitName = PKI
+commonName = bocata_jamon_subCA
+
+[CA_default]
+home = /home/user1/PKI_root/PKI_sub
+db = DB
+privado = private
+database = $home/$db/index.txt
+serial = $home/$db/serie_emitidos.txt
+crlnumber = $home/$db/serie_revocados.txt
+certificate = $home/certificado-subCA.crt
+private_key = $home/$privado/subCA.key
+crl = $home/$db/subCA.crl
+RANDFILE = $home/$privado/.rand
+new_certs_dir = $home/certs
+unique_subject = no
+copy_extensions = copy
+default_days = 3650
+default_crl_days = 300
+default_md = sha256
+policy = policy_c_o_match
+
+# Politica para la CA (email obligatorio: lo exigen gen_solicitud.sh -e y esta politica)
+[policy_c_o_match]
+countryName = match
+stateOrProvinceName = optional
+organizationName = match
+organizationalUnitName = optional
+commonName = supplied
+emailAddress = supplied
+
+[req]
+default_bits = 2048
+encrypt_key = yes
+default_md = sha256
+utf8 = yes
+string_mask = utf8only
+prompt = no
+distinguished_name = ca_dn
+
+[crl_info]
+URI.0 = $crl_url
+
+[issuer_info]
+caIssuers;URI.0 = $aia_url
+OCSP;URI.0 = $ocsp_url
+
+[ocsp_ext]
+authorityKeyIdentifier = keyid:always
+basicConstraints = critical,CA:false
+extendedKeyUsage = OCSPSigning
+keyUsage = critical,digitalSignature
+subjectKeyIdentifier = hash
+
+[server_ext]
+authorityInfoAccess = @issuer_info
+authorityKeyIdentifier = keyid:always
+basicConstraints = critical,CA:false
+crlDistributionPoints = @crl_info
+extendedKeyUsage = clientAuth,serverAuth
+keyUsage = critical,digitalSignature,keyEncipherment
+subjectKeyIdentifier = hash
+
+[user_ext]
+authorityInfoAccess = @issuer_info
+authorityKeyIdentifier = keyid:always
+basicConstraints = critical,CA:false
+crlDistributionPoints = @crl_info
+extendedKeyUsage = clientAuth
+keyUsage = critical,digitalSignature
+subjectKeyIdentifier = hash

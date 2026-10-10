@@ -1,0 +1,67 @@
+Script iniciado en 2026-10-10 14:52:29+02:00 [COMMAND="export ROOT_PASS=user1Root_CA; openssl ca -selfsign -batch -in ~/PKI_root/solicitud-rootCA.csr -out ~/PKI_root/certs/certificado-rootCA.crt -config ~/PKI_root/ca-root_openssl.cnf -extensions ca_ext -passin env:ROOT_PASS && ls -l ~/PKI_root/certs/ && openssl x509 -in ~/PKI_root/certs/certificado-rootCA.crt -noout -subject -issuer -serial" <no ejecutado en terminal>]
+Using configuration from /home/user1/PKI_root/ca-root_openssl.cnf
+Check that the request matches the signature
+Signature ok
+Certificate Details:
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number:
+            85:2a:f8:74:32:32:fa:a9:4d:14:b2:a1:5c:61:af:a3
+        Issuer:
+            countryName               = ES
+            stateOrProvinceName       = GP
+            organizationName          = Bocata de Jamon
+            organizationalUnitName    = PKI
+            commonName                = bocata_jamon_rootCA
+        Validity
+            Not Before: Oct 10 12:52:29 2026 GMT
+            Not After : Oct  7 12:52:29 2036 GMT
+        Subject:
+            countryName               = ES
+            stateOrProvinceName       = GP
+            organizationName          = Bocata de Jamon
+            organizationalUnitName    = PKI
+            commonName                = bocata_jamon_rootCA
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:86:64:dc:cb:b9:09:27:20:0e:68:bc:aa:58:77:
+                    cd:7e:80:ea:fe:72:6d:03:47:8a:62:f6:f0:a1:5f:
+                    b7:a1:dc:96:8c:e6:20:c1:8d:1e:c2:73:f6:dc:d1:
+                    d7:2d:8d:5a:a1:c5:e0:1e:58:e3:07:ec:24:00:5f:
+                    6e:46:2d:d5:a5:b6:01:d9:e7:a5:4d:31:40:86:ab:
+                    ec:8d:6d:f6:66:59:be:9b:0c:ad:40:8f:73:39:70:
+                    14:28:85:55:9d:4d:3d:8d:0f:21:9c:5f:55:90:4b:
+                    ca:d5:9b:fc:76:d5:80:66:42:85:85:06:0d:5c:18:
+                    da:21:4c:ac:da:5a:48:7b:80:95:2f:38:da:f5:2f:
+                    c4:8e:3b:26:0d:65:cf:a9:20:ac:c5:bd:c8:f3:23:
+                    d6:f7:39:40:21:e2:a4:ee:01:bf:f6:7d:d7:45:54:
+                    04:e9:c9:8d:db:cd:f3:34:b4:05:bf:87:af:c9:40:
+                    54:36:34:18:ee:f3:06:c5:ed:65:fe:a4:6c:d2:a8:
+                    b7:97:ec:99:e2:79:4f:b1:e5:31:56:52:c8:a6:f7:
+                    2c:b2:98:5a:a2:5f:22:71:c4:71:71:a6:2f:5c:b0:
+                    3d:7a:11:19:f0:5c:e4:91:40:32:83:6c:2f:a8:d2:
+                    ad:49:1a:30:45:36:91:be:fd:58:b9:ed:2e:53:0e:
+                    da:d1
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: critical
+                CA:TRUE
+            X509v3 Key Usage: critical
+                Certificate Sign, CRL Sign
+            X509v3 Subject Key Identifier: 
+                1C:CF:A1:6B:F2:E7:EB:10:E8:34:52:C2:BE:6D:9A:96:11:A3:E2:4E
+Certificate is to be certified until Oct  7 12:52:29 2036 GMT (3650 days)
+
+Write out database with 1 new entries
+Database updated
+total 16
+-rw-rw-r-- 1 user1 user1 4359 oct 10 14:52 852AF8743232FAA94D14B2A15C61AFA3.pem
+-rw-rw-r-- 1 user1 user1 4359 oct 10 14:52 certificado-rootCA.crt
+subject=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+serial=852AF8743232FAA94D14B2A15C61AFA3
+
+Script terminado en 2026-10-10 14:52:29+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

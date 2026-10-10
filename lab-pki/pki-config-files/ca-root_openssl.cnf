@@ -1,0 +1,81 @@
+[default]
+name = rootCA
+domain_suffix = bocata-jamon.srdsi.lab
+aia_url = http://$name.$domain_suffix/$name.crt
+crl_url = http://$name.$domain_suffix/$name.crl
+ocsp_url = http://ocsp.$domain_suffix:4747
+default_ca = CA_default # Seccion por defecto para CA
+name_opt = utf8,esc_ctrl,multiline,lname,align
+
+[ca_dn]
+countryName = ES
+stateOrProvinceName = GP
+localityName = Donostia
+organizationName = Bocata de Jamon
+organizationalUnitName = PKI
+commonName = bocata_jamon_rootCA
+
+[CA_default]
+home = /home/user1/PKI_root
+db = DB
+privado = private
+database = $home/$db/index.txt
+serial = $home/$db/serie_emitidos.txt
+crlnumber = $home/$db/serie_revocados.txt
+certificate = $home/certificado-rootCA.crt
+private_key = $home/$privado/rootCA.key
+crl = $home/$db/rootCA.crl
+RANDFILE = $home/$privado/.rand
+new_certs_dir = $home/certs
+unique_subject = no
+copy_extensions = none
+default_days = 3650
+default_crl_days = 300
+default_md = sha256
+policy = policy_c_o_match
+
+# Politica para la CA
+[policy_c_o_match]
+countryName = match
+stateOrProvinceName = optional
+organizationName = match
+organizationalUnitName = optional
+commonName = supplied
+emailAddress = optional
+
+[req]
+default_bits = 2048
+encrypt_key = yes
+default_md = sha256
+utf8 = yes
+string_mask = utf8only
+prompt = no
+distinguished_name = ca_dn
+
+[ca_ext]
+basicConstraints = critical,CA:true
+keyUsage = critical,keyCertSign,cRLSign
+subjectKeyIdentifier = hash
+
+[crl_info]
+URI.0 = $crl_url
+
+[issuer_info]
+caIssuers;URI.0 = $aia_url
+OCSP;URI.0 = $ocsp_url
+
+[ocsp_ext]
+authorityKeyIdentifier = keyid:always
+basicConstraints = critical,CA:false
+extendedKeyUsage = OCSPSigning
+keyUsage = critical,digitalSignature
+subjectKeyIdentifier = hash
+
+[subca_ext]
+authorityInfoAccess = @issuer_info
+authorityKeyIdentifier = keyid:always
+basicConstraints = critical,CA:true,pathlen:0
+crlDistributionPoints = @crl_info
+extendedKeyUsage = clientAuth,serverAuth
+keyUsage = critical,keyCertSign,cRLSign
+subjectKeyIdentifier = hash

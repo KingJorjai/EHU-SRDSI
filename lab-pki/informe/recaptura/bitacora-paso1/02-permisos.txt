@@ -1,0 +1,5 @@
+Script iniciado en 2026-10-10 14:51:50+02:00 [COMMAND="chmod 0700 ~/PKI_root/private ~/PKI_root/PKI_sub/private && ls -ld ~/PKI_root/private ~/PKI_root/PKI_sub/private" <no ejecutado en terminal>]
+drwx------ 2 user1 user1 4096 oct 10 14:51 /home/user1/PKI_root/PKI_sub/private
+drwx------ 2 user1 user1 4096 oct 10 14:51 /home/user1/PKI_root/private
+
+Script terminado en 2026-10-10 14:51:50+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

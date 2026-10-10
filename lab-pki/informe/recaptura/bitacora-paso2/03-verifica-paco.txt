@@ -1,0 +1,15 @@
++ openssl x509 -noout -subject -issuer -dates -in ~/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
+subject=C=ES, O=Bocata de Jamon, CN=Paco Antonio Gutierrez, emailAddress=paco@bocata-jamon.srdsi.lab
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+notBefore=Oct 10 12:54:39 2026 GMT
+notAfter=Oct  7 12:54:39 2036 GMT
++ openssl pkcs12 -info -noout -in <p12> (con KEY_PASS)
+MAC: sha256, Iteration 2048
+MAC length: 32, salt length: 8
+PKCS7 Encrypted data: PBES2, PBKDF2, AES-256-CBC, Iteration 2048, PRF hmacWithSHA256
+Certificate bag
+PKCS7 Data
+Shrouded Keybag: PBES2, PBKDF2, AES-256-CBC, Iteration 2048, PRF hmacWithSHA256
++ ls -l crt p12
+-rw-rw-r-- 1 user1 user1 1879 oct 10 14:54 /home/user1/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
+-rw------- 1 user1 user1 3683 oct 10 14:54 /home/user1/PKI_root/PKI_sub/certs.p12/certificado-Paco_Antonio_Gutierrez.p12
