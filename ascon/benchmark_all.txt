@@ -1,0 +1,154 @@
+./benchmark 
+MD5              0ms     0ms    10ms     0ms     0ms
+SHA1             0ms     0ms    10ms     0ms     0ms
+RIPEMD160       10ms     0ms    10ms     0ms     0ms
+TIGER192         0ms     0ms    10ms    10ms     0ms
+SHA256           0ms     0ms    10ms     0ms     0ms
+SHA384           0ms    10ms    10ms     0ms     0ms
+SHA512           0ms     0ms    10ms    10ms     0ms
+SHA224           0ms     0ms    10ms     0ms     0ms
+MD4              0ms     0ms    10ms     0ms     0ms
+CRC32            0ms     0ms    10ms     0ms     0ms
+CRC32RFC1510     0ms     0ms    10ms     0ms     0ms
+CRC24RFC2440     0ms     0ms    10ms     0ms     0ms
+WHIRLPOOL        0ms    10ms    10ms     0ms    10ms
+TIGER            0ms     0ms    10ms     0ms     0ms
+TIGER2          10ms     0ms    10ms     0ms     0ms
+GOSTR3411_94    20ms    10ms    20ms    20ms    20ms
+STRIBOG256       0ms    10ms    10ms     0ms    10ms
+STRIBOG512       0ms    10ms    10ms    10ms     0ms
+GOSTR3411_CP    20ms    10ms    30ms    10ms    20ms
+SHA3-224         0ms     0ms    10ms     0ms    10ms
+SHA3-256         0ms     0ms    10ms     0ms    10ms
+SHA3-384         0ms     0ms    10ms    10ms     0ms
+SHA3-512         0ms     0ms    20ms     0ms    10ms
+SHAKE128         0ms     0ms    10ms     0ms     0ms
+SHAKE256        10ms     0ms    10ms     0ms     0ms
+BLAKE2B_512      0ms    10ms     0ms    10ms     0ms
+BLAKE2B_384      0ms     0ms    10ms     0ms     0ms
+BLAKE2B_256      0ms     0ms    10ms     0ms     0ms
+BLAKE2B_160     10ms     0ms    10ms     0ms     0ms
+BLAKE2S_256      0ms     0ms    10ms     0ms     0ms
+BLAKE2S_224     10ms     0ms     0ms    10ms     0ms
+BLAKE2S_160      0ms     0ms    10ms     0ms    10ms
+BLAKE2S_128      0ms     0ms    10ms     0ms     0ms
+SM3              0ms     0ms    20ms     0ms     0ms
+SHA512_256       0ms     0ms    10ms    10ms     0ms
+SHA512_224       0ms     0ms    10ms     0ms     0ms
+
+GOST28147_IMIT          10ms    10ms     0ms
+HMAC_SHA256             10ms     0ms     0ms
+HMAC_SHA224              0ms     0ms     0ms
+HMAC_SHA512              0ms     0ms     0ms
+HMAC_SHA384             10ms     0ms     0ms
+HMAC_SHA1                0ms     0ms     0ms
+HMAC_MD5                 0ms    10ms     0ms
+HMAC_MD4                 0ms     0ms     0ms
+HMAC_RIPEMD160           0ms     0ms    10ms
+HMAC_TIGER               0ms     0ms     0ms
+HMAC_WHIRLPOOL           0ms    10ms     0ms
+HMAC_GOSTR3411_94       20ms    20ms    10ms
+HMAC_STRIBOG256         10ms     0ms    10ms
+HMAC_STRIBOG512          0ms    10ms     0ms
+HMAC_SHA3_224            0ms     0ms    10ms
+HMAC_SHA3_256            0ms     0ms     0ms
+HMAC_SHA3_384           10ms     0ms     0ms
+HMAC_SHA3_512           10ms     0ms     0ms
+HMAC_GOSTR3411_CP       20ms    20ms    10ms
+HMAC_BLAKE2B_512         0ms     0ms    10ms
+HMAC_BLAKE2B_384         0ms     0ms     0ms
+HMAC_BLAKE2B_256         0ms     0ms     0ms
+HMAC_BLAKE2B_160         0ms    10ms     0ms
+HMAC_BLAKE2S_256         0ms     0ms     0ms
+HMAC_BLAKE2S_224         0ms     0ms    10ms
+HMAC_BLAKE2S_160         0ms     0ms     0ms
+HMAC_BLAKE2S_128         0ms     0ms    10ms
+HMAC_SM3                 0ms     0ms     0ms
+HMAC_SHA512_256         10ms     0ms     0ms
+HMAC_SHA512_224          0ms     0ms     0ms
+CMAC_AES                 0ms     0ms     0ms
+CMAC_3DES               20ms    20ms    30ms
+CMAC_CAMELLIA            0ms    10ms     0ms
+CMAC_CAST5              10ms    10ms     0ms
+CMAC_BLOWFISH           10ms    10ms     0ms
+CMAC_TWOFISH            10ms     0ms    10ms
+CMAC_SERPENT            10ms    10ms    10ms
+CMAC_SEED               10ms    10ms    10ms
+CMAC_RFC2268            10ms    10ms    10ms
+CMAC_IDEA               10ms    10ms    10ms
+CMAC_GOST28147          10ms    10ms    20ms
+CMAC_SM4                10ms     0ms    10ms
+CMAC_ARIA               10ms     0ms    10ms
+GMAC_AES                 0ms     0ms     0ms
+GMAC_CAMELLIA            0ms     0ms     0ms
+GMAC_TWOFISH             0ms     0ms    10ms
+GMAC_SERPENT             0ms     0ms     0ms
+GMAC_SEED                0ms     0ms     0ms
+GMAC_SM4                 0ms     0ms     0ms
+GMAC_ARIA                0ms     0ms     0ms
+POLY1305                 0ms     0ms     0ms
+POLY1305_AES             0ms    10ms     0ms
+POLY1305_CAMELLIA        0ms     0ms     0ms
+POLY1305_TWOFISH         0ms     0ms     0ms
+POLY1305_SERPENT         0ms     0ms     0ms
+POLY1305_SEED            0ms     0ms     0ms
+POLY1305_SM4             0ms     0ms    10ms
+POLY1305_ARIA            0ms     0ms     0ms
+
+                ECB/Stream    CBC/Poly1305         CFB             OFB             CTR             XTS             CCM             GCM             OCB             EAX      
+             --------------- --------------- --------------- --------------- --------------- --------------- --------------- --------------- --------------- ---------------
+IDEA            10ms     0ms    10ms    10ms     0ms    10ms    10ms    10ms     0ms    10ms       -       -       -       -       -       -       -       -    10ms    20ms
+3DES            20ms    20ms    20ms    10ms    20ms    10ms    30ms    20ms    10ms    10ms       -       -       -       -       -       -       -       -    30ms    30ms
+CAST5           10ms     0ms    10ms     0ms    10ms     0ms    10ms     0ms    10ms     0ms       -       -       -       -       -       -       -       -    10ms    10ms
+BLOWFISH         0ms    10ms     0ms    10ms     0ms    10ms     0ms    10ms     0ms     0ms       -       -       -       -       -       -       -       -    10ms    10ms
+AES              0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms    10ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms
+AES192           0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms    10ms
+AES256           0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms     0ms
+TWOFISH         10ms     0ms     0ms     0ms    10ms     0ms    10ms     0ms     0ms     0ms    10ms     0ms    10ms     0ms     0ms    10ms     0ms     0ms    10ms     0ms
+ARCFOUR         10ms     0ms
+DES             10ms    10ms    10ms    10ms    10ms    10ms    10ms    10ms     0ms    10ms       -       -       -       -       -       -       -       -    20ms    20ms
+TWOFISH128       0ms     0ms    10ms     0ms    10ms     0ms     0ms    10ms     0ms     0ms     0ms     0ms    10ms    10ms     0ms     0ms     0ms    10ms     0ms    10ms
+SERPENT128       0ms     0ms    10ms     0ms    10ms    10ms     0ms    20ms     0ms     0ms     0ms     0ms    10ms    20ms     0ms     0ms     0ms     0ms    10ms    10ms
+SERPENT192       0ms    10ms     0ms    10ms    10ms     0ms    10ms    10ms     0ms     0ms     0ms    10ms    10ms    10ms     0ms     0ms     0ms     0ms    10ms    10ms
+SERPENT256      10ms     0ms    10ms     0ms    10ms     0ms    10ms    10ms     0ms     0ms    10ms     0ms    10ms    10ms     0ms     0ms     0ms     0ms    10ms    20ms
+RFC2268_40      10ms     0ms    10ms    10ms    10ms    10ms    10ms    10ms    10ms    10ms       -       -       -       -       -       -       -       -    20ms    20ms
+RFC2268_128     10ms    10ms    10ms    10ms    10ms    10ms    10ms    10ms    10ms    10ms       -       -       -       -       -       -       -       -    20ms    20ms
+SEED            10ms    10ms    10ms    10ms    10ms    10ms    10ms    10ms     0ms    10ms    10ms    10ms    20ms    20ms    10ms     0ms    10ms    10ms    20ms    20ms
+CAMELLIA128      0ms     0ms     0ms     0ms    10ms     0ms     0ms    10ms     0ms     0ms     0ms     0ms    10ms     0ms    10ms     0ms     0ms     0ms     0ms    10ms
+CAMELLIA192      0ms     0ms    10ms     0ms    10ms     0ms     0ms    10ms     0ms     0ms     0ms     0ms    10ms    10ms     0ms     0ms     0ms     0ms    10ms    10ms
+CAMELLIA256      0ms     0ms    10ms     0ms     0ms     0ms    10ms    10ms     0ms     0ms     0ms     0ms    10ms    10ms     0ms     0ms     0ms     0ms    10ms    10ms
+SALSA20          0ms     0ms
+SALSA20R12       0ms     0ms
+GOST28147       10ms    10ms    20ms    10ms    10ms    10ms    10ms    20ms     0ms    10ms       -       -       -       -       -       -       -       -    30ms    20ms
+CHACHA20         0ms     0ms     0ms     0ms
+GOST28147_MESH    20ms    10ms    10ms    10ms    10ms    10ms    10ms    20ms     0ms    20ms       -       -       -       -       -       -       -       -    20ms    20ms
+SM4              0ms     0ms    10ms     0ms    10ms     0ms    10ms    10ms     0ms     0ms     0ms    10ms    10ms    10ms     0ms     0ms     0ms     0ms    10ms    10ms
+ARIA128          0ms     0ms    10ms     0ms     0ms     0ms    10ms    10ms     0ms     0ms     0ms     0ms     0ms    10ms     0ms     0ms     0ms     0ms    10ms     0ms
+ARIA192          0ms     0ms     0ms     0ms    10ms     0ms    10ms     0ms     0ms     0ms     0ms     0ms    10ms    10ms     0ms     0ms     0ms     0ms    10ms     0ms
+ARIA256          0ms    10ms     0ms     0ms    10ms     0ms    10ms     0ms    10ms     0ms     0ms     0ms    10ms     0ms     0ms    10ms     0ms     0ms    10ms     0ms
+
+Algorithm         generate  100*priv  100*public
+------------------------------------------------
+RSA 1024 bit          10ms      70ms         0ms
+RSA 2048 bit          80ms     300ms         0ms
+RSA 3072 bit         140ms     800ms         0ms
+RSA 4096 bit        1150ms    1730ms        10ms
+ELG 1024 bit             -     410ms       180ms
+ELG 2048 bit             -    2050ms      1070ms
+ELG 3072 bit             -    5520ms      2510ms
+DSA 1024/160             -      10ms        20ms
+DSA 2048/224             -      60ms        70ms
+DSA 3072/256             -     110ms       160ms
+ECDSA 192 bit          0ms      30ms        40ms
+ECDSA 224 bit          0ms      40ms        50ms
+ECDSA 256 bit          0ms      50ms        60ms
+ECDSA 384 bit          0ms     100ms       110ms
+ECDSA 521 bit          0ms     220ms       230ms
+EdDSA Ed25519          0ms      20ms        40ms
+EdDSA Ed448            0ms      90ms       180ms
+GOST  256 bit          0ms      60ms        70ms
+GOST  512 bit         10ms     350ms       410ms
+
+powm          10ms     0ms    10ms
+
+random         0ms     0ms

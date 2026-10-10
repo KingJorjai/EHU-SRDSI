@@ -1,0 +1,19 @@
+# VM (6 GB + logs: fuera del repo)
+SRDSI_Debian13/
+*.vdi
+
+# Restos de compilación LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Prueba de compilación (no es entregable)
+hola-mundo.pdf
+
+# Binarios compilados de lab-ssl
+lab-ssl/source_files/tcp-server
+lab-ssl/source_files/tcp-client
