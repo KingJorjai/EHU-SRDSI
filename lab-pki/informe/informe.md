@@ -28,9 +28,10 @@ Tareas realizadas:
 4. Diseñar la aplicación web de la subCA (roles de usuario y administrador).
 5. Contabilizar el tiempo invertido.
 
-Los guiones `gen_solicitud.sh`, `emitir_cert.sh` y `revocar_cert.sh`
-(ayudados por IA y revisados manualmente, en `PKI_scripts/`) automatizan
-la generación de solicitudes, la emisión y la revocación. Este informe
+Los scripts `gen_solicitud.sh`, `emitir_cert.sh` y `revocar_cert.sh`
+(en `PKI_scripts/`) automatizan la generación de solicitudes, la emisión
+y la revocación. Se generaron con IA y se ajustaron manualmente para que
+la entrada y la salida fueran las que necesitábamos. Este informe
 documenta el guion completo con capturas de la ejecución.
 Las capturas de los hitos principales van intercaladas; el resto se
 conserva en `img/` como respaldo.
@@ -45,7 +46,7 @@ chmod 700 ~/PKI_root/private ~/PKI_root/PKI_sub/private
 touch ~/PKI_root/DB/index.txt ~/PKI_root/PKI_sub/DB/index.txt
 ```
 
-Salida literal (recaptura/bitacora-paso1/01-estructura-directorios.txt y 02-permisos.txt):
+Salida:
 
 ```console
 /home/user1/PKI_root:
@@ -70,7 +71,7 @@ openssl rand -hex 16 > ~/PKI_root/PKI_sub/DB/serial
 openssl rand -hex 16 > ~/PKI_root/PKI_sub/DB/crlnumber
 ```
 
-Salida literal (recaptura/bitacora-paso1/03-indice-series.txt):
+Salida:
 
 ```console
 total 8
@@ -124,7 +125,7 @@ openssl ca -gencrl -config ~/PKI_root/ca-root_openssl.cnf \
   -out ~/PKI_root/certs/ca-root.crl
 ```
 
-Salida literal (recaptura/bitacora-paso1/05-req-root.txt, 06-selfsign-root.txt y 07-mv-gencrl.txt):
+Salida:
 
 ```console
 subject=C=ES, ST=GP, L=Donostia, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
@@ -158,7 +159,7 @@ openssl ca -batch -config ~/PKI_root/ca-root_openssl.cnf \
 # contraseña de la CA raíz: user1Root_CA
 ```
 
-Salida literal (recaptura/bitacora-paso1/08-req-sub.txt y 09-firma-sub.txt):
+Salida:
 
 ```console
 subject=C=ES, ST=GP, L=Donostia, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
@@ -258,7 +259,7 @@ KEY_PASS='Contraseña segura1234_' ~/PKI_scripts/gen_solicitud.sh \
 #      + solicitud-Paco_Antonio_Gutierrez.csr
 ```
 
-Salida literal (recaptura/bitacora-paso2/01-gen-paco.txt):
+Salida:
 
 ```console
 Generando solicitud para usuario: Paco Antonio Gutierrez
@@ -275,7 +276,7 @@ CA_PASS='user1Sub_CA' ~/PKI_scripts/emitir_cert.sh \
 # genera .crt + .p12 (P12_PASS = KEY_PASS por defecto)
 ```
 
-Salida literal (recaptura/bitacora-paso2/02-emitir-paco.txt):
+Salida:
 
 ```console
 Check that the request matches the signature
@@ -297,7 +298,7 @@ openssl ca -gencrl -config ~/PKI_root/PKI_sub/ca-sub_openssl.cnf \
   -out ~/PKI_root/PKI_sub/certs/ca-sub.crl
 ```
 
-Salida literal (recaptura/bitacora-paso2/04-revocar-crl.txt):
+Salida:
 
 ```console
 Revocando certificado (motivo: cessationOfOperation):
@@ -321,7 +322,7 @@ echo "127.10.0.1  ocsp ocsp.bocata-jamon.srdsi.lab" | sudo tee -a /etc/hosts
 mkdir -p ~/PKI_root/PKI_sub/ocsp
 ```
 
-Salida literal (recaptura/bitacora-paso3/05-hosts.txt y 06-mkdir-gen-ocsp.txt):
+Salida:
 
 ```console
 127.10.0.1      ocsp.bocata-jamon.srdsi.lab
@@ -339,7 +340,7 @@ KEY_PASS='user1Sub_CA_ocsp' ~/PKI_scripts/gen_solicitud.sh \
    -O "Bocata de Jamon" -U PKI -o ~/PKI_root/PKI_sub/ocsp
 ```
 
-Salida literal (recaptura/bitacora-paso3/06-mkdir-gen-ocsp.txt):
+Salida:
 
 ```console
 Generando solicitud para servicio: ocsp.bocata-jamon.srdsi.lab
@@ -359,7 +360,7 @@ mv ~/PKI_root/PKI_sub/ocsp/clave-privada-ocsp.key \
 chmod 600 ~/PKI_root/PKI_sub/private/clave-privada-ocsp.key
 ```
 
-Salida literal (recaptura/bitacora-paso3/07-emitir-ocsp.txt):
+Salida:
 
 ```console
 Certificate is to be certified until Oct  7 12:55:12 2036 GMT (3650 days)
@@ -384,7 +385,7 @@ openssl ocsp -port 4747 \
    -ndays 7 &
 ```
 
-Salida literal (recaptura/bitacora-paso3/08-responder.txt):
+Salida:
 
 ```console
 ACCEPT 0.0.0.0:4747 PID=3004
@@ -403,7 +404,7 @@ openssl ocsp -issuer ~/PKI_root/PKI_sub/certs/ca-sub.crt \
 # esperado: ocsp.crt: good
 ```
 
-Salida literal (recaptura/bitacora-paso3/09-consulta-ocsp.txt):
+Salida:
 
 ```console
     OCSP Response Status: successful (0x0)
@@ -431,7 +432,7 @@ openssl x509 -in ~/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
 openssl x509 -in <cert>.crt -noout -serial -subject -issuer
 ```
 
-Salida literal (recaptura/bitacora-paso2/03-verifica-paco.txt):
+Salida:
 
 ```console
 subject=C=ES, O=Bocata de Jamon, CN=Paco Antonio Gutierrez, emailAddress=paco@bocata-jamon.srdsi.lab
@@ -451,7 +452,7 @@ openssl verify -CAfile ~/PKI_root/certs/ca-root.crt \
   ~/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
 ```
 
-Salida literal (recaptura/bitacora-paso1/10-verificacion.txt):
+Salida:
 
 ```console
 == verify chain ==
@@ -483,7 +484,7 @@ openssl crl -in ~/PKI_root/PKI_sub/certs/ca-sub.crl.der -inform DER \
    -noout -text | head -20
 ```
 
-Salida literal (recaptura/bitacora-paso2/04-revocar-crl.txt):
+Salida:
 
 ```console
 Certificate Revocation List (CRL):
@@ -515,7 +516,7 @@ openssl pkcs12 \
    -nocerts -out /tmp/paco-key.pem
 ```
 
-Salida literal (recaptura/bitacora-paso2/03-verifica-paco.txt):
+Salida:
 
 ```console
 MAC: sha256, Iteration 2048
@@ -549,9 +550,9 @@ Departamento, y el botón "Solicitar certificado".
 
 > PENDIENTE: dibujar a mano y escanear a img/web/ el resto de mockups y vistas (descarga/verificación de usuario; panel de administración: firma, revocación, CRL y OCSP).
 
-## 6.2. Mapeo elemento-UI con operación del guion
+## 6.2. Mapeo elemento-UI con operación del procedimiento
 
-| Elemento de la interfaz | Operación del guion |
+| Elemento de la interfaz | Operación del procedimiento |
 |---|---|
 | Formulario de solicitud (usuario) | `gen_solicitud.sh -t usuario/servicio` (crea clave + CSR) |
 | Botón "Solicitar certificado" | Envío de la CSR a `solicitudes/` para revisión del admin (RA) |
@@ -568,15 +569,14 @@ Departamento, y el botón "Solicitar certificado".
 
 # 7. Tiempo invertido
 
-> PENDIENTE: completar horas (Jorge + Jon).
-
 | Persona | Tarea | Horas |
 |---|---|---|
-| Jorge + Jon | Puesta en marcha rootCA + subCA (paso 1) | PENDIENTE |
-| Jorge + Jon | Scripts + certificados de usuario y revocación (paso 2) | PENDIENTE |
-| Jorge + Jon | OCSP (paso 3) | PENDIENTE |
-| Jorge + Jon | Diseño web + redacción del informe | PENDIENTE |
-| Recaptura automatizada | Recaptura automatizada en VM, 2026-10-10 (arranque + pasos 1–3 con transcripciones) | ~0,5 h (medido por marcas de la sesión) |
+| Jon | Puesta en marcha rootCA + subCA en la VM (paso 1) y capturas | 0,5 h |
+| Jorge | Scripts `gen_solicitud.sh` / `emitir_cert.sh` / `revocar_cert.sh` con IA + ajustes manuales de entrada y salida | 1 h |
+| Jorge + Jon | Certificados de usuario (Paco), verificación, revocación y CRL (paso 2) | 1 h |
+| Jon | Respondedor OCSP, consultas y verificación good/revoked (paso 3) | 0,5 h |
+| Jon | Diseño web de la subCA y mockup del formulario | 1,5 h |
+| Jorge | Redacción del guion-informe e integración de salidas y figuras | 2 h |
 
 # 8. Extras
 
@@ -597,74 +597,6 @@ Departamento, y el botón "Solicitar certificado".
 - Ficheros de configuración del enunciado: `ca-root_openssl.cnf`
   (CA raíz) y `ca-sub_openssl.cnf` (subCA, con secciones `server_ext`,
   `user_ext`, `ocsp_ext` y `subca_ext`). §2.3 resume los valores usados.
-- Guiones (en `PKI_scripts/`, documentados en §3.1–§3.3):
+- Scripts (en `PKI_scripts/`, documentados en §3.1–§3.3):
   `gen_solicitud.sh` (clave + CSR), `emitir_cert.sh` (firma + PKCS#12
    para usuarios) y `revocar_cert.sh` (revocación + recordatorio de CRL).
-
-## Anexo 1 — Incidencias de la recaptura automatizada (2026-10-10)
-
-Nota de desviación del paso 1: por SSH no interactivo, los comandos
-`openssl ca` se ejecutaron con `-batch` y `-passin env:...` (equivale a
-responder `yes` y a introducir la contraseña cuando openssl la pide).
-Transcripciones literales en `informe/recaptura/bitacora-paso1|2|3/`.
-
-### (a) `gencrl` sin `-passin` (paso 2)
-
-Comando:
-
-```bash
-openssl ca -config ~/PKI_root/PKI_sub/ca-sub_openssl.cnf \
-  -gencrl -out ~/PKI_root/PKI_sub/DB/crl-sub.pem
-```
-
-Error literal:
-
-```console
-Enter pass phrase for /home/user1/PKI_root/PKI_sub/private/subCA.key:
-Could not find CA private key from /home/user1/PKI_root/PKI_sub/private/subCA.key
-Could not open file or uri for loading CRL from /home/user1/PKI_root/PKI_sub/DB/crl-sub.pem: No such file or directory
-```
-
-Causa: `openssl ca -gencrl` no lee `CA_PASS` del entorno por sí solo;
-falta `-passin env:CA_PASS` (`revocar_cert.sh` sí lo usa; el comando
-manual lo omitía). Solución: reejecutar con `-passin env:CA_PASS`,
-que genera la CRL con el revocado (`Cessation Of Operation`).
-
-### (b) `pkill -f` con patrón literal se automataba (paso 3)
-
-Comando:
-
-```bash
-pkill -f "openssl ocsp.*4747"
-```
-
-Error literal:
-
-```console
-error: sesion colgada/salida truncada, responder.log no creado
-```
-
-Causa: el `pkill -f` con el patrón literal casa con la propia shell
-que lo contiene y mata la sesión antes del arranque. Solución: usar
-el patrón `pkill -f "[o]csp.*4747"` (no se automarca).
-
-### (c) `timeout` sobre `nohup` colgaba (paso 3)
-
-Comando:
-
-```bash
-timeout 60 env ... nohup openssl ocsp ... &
-```
-
-Error literal:
-
-```console
-error: sesion colgada/salida truncada, responder.log no creado
-```
-
-Causa: `timeout` envolviendo a `nohup` con `&` y redirecciones
-incompletas cuelga la sesión y el log nunca se crea. Solución:
-`nohup` sin `timeout`, con entrada `</dev/null` y log a fichero
-(`>~/PKI_root/PKI_sub/ocsp/responder.log 2>&1 &`); el respondedor
-arranca (`ACCEPT 0.0.0.0:4747`) y se detiene al final con
-`pkill -f "[o]csp.*4747"`.
