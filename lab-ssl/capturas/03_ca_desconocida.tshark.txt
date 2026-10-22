@@ -1,0 +1,14 @@
+# 03_ca_desconocida.pcapng
+# sink: tshark -r 03_ca_desconocida.pcapng -o tls.keylog_file:03_ca_desconocida.keylog
+
+1	TCP	33334 → 1064 [SYN] Seq=0 Win=65495 Len=0 MSS=65495 SACK_PERM TSval=1766877302 TSecr=0 WS=128
+2	TCP	1064 → 33334 [SYN, ACK] Seq=0 Ack=1 Win=65483 Len=0 MSS=65495 SACK_PERM TSval=4087049068 TSecr=1766877302 WS=128
+3	TCP	33334 → 1064 [ACK] Seq=1 Ack=1 Win=65536 Len=0 TSval=1766877302 TSecr=4087049068
+4	TLSv1	Client Hello
+5	TCP	1064 → 33334 [ACK] Seq=1 Ack=120 Win=65408 Len=0 TSval=4087049068 TSecr=1766877302
+6	TLSv1.2	Server Hello, Certificate, Server Hello Done
+7	TCP	33334 → 1064 [ACK] Seq=120 Ack=1068 Win=67584 Len=0 TSval=1766877302 TSecr=4087049068
+8	TLSv1.2	Alert (Level: Fatal, Description: Unknown CA)
+9	TCP	33334 → 1064 [RST, ACK] Seq=127 Ack=1068 Win=67584 Len=0 TSval=1766877302 TSecr=4087049068
+
+# Datos de aplicacion descifrados:

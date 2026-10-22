@@ -1,0 +1,15 @@
+# 02_cert_inexistente.pcapng
+# sink: tshark -r 02_cert_inexistente.pcapng 
+
+1	TCP	33540 → 1064 [SYN] Seq=0 Win=65495 Len=0 MSS=65495 SACK_PERM TSval=4113586460 TSecr=0 WS=128
+2	TCP	1064 → 33540 [SYN, ACK] Seq=0 Ack=1 Win=65483 Len=0 MSS=65495 SACK_PERM TSval=371526968 TSecr=4113586460 WS=128
+3	TCP	33540 → 1064 [ACK] Seq=1 Ack=1 Win=65536 Len=0 TSval=4113586460 TSecr=371526968
+4	TLSv1	Client Hello
+5	TCP	1064 → 33540 [ACK] Seq=1 Ack=120 Win=65408 Len=0 TSval=371526968 TSecr=4113586460
+6	TLSv1.2	Alert (Level: Fatal, Description: Handshake Failure)
+7	TCP	33540 → 1064 [ACK] Seq=120 Ack=8 Win=65536 Len=0 TSval=4113586460 TSecr=371526968
+8	TCP	33540 → 1064 [FIN, ACK] Seq=120 Ack=8 Win=65536 Len=0 TSval=4113586460 TSecr=371526968
+9	TCP	1064 → 33540 [FIN, ACK] Seq=8 Ack=121 Win=65536 Len=0 TSval=371526969 TSecr=4113586460
+10	TCP	33540 → 1064 [ACK] Seq=121 Ack=9 Win=65536 Len=0 TSval=4113586461 TSecr=371526969
+
+# Datos de aplicacion descifrados:

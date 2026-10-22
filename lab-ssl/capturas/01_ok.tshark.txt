@@ -1,0 +1,18 @@
+# 01_ok.pcapng
+# sink: tshark -r 01_ok.pcapng -o tls.keylog_file:01_ok.keylog
+
+1	TCP	33526 → 1064 [SYN] Seq=0 Win=65495 Len=0 MSS=65495 SACK_PERM TSval=1829509656 TSecr=0 WS=128
+2	TCP	1064 → 33526 [SYN, ACK] Seq=0 Ack=1 Win=65483 Len=0 MSS=65495 SACK_PERM TSval=1748677261 TSecr=1829509656 WS=128
+3	TCP	33526 → 1064 [ACK] Seq=1 Ack=1 Win=65536 Len=0 TSval=1829509656 TSecr=1748677261
+4	TLSv1	Client Hello
+5	TCP	1064 → 33526 [ACK] Seq=1 Ack=120 Win=65408 Len=0 TSval=1748677262 TSecr=1829509657
+6	TLSv1.2	Server Hello, Certificate, Server Hello Done
+7	TCP	33526 → 1064 [ACK] Seq=120 Ack=1068 Win=67584 Len=0 TSval=1829509657 TSecr=1748677262
+8	TLSv1.2	Client Key Exchange, Change Cipher Spec, Finished
+9	TLSv1.2	New Session Ticket, Change Cipher Spec, Finished
+10	TLSv1.2	Application Data, Application Data, Alert (Level: Warning, Description: Close Notify)
+11	TLSv1.2	Alert (Level: Warning, Description: Close Notify)
+12	TCP	1064 → 33526 [RST] Seq=1750 Win=0 Len=0
+
+# Datos de aplicacion descifrados:
+  frame 10	6,221

@@ -6,14 +6,20 @@ Layout: `lab-pki/` (PKI: `scripts/`, `pki-config-files/`, `docs/`, `informe/`), 
 
 ## lab-ssl: C + OpenSSL (`lab-ssl/source_files/`)
 
-Enunciado en `lab-ssl/Lab-ssl-actividad.pdf` (teoría en `Lab-ssl-teoria.pdf`). Ejercicio 1 = pasar el protocolo `cli-infouser.c`/`serv-infouser.c` (TCP plano) a sockets OpenSSL (`ssl_client-auth.c`/`ssl_server-auth.c`); Ejercicio 2 = analizar alertas con cert inexistente / CA desconocida.
+Enunciado en `lab-ssl/Lab-ssl-actividad.pdf` (teoría en `Lab-ssl-teoria.pdf`). El cliente/servidor de la actividad (`cli-infouser.c`/`serv-infouser.c`) **ya están migrados a OpenSSL** (Ejercicio 1); los ejemplos de la teoría sin migrar son `tcp_*.c` y `ssl_*-auth.c`. El Ejercicio 2 = analizar alertas con cert inexistente / CA desconocida.
 
-- Sin Makefile. Compilar: `gcc -Wall -o <bin> ssl_<lado>-auth.c -lssl -lcrypto` (los planos, sin flags). El PDF pide `gcc [-g] [-O2] -o ejecutable ssl-fuente.c -Wall -lssl -lcrypto`.
+- Sin Makefile. Compilar: `gcc -Wall -o <bin> <fuente>.c -lssl -lcrypto` (el PDF pide `[-g] [-O2]`).
 - **Ejecutar siempre desde `source_files/`**: los certificados van por ruta relativa (`certificados/s_cert.pem`, `certificados/c-ca_cert.pem`, etc.); desde otro cwd `SSL_CTX_use_certificate_file` falla.
-- Certs ya generados en `certificados/`: dos CAs independientes, servidor (`s-ca_cert.pem`, CN=CA_SERV-SRDSI) y cliente (`c-ca_cert.pem`, CN=CA_CLI-SRDSI), más `s_cert/s_key` y `c_cert/c_key`. Caducan el 2026-08-14.
-- `ssl_client-auth.c` fija la lista de cifrados (`AES128-SHA256:AES256-CCM:AES256-GCM-SHA384`) y limita a TLS 1.2 (`SSL_CTX_set_max_proto_version(..., TLS1_2_VERSION)`), imprescindible para descifrar en Wireshark (solo TLSv1.2); el callback escribe `keylog-ssl.log` para cargarlo en Prefs → Protocols → TLS. Ambos exigen verificación mutua (`SSL_VERIFY_PEER`, depth 1).
-- Uso: servidor `ssl_server-auth <portnum>`; cliente `ssl_client-auth <hostname> <portnum>`. Los planos usan puerto fijo 1064 y cliente `cli-infouser <hostip> <filename>`.
-- `.gitignore` solo ignora los binarios `tcp-server`/`tcp-client`: compilar los `ssl_*` deja binarios y `keylog-ssl.log` sin trackear — no commitear.
+- Certs ya generados en `certificados/`: dos CAs independientes, servidor (`s-ca_cert.pem`, CN=CA_SERV-SRDSI) y cliente (`c-ca_cert.pem`, CN=CA_CLI-SRDSI), más `s_cert/s_key` y `c_cert/c_key`. Sustituidos el 2026-10-19; caducan el **2037-10-01**.
+- Cliente: fija cifrados (`AES128-SHA256:AES256-CCM:AES256-GCM-SHA384`) + TLS 1.2 (`SSL_CTX_set_max_proto_version(..., TLS1_2_VERSION)`) para descifrar en Wireshark (solo TLSv1.2); el callback escribe `keylog-ssl.log`. **El cliente no presenta certificado** (solo verifica al servidor con `s-ca_cert.pem`); el servidor no pide cert de cliente y usa `SO_REUSEADDR`.
+- Uso: servidor `serv-infouser` (puerto fijo 1064, sin args); cliente `cli-infouser <hostip> <filename>`. Los ejemplos usan `<hostname> <portnum>`.
+- `.gitignore` ignora los binarios de `source_files/` (`tcp-*`, `cli/serv-infouser`) y `*.log` (incluye `keylog-ssl.log`).
+
+## lab-ssl: automatización y capturas (`lab-ssl/run-lab.sh`)
+
+- `run-lab.sh [--gui]` controla la VM por SSH (alias `SRDSI`, carpeta compartida `/media/sf_SRDSI` == este repo): compila, reproduce 3 escenarios con `dumpcap -i lo` y analiza con `tshark`. Evidencia en `lab-ssl/capturas/` (`.pcapng`, `.keylog`, `.tshark.txt`; `.png` con `--gui`). `ws_shot.sh` hace las capturas GUI en un **display virtual Xvfb dentro de la VM** (`Xvfb :99` + `openbox` + `scrot`): no abre ninguna ventana en el host. Pasos y análisis en `lab-ssl/guion-capturas.md`.
+- La VM ya tiene instalados `libssl-dev`, `xvfb`, `scrot`, `openbox`, `xdotool`, `dumpcap` y `wireshark`; `sudo` disponible para instalar más paquetes. Se compila con las cabeceras del sistema: `gcc -Wall -O2 -o <bin> <fuente>.c -lssl -lcrypto`.
+- Informe en `lab-ssl/informe/informe.md` → PDF con `make informe` (mismo método que lab-pki: Pandoc + pdflatex + clase `ifreport`); figuras en `lab-ssl/capturas/*.png`.
 
 ## lab-pki: scripts openssl (`lab-pki/scripts/`)
 

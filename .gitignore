@@ -17,3 +17,7 @@ hola-mundo.pdf
 # Binarios compilados de lab-ssl
 lab-ssl/source_files/tcp-server
 lab-ssl/source_files/tcp-client
+lab-ssl/source_files/cli-infouser
+lab-ssl/source_files/serv-infouser
+lab-ssl/source_files/ssl-server
+lab-ssl/source_files/ssl-client
