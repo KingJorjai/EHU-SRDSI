@@ -4,6 +4,8 @@ Repo privado de prácticas SRDSI (Jorge Arévalo y Jon González). Rama: `main`.
 
 Layout: `lab-pki/` (PKI: `scripts/`, `pki-config-files/`, `docs/`, `informe/`), `lab-openssh/`, `lab-ssl/`, `ascon/`. La VM `SRDSI_Debian13/` no se versiona (ver `.gitignore`).
 
+Terminología: `script` = programa (p. ej. `run-lab.sh`); `guion` = guía/secuencia de pasos (`guion-capturas.md`). No traducir `script` como `guion`.
+
 ## lab-ssl: C + OpenSSL (`lab-ssl/source_files/`)
 
 Enunciado en `lab-ssl/Lab-ssl-actividad.pdf` (teoría en `Lab-ssl-teoria.pdf`). El cliente/servidor de la actividad (`cli-infouser.c`/`serv-infouser.c`) **ya están migrados a OpenSSL** (Ejercicio 1); los ejemplos de la teoría sin migrar son `tcp_*.c` y `ssl_*-auth.c`. El Ejercicio 2 = analizar alertas con cert inexistente / CA desconocida.

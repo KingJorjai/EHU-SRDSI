@@ -33,7 +33,7 @@ Tareas realizadas:
 3. Analizar las alertas TLS observadas.
 4. Contabilizar el tiempo invertido y valorar la actividad.
 
-Todo el código y los guiones de captura están en el repositorio
+Todo el código y los scripts de captura están en el repositorio
 (`lab-ssl/source_files/` y `lab-ssl/run-lab.sh`), y la evidencia en
 `lab-ssl/capturas/`.
 
@@ -132,7 +132,7 @@ servidor (mismo tamaño y contenido; en la captura de referencia, 221 bytes).
 El tráfico se captura en la interfaz de *loopback* de la máquina virtual con
 `dumpcap -i lo -w captura.pcapng`, y se analiza con `tshark`/Wireshark cargando
 `keylog-ssl.log` en *Edit → Preferences → Protocols → TLS → (Pre)-Master-Secret
-log filename*. El guion `lab-ssl/run-lab.sh` automatiza la compilación, la
+log filename*. El script `lab-ssl/run-lab.sh` automatiza la compilación, la
 reproducción de los tres escenarios y el análisis.
 
 Los certificados empleados son los del repositorio, sustituidos el 2026-10-19:
