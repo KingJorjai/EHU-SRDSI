@@ -33,9 +33,8 @@ Estas son las tareas que hemos hecho:
 3. Analizar las alertas TLS observadas.
 4. Contabilizar el tiempo invertido y valorar la actividad.
 
-Todo el código y los scripts de captura están en el repositorio
-(`lab-ssl/source_files/` y `lab-ssl/run-lab.sh`), y la evidencia en
-`lab-ssl/capturas/`.
+El código fuente y los certificados están en `source_files/`; las capturas y
+sus keylogs, en `capturas/`.
 
 # 2. Ejercicio 1: del protocolo TCP a OpenSSL
 
@@ -130,16 +129,16 @@ servidor (mismo tamaño y contenido; en la captura de referencia, 221 bytes).
 ## 3.1. Montaje de las capturas
 
 Capturamos el tráfico en la interfaz de *loopback* de la máquina virtual con
-`dumpcap -i lo -w captura.pcapng` y lo analizamos con `tshark`/Wireshark,
-cargando `keylog-ssl.log` en *Edit → Preferences → Protocols → TLS →
-(Pre)-Master-Secret log filename*. El script `lab-ssl/run-lab.sh` automatiza la
-compilación, la reproducción de los tres escenarios y el análisis.
+`dumpcap -i lo -w captura.pcapng` y lo analizamos con `tshark`/Wireshark. Para
+descifrar cargamos el keylog de la captura (`capturas/01_ok.keylog`) en *Edit →
+Preferences → Protocols → TLS → (Pre)-Master-Secret log filename*.
 
-Los certificados que usamos son los del repositorio, sustituidos el 2026-10-19:
-el de servidor (`s_cert.pem`, serial `865EE37EE2F16ABE`) y el de cliente
-(`c_cert.pem`, serial `16B61DD2792713CF`) son válidos del 2026-10-19 al
-2037-10-01, igual que las CAs `CA_SERV-SRDSI` y `CA_CLI-SRDSI`. El certificado
-del servidor que aparece en `01_ok.pcapng` es el mismo que `s_cert.pem`.
+Los certificados que usamos son los de `source_files/certificados/`,
+sustituidos el 2026-10-19: el de servidor (`s_cert.pem`, serial
+`865EE37EE2F16ABE`) y el de cliente (`c_cert.pem`, serial `16B61DD2792713CF`)
+son válidos del 2026-10-19 al 2037-10-01, igual que las CAs `CA_SERV-SRDSI` y
+`CA_CLI-SRDSI`. El certificado del servidor que aparece en la captura de
+`capturas/01_ok.pcapng` es el mismo que `s_cert.pem`.
 
 ## 3.2. Escenario correcto (referencia)
 
@@ -161,7 +160,7 @@ Podemos volcar el contenido descifrado con `Follow → TLS Stream` (o
 (`OK:<tamaño>`) y la salida de `w`:
 
 ```console
-$ tshark -r 01_ok.pcapng -o tls.keylog_file:01_ok.keylog -q -z follow,tls,ascii,0
+$ tshark -r capturas/01_ok.pcapng -o tls.keylog_file:capturas/01_ok.keylog -q -z follow,tls,ascii,0
 Filter: tls.stream eq 0
 Node 0: 127.0.0.1:33526
 Node 1: 127.0.0.1:1064
@@ -244,6 +243,6 @@ persona.
 
 # 6. Referencias
 
-1. Enunciado del laboratorio: `Lab-ssl-actividad.pdf` y `Lab-ssl-teoria.pdf`.
+1. Enunciado y material de teoría del laboratorio SSL (proporcionados en la asignatura).
 2. OpenSSL Documentation. <https://www.openssl.org/docs/>
 3. Wireshark: descifrado TLS con keylog file. <https://wiki.wireshark.org/TLS>
