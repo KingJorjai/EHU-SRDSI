@@ -97,6 +97,11 @@ nav:
           - OpenSSL y PKI: tema1/comandos/openssl.md
           - GnuPG: tema1/comandos/gpg.md
           - Hashes e integridad: tema1/comandos/hash.md
+      - Actividades:
+          - Modelo de amenazas: tema1/actividades/amenazas.md
+          - GnuPG: tema1/actividades/gnupg.md
+          - Criptografía y Ascon: tema1/actividades/criptografia.md
+          - Estudio de una CA: tema1/actividades/estudio-ca.md
   - Tema 2: tema2/index.md
   - Chuletas: chuletas/comandos.md
   - Recursos: recursos/pdfs.md
