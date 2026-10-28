@@ -115,5 +115,10 @@ nav:
           - PGP y S/MIME: tema2/teoria/pgp-smime.md
           - TLS, DTLS y QUIC: tema2/teoria/tls-dtls.md
           - IPsec: tema2/teoria/ipsec.md
+      - Comandos:
+          - SSH y túneles: tema2/comandos/ssh.md
+          - OpenSSL TLS/DTLS: tema2/comandos/openssl-tls.md
+          - Wireshark y capturas: tema2/comandos/wireshark.md
+          - PGP con GnuPG: tema2/comandos/pgp.md
   - Chuletas: chuletas/comandos.md
   - Recursos: recursos/pdfs.md
