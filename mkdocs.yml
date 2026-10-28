@@ -93,6 +93,10 @@ nav:
           - Criptografía: tema1/teoria/criptografia.md
           - Comunicación segura: tema1/teoria/comunicacion-segura.md
           - Gestión de claves y PKI: tema1/teoria/gestion-claves.md
+      - Comandos:
+          - OpenSSL y PKI: tema1/comandos/openssl.md
+          - GnuPG: tema1/comandos/gpg.md
+          - Hashes e integridad: tema1/comandos/hash.md
   - Tema 2: tema2/index.md
   - Chuletas: chuletas/comandos.md
   - Recursos: recursos/pdfs.md
