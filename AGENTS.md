@@ -1,11 +1,13 @@
 # AGENTS.md — EHU-SRDSI
 
-Repo privado de prácticas SRDSI (Jorge Arévalo y Jon González). Rama: `main`. Sin CI, tests ni linters.
+Repo de prácticas SRDSI (Jorge Arévalo y Jon González). Rama: `main`. Sin tests ni linters. La CI (`.github/workflows/docs.yml`) solo construye y publica la documentación. El repo es público y las claves/certificados son sintéticos de laboratorio.
 
 ## Layout actual (por temas)
 
 Los directorios de prácticas **ya no están en la raíz**: viven dentro de un directorio por tema. Las rutas llevan espacios y `:`; cítalas siempre entre comillas en la shell.
 
+- `docs/` — fuente del sitio MkDocs publicado en <https://kingjorjai.github.io/EHU-SRDSI/>. `docs/assets/` es **generado** (ignorado por git); no lo edites a mano.
+- `mkdocs.yml`, `mkdocs.offline.yml`, `requirements.txt`, `scripts/prepare_docs_assets.sh` y `.github/workflows/docs.yml` — construcción, bundle offline y despliegue.
 - `General/` — material común del curso (programa, anexo de laboratorios, personalización del entorno, plagio). `SRDSI_26_27_ Bibliografía _ eGela EHU_files/` es el volcado de una web (HTML/CSS/JS), no código del repo.
 - `Tema 1: Introducción a la seguridad informática/`
   - `lab-pki/` — PKI privada (rootCA + subCA): `scripts/`, `pki-config-files/`, `docs/`, `informe/`.
@@ -17,11 +19,20 @@ Los directorios de prácticas **ya no están en la raíz**: viven dentro de un d
   - `lab-openssh/` — notas Markdown, enunciados y el informe LaTeX `informe_open_ssh.tex`.
   - `ejercicio-tls-dtls/` — enunciado `Lab-TLS_y_DTLS.pdf` + `lab-certs/`.
 
-`README.md` está desactualizado (sigue listando `lab-*` y `ascon/` en la raíz). Si `git status` muestra esos directorios antiguos como borrados y los `Tema N/` como no rastreados, es la reorganización pendiente de commit: **no los restaures** con `git restore`/`git checkout`. `.gitignore` también apunta a las rutas antiguas de los binarios de lab-ssl (ver abajo).
+`README.md` enlaza el sitio y describe el layout actual. No restaures los antiguos `lab-*`/`ascon/` de la raíz: el material vive ahora bajo `Tema N/`. `docs/assets/` se regenera con el script de preparación; no lo edites ni lo añadas a git.
 
 La VM `SRDSI_Debian13/` (VirtualBox, usuario `user1`, host `bocata-jamon`, carpeta compartida `/media/sf_SRDSI` == raíz del repo) no se versiona.
 
 Terminología: `script` = programa (p. ej. `run-lab.sh`); `guion` = guía/secuencia de pasos (`guion-capturas.md`). No traducir `script` como `guion`.
+
+## Documentación (MkDocs + GitHub Pages)
+
+- Sitio: <https://kingjorjai.github.io/EHU-SRDSI/>. Fuente en `docs/`; `docs/assets/` es generado por `scripts/prepare_docs_assets.sh` (copia PDFs, imágenes, capturas, scripts, C, configs y certs desde `General/` y `Tema N/`).
+- Dependencias: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`. La CI usa Python 3.12; en local funciona 3.15.
+- Ciclo de construcción: `bash scripts/prepare_docs_assets.sh` → `.venv/bin/mkdocs build --strict` (online) → `.venv/bin/mkdocs build -f mkdocs.offline.yml -d site-offline --strict` (offline).
+- `docs/superpowers/` está excluido del sitio con `exclude_docs`. El ZIP offline se genera en CI, se copia a `site/recursos/` y se enlaza desde `docs/recursos/descargas.md` con un `<a>` HTML: un enlace Markdown relativo al ZIP haría fallar `--strict` porque el ZIP no existe en la fuente.
+- El script borra los `.md` copiados dentro de `docs/assets/` (p. ej. `img/lab-pki/MANIFIESTO.md`) para que no se rendericen como páginas.
+- Despliegue: push a `main` → `.github/workflows/docs.yml` → GitHub Pages. Pages debe estar activado con **Source: GitHub Actions** en Settings → Pages.
 
 ## lab-ssl: C + OpenSSL
 
@@ -34,7 +45,7 @@ Enunciado en `lab-ssl/Lab-ssl-actividad.pdf` (teoría en `Lab-ssl-teoria.pdf`). 
 - Certs ya generados en `certificados/`: dos CAs independientes, servidor (`s-ca_cert.pem`, CN=CA_SERV-SRDSI) y cliente (`c-ca_cert.pem`, CN=CA_CLI-SRDSI), más `s_cert/s_key` y `c_cert/c_key`. Sustituidos el 2026-10-19; caducan el **2037-10-01**.
 - Cliente: fija cifrados (`AES128-SHA256:AES256-CCM:AES256-GCM-SHA384`) + TLS 1.2 (`SSL_CTX_set_max_proto_version(..., TLS1_2_VERSION)`) para descifrar en Wireshark (solo TLSv1.2); el callback escribe `keylog-ssl.log`. **El cliente no presenta certificado** (solo verifica al servidor con `s-ca_cert.pem`); el servidor no pide cert de cliente y usa `SO_REUSEADDR`.
 - Uso: servidor `serv-infouser` (puerto fijo 1064, sin args); cliente `cli-infouser <hostip> <filename>`. Los ejemplos usan `<hostname> <portnum>`.
-- `.gitignore` solo ignora los binarios en la ruta **antigua** `lab-ssl/source_files/`; compilados en la ubicación actual quedan sin ignorar → no los añadas al commit. Sí ignora globalmente `*.log` (incluye `keylog-ssl.log`), pero **no** `*.keylog` (evidencia de capturas, se versiona).
+- `.gitignore` ignora los binarios de `lab-ssl/source_files/` en cualquier ubicación (`**/lab-ssl/source_files/...`) y `*.log` (incluye `keylog-ssl.log`), pero **no** `*.keylog` (evidencia de capturas, se versiona).
 
 ## lab-ssl: automatización y capturas
 
