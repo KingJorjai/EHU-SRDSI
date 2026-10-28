@@ -1,0 +1,8 @@
+INHERIT: mkdocs.yml
+
+# Variante para el ZIP offline: el plugin offline inlinea assets y hace que la
+# búsqueda funcione sin servidor web (incluido file://).
+plugins:
+  - search:
+      lang: es
+  - offline

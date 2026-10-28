@@ -14,10 +14,17 @@ SRDSI_Debian13/
 # Prueba de compilación (no es entregable)
 hola-mundo.pdf
 
-# Binarios compilados de lab-ssl
-lab-ssl/source_files/tcp-server
-lab-ssl/source_files/tcp-client
-lab-ssl/source_files/cli-infouser
-lab-ssl/source_files/serv-infouser
-lab-ssl/source_files/ssl-server
-lab-ssl/source_files/ssl-client
+# Binarios compilados de lab-ssl (cualquier ubicación)
+**/lab-ssl/source_files/tcp-server
+**/lab-ssl/source_files/tcp-client
+**/lab-ssl/source_files/cli-infouser
+**/lab-ssl/source_files/serv-infouser
+**/lab-ssl/source_files/ssl-server
+**/lab-ssl/source_files/ssl-client
+
+# Documentación (MkDocs)
+.venv/
+site/
+site-offline/
+docs/assets/
+EHU-SRDSI-docs-offline.zip

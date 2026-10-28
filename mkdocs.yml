@@ -1,0 +1,87 @@
+site_name: SRDSI — Documentación
+site_description: Documentación de examen de Seguridad, Rendimiento y Disponibilidad de Servicios e Infraestructuras
+site_url: https://kingjorjai.github.io/EHU-SRDSI/
+repo_url: https://github.com/KingJorjai/EHU-SRDSI
+repo_name: KingJorjai/EHU-SRDSI
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+plugins:
+  - search:
+      lang: es
+  - glightbox
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+exclude_docs: |
+  superpowers/
+
+extra:
+  generator: false
+
+copyright: Documentación de laboratorio SRDSI · UPV/EHU
+
+nav:
+  - Inicio: index.md
+  - Guía: guia/index.md
+  - Tema 1: tema1/index.md
+  - Tema 2: tema2/index.md
+  - Chuletas: chuletas/comandos.md
+  - Recursos: recursos/pdfs.md
