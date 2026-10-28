@@ -122,6 +122,7 @@ nav:
           - PGP con GnuPG: tema2/comandos/pgp.md
       - Actividades:
           - OpenSSH: tema2/actividades/openssh.md
+          - TLS y DTLS: tema2/actividades/tls-dtls.md
       - Lab SSL:
           - tema2/lab-ssl/index.md
           - Guía rápida: tema2/lab-ssl/guia.md
