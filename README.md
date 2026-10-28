@@ -1,20 +1,52 @@
-# EHU-SRDSI
+<p align="center">
+  <img src="assets/banner.svg" alt="SRDSI — Apuntes de Seguridad, Rendimiento y Disponibilidad de Servicios e Infraestructuras" width="100%">
+</p>
 
-Prácticas de Seguridad, Rendimiento y Disponibilidad de Servicios e Infraestructuras (SRDSI). Autores: Jorge Arévalo y Jon González.
+<p align="center">
+  <a href="https://kingjorjai.github.io/EHU-SRDSI/"><img alt="Documentación online" src="https://img.shields.io/badge/Docs-online-3949ab?style=for-the-badge&logo=githubpages&logoColor=white"></a>
+  <a href="https://github.com/KingJorjai/EHU-SRDSI/actions/workflows/docs.yml"><img alt="Estado del workflow de documentación" src="https://img.shields.io/github/actions/workflow/status/KingJorjai/EHU-SRDSI/docs.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white"></a>
+  <a href="https://squidfunk.github.io/mkdocs-material/"><img alt="MkDocs Material" src="https://img.shields.io/badge/MkDocs-Material-526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white"></a>
+  <a href="https://www.ehu.eus/"><img alt="UPV/EHU" src="https://img.shields.io/badge/UPV%2FEHU-SRDSI-1f6feb?style=for-the-badge"></a>
+  <a href="LICENSE"><img alt="Licencia CC BY-NC-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=for-the-badge&logo=creativecommons&logoColor=white"></a>
+</p>
 
-**Documentación:** <https://kingjorjai.github.io/EHU-SRDSI/>
+<h1 align="center">SRDSI</h1>
 
-La documentación incluye teoría resumida, programas de línea de comandos, ejercicios resueltos, laboratorios, PDFs originales y un bundle offline.
+<p align="center">
+  Apuntes, comandos y laboratorios resueltos de
+  <strong>Seguridad, Rendimiento y Disponibilidad de Servicios e Infraestructuras</strong>
+  (UPV/EHU).
+</p>
 
-## Contenido
+## Acceso rápido
 
-- `General/` — programa, anexo de laboratorios, personalización del entorno, protocolo de plagio y bibliografía.
-- `Tema 1: Introducción a la seguridad informática/` — teoría, actividad de criptografía, estudio de CA y laboratorio PKI.
-- `Tema 2: Seguridad en la comunicación/` — teoría, laboratorio SSL, laboratorio OpenSSH y ejercicios TLS/DTLS.
-- `docs/` — fuente del sitio MkDocs (la documentación publicada).
-- `mkdocs.yml`, `requirements.txt`, `scripts/prepare_docs_assets.sh` y `.github/workflows/docs.yml` — construcción y despliegue.
+- **[Documentación online](https://kingjorjai.github.io/EHU-SRDSI/)**: teoría, comandos y laboratorios con búsqueda.
+- **[Bundle offline](https://kingjorjai.github.io/EHU-SRDSI/recursos/EHU-SRDSI-docs-offline.zip)**: ZIP con el sitio y los PDFs para consultar sin internet.
+- **[Chuleta de comandos](https://kingjorjai.github.io/EHU-SRDSI/chuletas/comandos/)**: OpenSSL, SSH, TLS/DTLS, GnuPG y Wireshark.
+- **[PDFs originales](https://kingjorjai.github.io/EHU-SRDSI/recursos/pdfs/)**: enunciados, teoría e informes.
 
-## Documentación local
+## Qué hay dentro
+
+- Teoría resumida de los temas 1 y 2.
+- Comandos de OpenSSL, GnuPG, SSH, TLS/DTLS, Wireshark y GDB.
+- Ejercicios resueltos de GnuPG, PGP, TLS/DTLS, OpenSSH y modelo de amenazas.
+- Laboratorios de PKI, SSL y OpenSSH, con informes y capturas.
+- PDFs, chuletas y checklist para el examen.
+
+## Cómo usarlo
+
+- Pulsa `/` o usa la lupa para buscar cualquier comando o concepto.
+- Navega con las pestañas: **Guía**, **Tema 1**, **Tema 2**, **Chuletas** y **Recursos**.
+- Para el examen, descarga el ZIP offline y descomprímelo en el USB. Si el navegador bloquea la búsqueda con `file://`, sirve la carpeta con `python3 -m http.server`.
+
+<details>
+<summary><strong>Captura del sitio</strong></summary>
+<p align="center">
+  <img src="assets/preview.png" alt="Captura de la documentación SRDSI" width="100%">
+</p>
+</details>
+
+## Desarrollo local
 
 ```bash
 python3 -m venv .venv
@@ -23,10 +55,31 @@ bash scripts/prepare_docs_assets.sh
 .venv/bin/mkdocs serve
 ```
 
-- `mkdocs build --strict` construye el sitio online en `site/`.
-- `mkdocs build -f mkdocs.offline.yml -d site-offline --strict` construye la variante offline.
-- `docs/assets/` es generado y está ignorado por git; el material original vive en `General/` y en los directorios `Tema N/`.
+Construcción y verificación:
 
-## Máquina virtual
+```bash
+.venv/bin/mkdocs build --strict
+.venv/bin/mkdocs build -f mkdocs.offline.yml -d site-offline --strict
+```
 
-La VM del laboratorio (`SRDSI_Debian13/`, VirtualBox, usuario `user1`, host `bocata-jamon`) no se versiona. Las claves y certificados del repositorio son **sintéticos** y solo se usan en el laboratorio.
+El sitio se publica automáticamente en GitHub Pages al hacer push a `main`.
+
+<details>
+<summary><strong>Estructura del repositorio</strong></summary>
+
+- `General/` — programa, anexo de laboratorios, entorno y bibliografía.
+- `Tema 1: Introducción a la seguridad informática/` — teoría, actividad de criptografía, estudio de CA y laboratorio PKI.
+- `Tema 2: Seguridad en la comunicación/` — teoría, laboratorio SSL, laboratorio OpenSSH y ejercicios TLS/DTLS.
+- `docs/` — fuente del sitio MkDocs publicado.
+- `mkdocs.yml`, `mkdocs.offline.yml`, `requirements.txt` y `scripts/` — construcción y bundle offline.
+- `.github/workflows/docs.yml` — construcción y despliegue en GitHub Pages.
+
+</details>
+
+## Licencia y aviso
+
+El contenido original de este repositorio se distribuye bajo **CC BY-NC-SA 4.0**; consulta [LICENSE](LICENSE). Los PDFs, transparencias, enunciados y código de ejemplo de la asignatura son material docente y no están cubiertos por esa licencia.
+
+Las claves y certificados del repositorio son **sintéticos** y solo se usan en la máquina virtual del laboratorio. Este material es de apoyo: revisa siempre el enunciado oficial de la asignatura.
+
+Hecho por **Jorge Arévalo** y **Jon González**. Si encuentras un error, abre un *issue* o un *pull request*.

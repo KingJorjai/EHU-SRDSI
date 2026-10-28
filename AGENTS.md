@@ -1,115 +1,169 @@
 # AGENTS.md — EHU-SRDSI
 
-Repo de prácticas SRDSI (Jorge Arévalo y Jon González). Rama: `main`. Sin tests ni linters. La CI (`.github/workflows/docs.yml`) solo construye y publica la documentación. El repo es público y las claves/certificados son sintéticos de laboratorio.
+## TL;DR
 
-## Layout actual (por temas)
+- **Fuente de verdad:** el material original está en `General/` y `Tema N/`. `docs/` es la documentación derivada que se publica.
+- **Nunca edites `docs/assets/`:** se borra y regenera con `scripts/prepare_docs_assets.sh`; está ignorado por git.
+- **Toda página nueva debe añadirse a `nav` en `mkdocs.yml`** o no aparecerá en el sitio.
+- **Verificación mínima:** `bash scripts/prepare_docs_assets.sh` → `.venv/bin/mkdocs build --strict` → `.venv/bin/mkdocs build -f mkdocs.offline.yml -d site-offline --strict`.
+- **No inventes resultados:** si un paso depende de la VM y no está disponible, márcalo como **VM**; no simules salidas.
 
-Los directorios de prácticas **ya no están en la raíz**: viven dentro de un directorio por tema. Las rutas llevan espacios y `:`; cítalas siempre entre comillas en la shell.
+## Qué es este repo
 
-- `docs/` — fuente del sitio MkDocs publicado en <https://kingjorjai.github.io/EHU-SRDSI/>. `docs/assets/` es **generado** (ignorado por git); no lo edites a mano.
-- `mkdocs.yml`, `mkdocs.offline.yml`, `requirements.txt`, `scripts/prepare_docs_assets.sh` y `.github/workflows/docs.yml` — construcción, bundle offline y despliegue.
-- `General/` — material común del curso (programa, anexo de laboratorios, personalización del entorno, plagio). `SRDSI_26_27_ Bibliografía _ eGela EHU_files/` es el volcado de una web (HTML/CSS/JS), no código del repo.
+Repo público de prácticas de **Seguridad, Rendimiento y Disponibilidad de Servicios e Infraestructuras** (SRDSI, UPV/EHU), de Jorge Arévalo y Jon González.
+
+- Documentación: <https://kingjorjai.github.io/EHU-SRDSI/>
+- Rama: `main`. Sin tests ni linters; la CI (`.github/workflows/docs.yml`) solo construye y publica la documentación.
+- Claves y certificados **sintéticos**, solo para el laboratorio.
+- El contenido propio está bajo CC BY-NC-SA 4.0 (`LICENSE`). Los PDFs, slides y enunciados de la asignatura quedan excluidos.
+
+## Mapa del repositorio
+
+- `General/` — programa, anexo de laboratorios, personalización del entorno, protocolo de plagio y bibliografía. `SRDSI_26_27_ Bibliografía _ eGela EHU_files/` es el volcado de una web (HTML/CSS/JS), no código.
 - `Tema 1: Introducción a la seguridad informática/`
-  - `lab-pki/` — PKI privada (rootCA + subCA): `scripts/`, `pki-config-files/`, `docs/`, `informe/`.
-  - `actividad-criptografia/` — enunciados y `benchmark_*.txt`; **no contiene fuentes de Ascon**.
-  - `actividad-estudio-CAs/` — PDF del estudio de una CA.
+  - `SRDSI_T1-1..4.pdf` — teoría (image-based).
+  - `lab-pki/` — PKI privada: `scripts/`, `pki-config-files/`, `docs/`, `informe/`.
+  - `actividad-criptografia/` — enunciados y `benchmark_*.txt`; **no hay fuentes de Ascon**.
+  - `actividad-estudio-CAs/` — estudio de GlobalSign.
   - `Material extra/` — material de clase.
 - `Tema 2: Seguridad en la comunicación/`
-  - `lab-ssl/` — SSL/TLS: teoría, `source_files/` (C+OpenSSL), `capturas/`, `run-lab.sh`, `informe/`.
-  - `lab-openssh/` — notas Markdown, enunciados y el informe LaTeX `informe_open_ssh.tex`.
-  - `ejercicio-tls-dtls/` — enunciado `Lab-TLS_y_DTLS.pdf` + `lab-certs/`.
+  - `SRDSI_T2-1..4.pdf` — teoría (image-based).
+  - `lab-ssl/` — SSL/TLS: `source_files/` (C+OpenSSL), `capturas/`, `run-lab.sh`, `ws_shot.sh`, `informe/`.
+  - `lab-openssh/` — notas Markdown, enunciados y `informe_open_ssh.tex` (clase `article`).
+  - `ejercicio-tls-dtls/` — `Lab-TLS_y_DTLS.pdf` + `lab-certs/`.
+- `docs/` — fuente MkDocs del sitio:
+  - `guia/`, `tema1/{teoria,comandos,actividades,lab-pki}/`, `tema2/{teoria,comandos,actividades,lab-ssl}/`, `chuletas/`, `recursos/`.
+- `assets/banner.svg`, `assets/preview.png` — solo para el README; no forman parte del sitio.
+- `mkdocs.yml`, `mkdocs.offline.yml`, `requirements.txt`, `scripts/prepare_docs_assets.sh`, `.github/workflows/docs.yml` — construcción, bundle offline y despliegue.
+- `docs/superpowers/` — planes internos excluidos del sitio con `exclude_docs`; no añadir a `nav`.
+- `SRDSI_Debian13/` — VM VirtualBox, **no versionada** (usuario `user1`, host `bocata-jamon`, carpeta compartida `/media/sf_SRDSI` == raíz del repo).
 
-`README.md` enlaza el sitio y describe el layout actual. No restaures los antiguos `lab-*`/`ascon/` de la raíz: el material vive ahora bajo `Tema N/`. `docs/assets/` se regenera con el script de preparación; no lo edites ni lo añadas a git.
+## Fuente de verdad y ficheros generados
 
-La VM `SRDSI_Debian13/` (VirtualBox, usuario `user1`, host `bocata-jamon`, carpeta compartida `/media/sf_SRDSI` == raíz del repo) no se versiona.
+| Ruta | Papel |
+| --- | --- |
+| `General/`, `Tema N/` | Material original. No se reescribe para arreglar la documentación. |
+| `docs/` | Páginas escritas a mano. Aquí sí se edita. |
+| `docs/assets/` | **Generado** por `scripts/prepare_docs_assets.sh`; ignorado por git. |
+| `site/`, `site-offline/`, `.venv/`, `EHU-SRDSI-docs-offline.zip` | Artefactos locales; ignorados por git. |
+| `assets/` | Banner y captura del README; se versionan. `assets/` no entra en el build de MkDocs. |
+| `docs/superpowers/` | Planes internos; excluidos del sitio. |
 
-Terminología: `script` = programa (p. ej. `run-lab.sh`); `guion` = guía/secuencia de pasos (`guion-capturas.md`). No traducir `script` como `guion`.
-
-## Documentación (MkDocs + GitHub Pages)
-
-- Sitio: <https://kingjorjai.github.io/EHU-SRDSI/>. Fuente en `docs/`; `docs/assets/` es generado por `scripts/prepare_docs_assets.sh` (copia PDFs, imágenes, capturas, scripts, C, configs y certs desde `General/` y `Tema N/`).
-- Dependencias: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`. La CI usa Python 3.12; en local funciona 3.15.
-- Ciclo de construcción: `bash scripts/prepare_docs_assets.sh` → `.venv/bin/mkdocs build --strict` (online) → `.venv/bin/mkdocs build -f mkdocs.offline.yml -d site-offline --strict` (offline).
-- `docs/superpowers/` está excluido del sitio con `exclude_docs`. El ZIP offline se genera en CI, se copia a `site/recursos/` y se enlaza desde `docs/recursos/descargas.md` con un `<a>` HTML: un enlace Markdown relativo al ZIP haría fallar `--strict` porque el ZIP no existe en la fuente.
-- El script borra los `.md` copiados dentro de `docs/assets/` (p. ej. `img/lab-pki/MANIFIESTO.md`) para que no se rendericen como páginas.
-- Despliegue: push a `main` → `.github/workflows/docs.yml` → GitHub Pages. Pages debe estar activado con **Source: GitHub Actions** en Settings → Pages.
-
-## lab-ssl: C + OpenSSL
-
-Rutas relativas a `Tema 2: Seguridad en la comunicación/`.
-
-Enunciado en `lab-ssl/Lab-ssl-actividad.pdf` (teoría en `Lab-ssl-teoria.pdf`). El cliente/servidor de la actividad (`cli-infouser.c`/`serv-infouser.c`) **ya están migrados a OpenSSL** (Ejercicio 1); los ejemplos de la teoría sin migrar son `tcp_*.c` y `ssl_*-auth.c`. El Ejercicio 2 = analizar alertas con cert inexistente / CA desconocida.
-
-- Sin Makefile. Compilar: `gcc -Wall -o <bin> <fuente>.c -lssl -lcrypto` (el PDF pide `[-g] [-O2]`).
-- **Ejecutar siempre desde `source_files/`**: los certificados van por ruta relativa (`certificados/s_cert.pem`, `certificados/c-ca_cert.pem`, etc.); desde otro cwd `SSL_CTX_use_certificate_file` falla.
-- Certs ya generados en `certificados/`: dos CAs independientes, servidor (`s-ca_cert.pem`, CN=CA_SERV-SRDSI) y cliente (`c-ca_cert.pem`, CN=CA_CLI-SRDSI), más `s_cert/s_key` y `c_cert/c_key`. Sustituidos el 2026-10-19; caducan el **2037-10-01**.
-- Cliente: fija cifrados (`AES128-SHA256:AES256-CCM:AES256-GCM-SHA384`) + TLS 1.2 (`SSL_CTX_set_max_proto_version(..., TLS1_2_VERSION)`) para descifrar en Wireshark (solo TLSv1.2); el callback escribe `keylog-ssl.log`. **El cliente no presenta certificado** (solo verifica al servidor con `s-ca_cert.pem`); el servidor no pide cert de cliente y usa `SO_REUSEADDR`.
-- Uso: servidor `serv-infouser` (puerto fijo 1064, sin args); cliente `cli-infouser <hostip> <filename>`. Los ejemplos usan `<hostname> <portnum>`.
-- `.gitignore` ignora los binarios de `lab-ssl/source_files/` en cualquier ubicación (`**/lab-ssl/source_files/...`) y `*.log` (incluye `keylog-ssl.log`), pero **no** `*.keylog` (evidencia de capturas, se versiona).
-
-## lab-ssl: automatización y capturas
-
-- `run-lab.sh [--gui]` controla la VM por SSH (alias `SRDSI`, carpeta compartida `/media/sf_SRDSI` == raíz del repo): compila, reproduce 3 escenarios con `dumpcap -i lo` y analiza con `tshark`. Evidencia en `lab-ssl/capturas/` (`.pcapng`, `.keylog`, `.tshark.txt`; `.png` con `--gui`). Pasos y análisis en `lab-ssl/guion-capturas.md`.
-- `run-lab.sh` usa `RREPO=/media/sf_SRDSI/Tema 2: Seguridad en la comunicación` y `ws_shot.sh` deriva la ruta relativa desde `git rev-parse --show-toplevel`; si cambia el layout, revisa ambos. Requiere el alias SSH `SRDSI` y la carpeta compartida `/media/sf_SRDSI` apuntando a la raíz del repo.
-- `ws_shot.sh` hace las capturas GUI en un **display virtual Xvfb dentro de la VM** (`Xvfb :99` + `openbox` + `scrot`): no abre ninguna ventana en el host. Con `--gui`, `01_ok` se captura con el frame de *Application Data* seleccionado y un clic (`xdotool`, coord. fija `60,740`) en la fila `Data` para mostrar la fuente **Decrypted TLS**.
-- La VM ya tiene instalados `libssl-dev`, `xvfb`, `scrot`, `openbox`, `xdotool`, `dumpcap` y `wireshark`; `sudo` disponible para instalar más paquetes. Se compila con las cabeceras del sistema: `gcc -Wall -O2 -o <bin> <fuente>.c -lssl -lcrypto`.
-
-## lab-pki: scripts openssl
-
-Rutas relativas a `Tema 1: Introducción a la seguridad informática/`.
-
-- `gen_solicitud.sh` — clave privada cifrada + CSR (`clave-privada-<nombre>.key`, `solicitud-<nombre>.csr`).
-- `emitir_cert.sh` — firma con la subCA (`openssl ca -batch`); `user_ext` además empaqueta PKCS#12.
-- `revocar_cert.sh` — `openssl ca -revoke`; la CRL hay que regenerarla aparte (`openssl ca -gencrl`).
+## Comandos esenciales
 
 ```bash
-bash -n <script>.sh                                          # syntax check
-KEY_PASS=xxx ./gen_solicitud.sh -t usuario -n "Nombre" -e user@ejemplo.com -o ./out
-./emitir_cert.sh ./out/solicitud-Nombre.csr user_ext
-./revocar_cert.sh <certificado.crt> [motivo]
+# Documentación
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+bash scripts/prepare_docs_assets.sh
+.venv/bin/mkdocs serve
+.venv/bin/mkdocs build --strict
+.venv/bin/mkdocs build -f mkdocs.offline.yml -d site-offline --strict
+
+# Laboratorio SSL (ejecutar desde source_files/)
+cd "Tema 2: Seguridad en la comunicación/lab-ssl/source_files"
+gcc -Wall -O2 -o serv-infouser serv-infouser.c -lssl -lcrypto
+gcc -Wall -O2 -o cli-infouser  cli-infouser.c  -lssl -lcrypto
+./serv-infouser &
+./cli-infouser 127.0.0.1 /tmp/usuarios.txt
+
+# Scripts PKI (rutas relativas a Tema 1: .../lab-pki/)
+KEY_PASS=xxx ./scripts/gen_solicitud.sh -t usuario -n "Nombre" -e user@ejemplo.com -o ./out
+CA_PASS=xxx ./scripts/emitir_cert.sh ./out/solicitud-Nombre.csr user_ext
+CA_PASS=xxx ./scripts/revocar_cert.sh certificado-Nombre.crt cessationOfOperation
+
+# Informes
+cd "Tema 1: Introducción a la seguridad informática/lab-pki/informe" && make informe
+cd "Tema 2: Seguridad en la comunicación/lab-ssl/informe" && make informe
+cd "Tema 2: Seguridad en la comunicación/lab-openssh" && pdflatex informe_open_ssh.tex
+
+# Estado del despliegue
+gh run list --workflow docs.yml --limit 1
 ```
 
-Requires OpenSSL >= 1.1.1 (`gen_solicitud.sh` lo exige por `-addext`).
+## Documentación: cómo trabajar
 
-Gotchas:
+- El material original manda. Las páginas de `docs/` resumen, enlazan y explican; no copies PDFs enteros ni reescribas resultados.
+- Enlaza PDFs con anclas de página 1-based: `../../assets/pdf/SRDSI_T1-1.pdf#page=38`.
+- Añade cada página nueva a `nav` en `mkdocs.yml`. Si no, MkDocs la construye pero no se navega.
+- Contenido en español. Usa tablas, admoniciones y bloques `bash` copiables.
+- Ejemplos GnuPG con `GNUPGHOME=$(mktemp -d)` para no tocar el llavero real.
+- Ejemplos TLS/DTLS con directorios temporales (`mktemp -d`) y puertos altos; cierra los procesos al terminar.
+- El sitio usa sintaxis específica de Material: `grid cards`, iconos `:material-...:`/`:octicons-...:`, `{ .md-button }`, admoniciones y `pymdownx`. Cambiar de tema obliga a reescribir esas partes.
+- `docs/assets/` se regenera. El script también borra los `.md` copiados (p. ej. `img/lab-pki/MANIFIESTO.md`) para que no se rendericen.
+- El enlace al ZIP offline en `docs/recursos/descargas.md` es un `<a>` HTML, no Markdown: un enlace relativo al ZIP haría fallar `--strict` porque el fichero no existe en la fuente.
+- **README.md, AGENTS.md, `assets/` y `LICENSE` no disparan el workflow de docs** (no están en `paths`). Si cambias solo esos ficheros, no habrá redeploy.
 
-- Rutas por defecto hardcodeadas a la VM (`PKI_DIR=/home/user1/PKI_root/PKI_sub`, `OUTDIR=.../solicitudes`). Override por env (`PKI_DIR`, `CONF_CA`, `CERTS_DIR`, `P12_DIR`, `-o`), nunca editando scripts.
-- `set -euo pipefail`, `umask 077`; claves/`.p12` a 600. No sobrescriben salidas (`-f` solo en `gen_solicitud.sh`).
-- Passwords por env: `KEY_PASS` (requerida), `P12_PASS` (=`KEY_PASS` por defecto), `CA_PASS` (si no, openssl pregunta). Preferir `KEY_PASS=...` a `-p` (visible en `ps`/historial).
-- `-t servicio` exige `-d`, `-e`, `-C`, `-O` (la política de la subCA exige C y O iguales a los de la CA); `-t usuario` exige `-e`. RSA 3072 por defecto, mínimo 2048.
-- `emitir_cert.sh` NO valida la CSR (revisión manual = el admin es la RA); extensiones solo `server_ext|user_ext|ocsp_ext` con sección en `ca-sub_openssl.cnf`. `user_ext` necesita la clave hermana junto a la CSR.
-- `revocar_cert.sh` consulta `openssl ca -status` antes para no ensuciar `index.txt`. Motivos válidos: `unspecified,keyCompromise,CACompromise,affiliationChanged,superseded,cessationOfOperation,certificateHold`.
+## Verificación y despliegue
 
-## Informes (lab-pki y lab-ssl)
+1. `bash scripts/prepare_docs_assets.sh`
+2. `.venv/bin/mkdocs build --strict`
+3. `.venv/bin/mkdocs build -f mkdocs.offline.yml -d site-offline --strict`
+4. Comprueba enlaces relativos y que `site/search/search_index.json` contiene los términos clave.
+5. Haz commit y push a `main`; `.github/workflows/docs.yml` construye online + offline, publica en Pages y sube el ZIP como artifact.
+6. Verifica el sitio live y el workflow: `gh run list --workflow docs.yml --limit 1`.
 
-Cada `informe/` tiene su copia de `iflatex/` y un `Makefile`: fuente única `informe.md` (Markdown) → PDF con Pandoc + **pdflatex** + clase `ifreport` (UPV/EHU, `[es]`).
+GitHub Pages debe estar configurado con **Source: GitHub Actions** en Settings → Pages. El ZIP offline se copia a `site/recursos/EHU-SRDSI-docs-offline.zip`.
 
-```bash
-make informe   # informe.pdf (TEXINPUTS=./iflatex: ya en el Makefile)
-```
+## Tema 1
 
-- En lab-pki, `make check` valida `hola-mundo.pdf` (prueba de compilación), **no** `informe.pdf`.
-- Notas verificadas: Pandoc 3.12 no tiene `--documentclass` (usar `-V documentclass=ifreport`); `xelatex` no tiene formato generado e `ifreport.cls` usa `\pdfpagewidth` (incompatible con XeTeX) → quedarse en pdflatex; `babel-spanish` viene del paquete `extra/texlive-langspanish` y se activa con `lang: es` en el YAML. Imágenes con caption son floats: fijadas con `\usepackage{float}` + `\floatplacement{figure}{H}`; solo 6 figuras en el PDF de lab-pki, el resto queda en `img/` como respaldo. Salidas largas en bloques `console` truncadas con marca `[... salida truncada: N líneas ...]`. PENDIENTEs actuales (lab-pki): mockups a mano (`img/web/`) y horas manuales (§7).
+- Teoría: `docs/tema1/teoria/{conceptos,criptografia,comunicacion-segura,gestion-claves}.md`.
+- Comandos: `docs/tema1/comandos/{openssl,gpg,hash}.md`.
+- Actividades: `docs/tema1/actividades/{amenazas,gnupg,criptografia,estudio-ca}.md`.
+- Lab PKI: `docs/tema1/lab-pki/{index,guia,scripts,informe,web}.md`.
 
-## lab-openssh
+Lab PKI:
 
-Rutas relativas a `Tema 2: Seguridad en la comunicación/`.
+- `gen_solicitud.sh` — clave privada cifrada + CSR.
+- `emitir_cert.sh` — firma con la subCA (`openssl ca -batch`); `user_ext` empaqueta PKCS#12.
+- `revocar_cert.sh` — `openssl ca -revoke`; después hay que regenerar la CRL (`openssl ca -gencrl`).
+- Rutas por defecto hardcodeadas a la VM (`PKI_DIR=/home/user1/PKI_root/PKI_sub`). Override por env (`PKI_DIR`, `CONF_CA`, `CERTS_DIR`, `P12_DIR`, `-o`), nunca editando scripts.
+- `KEY_PASS` es obligatoria; `P12_PASS` cae a `KEY_PASS`; `CA_PASS` evita el prompt de OpenSSL.
+- `-t servicio` exige `-d`, `-e`, `-C`, `-O`; la política exige C/O iguales a los de la CA. `-t usuario` exige `-e`.
+- `emitir_cert.sh` NO valida la CSR (la RA es el admin); extensiones válidas: `server_ext`, `user_ext`, `ocsp_ext`.
+- El informe está en `Tema 1: .../lab-pki/informe/informe.md`; los pendientes del informe son mockups a mano (`img/web/`) y horas manuales (§7), no fallos del sitio.
+- Ascon: el código no está en el repo; los benchmarks se ejecutaron en la VM (`~/gcrypt-test/ascon-c/build`). La página `docs/tema1/actividades/criptografia.md` resume los resultados.
 
-- Solo documentación: notas de Jon y Jorge (`.md`), enunciados (`Lab_SSH.pdf`, `SSH_PORT-FORWARDING.pdf`) y el informe `informe_open_ssh.tex` (clase `article`, **no** usa `ifreport`).
-- Regenerar el PDF: `pdflatex informe_open_ssh.tex` (repetir para el TOC). Sin Makefile; las figuras `firefox-*.png` están en el mismo directorio.
+## Tema 2
 
-## ejercicio-tls-dtls
+- Teoría: `docs/tema2/teoria/{ssh,pgp-smime,tls-dtls,ipsec}.md`.
+- Comandos: `docs/tema2/comandos/{ssh,openssl-tls,wireshark,pgp}.md`.
+- Actividades: `docs/tema2/actividades/{openssh,pgp,tls-dtls}.md`.
+- Lab SSL: `docs/tema2/lab-ssl/{index,guia,codigo,capturas,informe}.md`.
 
-Rutas relativas a `Tema 2: Seguridad en la comunicación/ejercicio-tls-dtls/`.
+Lab SSL:
 
-- `Lab-TLS_y_DTLS.pdf`: 9 ejercicios con `openssl s_server`/`s_client` (TLS 1.2/1.3, DTLS 1.2, session resumption, 0-RTT, PQC), capturando en loopback con Wireshark. No hay scripts ni código en el repo.
-- `lab-certs/`: `ca-root.crt` (CN=CA-SRDSI), `subca.crt` (CN=SUBCA-SRDSI), `server.crt/.key` (CN=www.srdsi.lab), `client.crt/.key` (CN=client) y `serverpq.crt/.key` (misma CN, clave **ML-DSA-65**). Claves sin passphrase; no las cifres.
-- El servidor está firmado por `subca`, no directamente por la raíz: `openssl verify -CAfile ca-root.crt server.crt` falla; hay que pasar la cadena (concatenar `ca-root.crt` + `subca.crt` en `-CAfile`, o `-cert_chain`).
-- Los certificados solo tienen CN, sin SAN. El README de `lab-certs/` menciona `server2.crt/.key` (`www.srdsi2.lab`), pero **no existen** en el repo.
-- `serverpq` requiere OpenSSL con ML-DSA (la VM tiene OpenSSL 3.5.7).
+- Cliente/servidor `cli-infouser.c`/`serv-infouser.c` ya migrados a OpenSSL (Ejercicio 1); `tcp_*.c` y `ssl_*-auth.c` son ejemplos de teoría.
+- Compilar con `gcc -Wall -O2 ... -lssl -lcrypto`. **Ejecutar desde `source_files/`**: los certificados van por ruta relativa.
+- Servidor en puerto fijo 1064, sin args; cliente `cli-infouser <hostip> <filename>`.
+- Cliente: TLS 1.2 + cifrados fijados + keylog para Wireshark; no presenta certificado. Servidor: no pide cert de cliente y usa `SO_REUSEADDR`.
+- Certs en `source_files/certificados/`: CAs `CA_SERV-SRDSI` y `CA_CLI-SRDSI`, válidos hasta 2037-10-01.
+- `run-lab.sh [--gui]` requiere el alias SSH `SRDSI`, la VM encendida y la carpeta compartida. Usa `RREPO=/media/sf_SRDSI/Tema 2: Seguridad en la comunicación`; `ws_shot.sh` deriva la ruta con `git rev-parse --show-toplevel`.
+- Wireshark 4.7.4 ya no tiene *RSA keys list*: la falta de *forward secrecy* se demuestra por el handshake (`Encrypted PreMaster`, sin `ServerKeyExchange`), no descifrando con la clave privada.
 
-## actividad-criptografia
+OpenSSH y TLS/DTLS:
 
-Rutas relativas a `Tema 1: Introducción a la seguridad informática/`.
+- `docs/tema2/actividades/openssh.md` resuelve los ejercicios 1–6; `informe_open_ssh.tex` solo cubre 1–4. Los pasos que requieren servidor SSH están marcados **VM**.
+- `docs/tema2/actividades/tls-dtls.md` resuelve los 9 ejercicios con `lab-certs/`.
+- Certificados de `lab-certs/`: `server.crt` está firmado por `subca.crt`, no directamente por `ca-root.crt`; hay que pasar la cadena (`-cert_chain` o concatenar en `-CAfile`).
+- No hay SAN; `server2.crt/.key` se menciona en el README de `lab-certs/` pero **no existe**.
+- `serverpq` usa ML-DSA-65. El host de documentación tiene OpenSSL 4.0.3; la VM, OpenSSL 3.5.7. Ambos soportan ML-DSA.
 
-- Solo enunciados y logs `benchmark_*.txt`; el código de Ascon/libgcrypt **no está aquí** (se ejecutó en la VM, p. ej. `~/gcrypt-test/ascon-c/build`). No busques fuentes para recompilar.
+## Limitaciones y gotchas
+
+- La VM no siempre está accesible. No simules capturas ni conexiones: documenta el comando, marca **VM** y usa pruebas locales cuando sea posible.
+- `run-lab.sh`/`ws_shot.sh` dependen del alias SSH `SRDSI` y de `/media/sf_SRDSI` apuntando a la raíz del repo. Si cambia el layout, revisa ambos.
+- `lab-certs/server2.crt` no existe; los certs no tienen SAN.
+- Material carga Roboto desde Google Fonts. En el ZIP offline hay fallback tipográfico; si se quiere 100 % offline, habría que autoalojar fuentes y tocar el tema.
+- `docs/assets/` ocupa ~88 MB y no se versiona. No lo añadas a git.
+- No hay tests ni linters. La única verificación automática es `mkdocs build --strict` y el workflow de Pages.
+
+## No tocar / no commitear
+
+- `docs/assets/`, `site/`, `site-offline/`, `.venv/`, `EHU-SRDSI-docs-offline.zip`, `package-lock.json`.
+- Los PDFs, slides, enunciados y código de ejemplo originales: se enlazan, no se reescriben.
+- No cambies el tema ni la estructura de `nav` sin revisar la sintaxis específica de Material y el build offline.
+
+## Terminología
+
+`script` = programa (p. ej. `run-lab.sh`); `guion` = guía/secuencia de pasos (`guion-capturas.md`). No traducir `script` como `guion`.
