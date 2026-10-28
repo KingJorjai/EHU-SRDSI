@@ -1,0 +1,640 @@
+[:material-file-pdf-box: Informe original en PDF](../../assets/pdf/informe-pki.pdf){ .md-button }
+[:material-file-pdf-box: Enunciado del laboratorio (PDF)](../../assets/pdf/lab-pki-enunciado.pdf){ .md-button }
+
+**Autoría:** Jorge Arévalo y Jon González · **Fecha:** octubre de 2026.
+
+!!! note "Informe entregado"
+    Este es el informe original de la práctica adaptado al formato del sitio. Los resultados, salidas de comandos y figuras se conservan tal como se entregaron; solo se han cambiado las rutas de las imágenes.
+
+# 1. Introducción y objetivo
+
+El objetivo de esta primera fase es poner en marcha una PKI privada compuesta
+por una autoridad raíz (*rootCA*) y una autoridad subordinada (*subCA*) que
+emite certificados para usuarios (personas) y servicios, además de diseñar
+la interfaz web de la subCA.
+
+Tareas realizadas:
+
+1. Crear y configurar la CA raíz y la CA subordinada.
+2. Generar, emitir, revocar y verificar certificados (usuarios y servicios).
+3. Poner en marcha un respondedor OCSP y verificar el estado por CRL y OCSP.
+4. Diseñar la aplicación web de la subCA (roles de usuario y administrador).
+5. Contabilizar el tiempo invertido.
+
+Los scripts `gen_solicitud.sh`, `emitir_cert.sh` y `revocar_cert.sh`
+(en `PKI_scripts/`) automatizan la generación de solicitudes, la emisión
+y la revocación. Se generaron con IA y se ajustaron manualmente para que
+la entrada y la salida fueran las que necesitábamos. Este informe
+documenta el guion completo con capturas de la ejecución.
+Las capturas de los hitos principales van intercaladas; el resto se
+conserva en `img/` como respaldo.
+
+# 2. Paso 1 — CA raíz y CA subordinada
+
+## 2.1. Estructura de directorios y permisos
+
+```bash
+mkdir -p ~/PKI_root/{private,DB,certs,solicitudes,certs.p12,PKI_sub/{private,DB,certs,certs.p12,solicitudes}} ~/PKI_scripts
+chmod 700 ~/PKI_root/private ~/PKI_root/PKI_sub/private
+touch ~/PKI_root/DB/index.txt ~/PKI_root/PKI_sub/DB/index.txt
+```
+
+Salida:
+
+```console
+/home/user1/PKI_root:
+certs  certs.p12  DB  PKI_sub  private	solicitudes
+/home/user1/PKI_root/PKI_sub:
+certs  certs.p12  DB  private  solicitudes
+drwx------ 2 user1 user1 4096 oct 10 14:51 /home/user1/PKI_root/PKI_sub/private
+drwx------ 2 user1 user1 4096 oct 10 14:51 /home/user1/PKI_root/private
+[... salida truncada: 29 líneas omitidas ...]
+```
+
+Las claves privadas quedan solo accesibles al propietario (`chmod 700` en
+los directorios `private`; los scripts trabajan con `umask 077` y dejan
+claves y `.p12` con modo 600).
+
+## 2.2. Números de serie y CRL
+
+```bash
+openssl rand -hex 16 > ~/PKI_root/DB/serie_emitidos.txt
+openssl rand -hex 16 > ~/PKI_root/DB/serie_revocados.txt
+openssl rand -hex 16 > ~/PKI_root/PKI_sub/DB/serie_emitidos.txt
+openssl rand -hex 16 > ~/PKI_root/PKI_sub/DB/serie_revocados.txt
+```
+
+Salida:
+
+```console
+total 8
+-rw-rw-r-- 1 user1 user1  0 oct 10 14:52 index.txt
+-rw-rw-r-- 1 user1 user1 33 oct 10 14:52 serie_emitidos.txt
+-rw-rw-r-- 1 user1 user1 33 oct 10 14:52 serie_revocados.txt
+e79f4111631fcd10c669ee18c003ffa3
+28d562cfb6cacda9e0fdb6dba9aa7990
+0 /home/user1/PKI_root/DB/index.txt
+0 /home/user1/PKI_root/PKI_sub/DB/index.txt
+[... salida truncada: 13 líneas omitidas ...]
+```
+
+Se generan cuatro series aleatorias (`serie_emitidos.txt` y
+`serie_revocados.txt` para cada nivel) con `openssl rand -hex 16`.
+
+## 2.3. Ficheros de configuración
+
+Se copian `ca-root_openssl.cnf` y `ca-sub_openssl.cnf` a `~/PKI_root/` y
+`~/PKI_root/PKI_sub/` respectivamente. Valores principales de la CA raíz:
+
+| Parámetro | Valor |
+|---|---|
+| name | rootCA |
+| domain | bocata-jamon.srdsi.lab |
+| ocsp_url | puerto 4747 |
+| C / ST / L | ES / GP / Donostia |
+| O / OU | Bocata de Jamon / PKI |
+| CN | bocata_jamon_rootCA |
+| home | /home/user1/PKI_root |
+| database | `$home/DB/index.txt` |
+| serial | `$home/DB/serie_emitidos.txt` |
+| crlnumber | `$home/DB/serie_revocados.txt` |
+| certificate | `$home/certificado-rootCA.crt` |
+| private_key | `$home/private/rootCA.key` |
+| new_certs_dir | `$home/certs` |
+
+La subCA usa los mismos valores con `name=subCA` y `home=.../PKI_sub`,
+política `supplied` (C y O deben coincidir con los de la CA) y sin
+`subjectAltName=email:copy` en `server_ext`.
+
+## 2.4. Clave y certificado de la CA raíz (autofirmado)
+
+```bash
+openssl req -new -newkey rsa:3072 \
+  -keyout ~/PKI_root/private/rootCA.key \
+  -out ~/PKI_root/solicitud-rootCA.csr \
+  -config ~/PKI_root/ca-root_openssl.cnf
+# contraseña: user1Root_CA
+
+openssl ca -selfsign -batch -config ~/PKI_root/ca-root_openssl.cnf \
+  -extensions ca_ext \
+  -in ~/PKI_root/solicitud-rootCA.csr \
+  -out ~/PKI_root/certs/certificado-rootCA.crt
+mv ~/PKI_root/certs/certificado-rootCA.crt ~/PKI_root/certificado-rootCA.crt
+openssl ca -gencrl -config ~/PKI_root/ca-root_openssl.cnf \
+  -out ~/PKI_root/DB/crl-CA.pem
+```
+
+Salida:
+
+```console
+subject=C=ES, ST=GP, L=Donostia, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+Certificate is to be certified until Oct  7 12:52:29 2036 GMT (3650 days)
+Write out database with 1 new entries
+Database updated
+subject=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+serial=E79F4111631FCD10C669EE18C003FFA3
+Issuer: C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+Last Update: Oct 10 12:52:47 2026 GMT
+No Revoked Certificates.
+[... salida truncada: 105 líneas omitidas ...]
+```
+
+![Firma del certificado raíz autofirmado](../../assets/img/lab-pki/paso1-01.png){ width=90% }
+
+## 2.5. Clave y certificado de la CA subordinada
+
+```bash
+openssl req -new -newkey rsa:3072 \
+  -keyout ~/PKI_root/PKI_sub/private/subCA.key \
+  -out ~/PKI_root/PKI_sub/solicitud-subCA.csr \
+  -config ~/PKI_root/PKI_sub/ca-sub_openssl.cnf
+# contraseña: user1Sub_CA
+
+openssl ca -batch -config ~/PKI_root/ca-root_openssl.cnf \
+  -extensions subca_ext \
+  -in ~/PKI_root/PKI_sub/solicitud-subCA.csr \
+  -out ~/PKI_root/PKI_sub/certificado-subCA.crt
+# contraseña de la CA raíz: user1Root_CA
+```
+
+Salida:
+
+```console
+subject=C=ES, ST=GP, L=Donostia, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+Certificate is to be certified until Oct  7 12:53:04 2036 GMT (3650 days)
+Write out database with 1 new entries
+Database updated
+subject=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_rootCA
+serial=E79F4111631FCD10C669EE18C003FFA4
+[... salida truncada: 78 líneas omitidas ...]
+```
+
+![Emisión del certificado de la subCA](../../assets/img/lab-pki/paso1-02.png){ width=90% }
+
+# 3. Paso 2 — Certificados de usuario: scripts y ejemplo
+
+## 3.1. `gen_solicitud.sh` — genera clave privada cifrada + CSR
+
+Uso:
+
+```console
+./gen_solicitud.sh -t {usuario|servicio} -n <nombre> {-p <password> | KEY_PASS} [opciones]
+```
+
+| Opción | Significado |
+|---|---|
+| `-t` | Tipo: `usuario` o `servicio` (obligatorio) |
+| `-n` | Common Name, CN (obligatorio) |
+| `-p` / `KEY_PASS` | Contraseña de la clave (obligatoria; preferible `KEY_PASS`) |
+| `-e` | Correo (obligatorio para usuario y servicio) |
+| `-d` | DNS separados por comas (obligatorio para servicio) |
+| `-b` | Bits RSA, mínimo 2048 (por defecto 3072) |
+| `-C` | País C, 2 letras (obligatorio para servicio) |
+| `-S` / `-L` | Provincia ST / localidad L (opcionales) |
+| `-O` | Organización O (obligatoria para servicio) |
+| `-U` | Unidad organizativa OU (opcional) |
+| `-o` | Directorio de salida |
+| `-f` | Sobrescribir clave y CSR existentes |
+
+Para tipo `servicio` son obligatorios `-d`, `-e`, `-C` y `-O`: la política
+de la subCA exige `emailAddress`, y que C y O coincidan con los de la CA.
+Para tipo `usuario` basta con `-e`. Los ficheros generados son
+`clave-privada-<nombre>.key` (cifrada, modo 600) y
+`solicitud-<nombre>.csr`; el nombre deriva del CN (espacios a `_`,
+solo `[alnum]_.-`). Nunca sobrescribe salvo con `-f`.
+
+## 3.2. `emitir_cert.sh` — firma una CSR con la subCA
+
+Uso:
+
+```console
+./emitir_cert.sh <solicitud.csr> {server_ext|user_ext|ocsp_ext}
+```
+
+El script NO revisa la solicitud: se asume revisión manual previa (el
+administrador actúa como autoridad de registro). Solo acepta extensiones
+cuya sección exista en `ca-sub_openssl.cnf`. Con `user_ext` exige la clave
+privada junto a la CSR (`clave-privada-<nombre>.key`) y genera además un
+PKCS#12; con `server_ext`/`ocsp_ext` entrega solo el `.crt`.
+
+| Variable | Efecto |
+|---|---|
+| `KEY_PASS` | Contraseña de la clave (obligatoria solo con `user_ext`) |
+| `P12_PASS` | Contraseña del `.p12` (por defecto = `KEY_PASS`) |
+| `PKI_DIR` | SubCA (por defecto `/home/user1/PKI_root/PKI_sub`) |
+| `CONF_CA` | Config de la CA (por defecto `$PKI_DIR/ca-sub_openssl.cnf`) |
+| `CERTS_DIR` / `P12_DIR` | Destinos de `.crt` / `.p12` |
+| `CA_PASS` | Contraseña de la CA (si no, openssl la pide) |
+
+Códigos de salida: 1 = solicitud/clave ilegible, 2 = extensión no válida,
+3 = configuración o fichero existente, 4 = `.crt` emitido pero falló el `.p12`.
+Nunca sobrescribe salidas existentes.
+
+## 3.3. `revocar_cert.sh` — revoca un certificado
+
+Uso:
+
+```console
+./revocar_cert.sh <certificado.crt> [motivo]
+```
+
+Motivos válidos: `unspecified` (por defecto), `keyCompromise`,
+`CACompromise`, `affiliationChanged`, `superseded`,
+`cessationOfOperation`, `certificateHold`. Comprueba antes el estado con
+`openssl ca -status <serial>` (solo lectura) para no ensuciar `index.txt`
+si el serial no existe o ya está revocado. Tras revocar hay que regenerar
+y publicar la CRL con `openssl ca -gencrl`.
+
+## 3.4. Ejemplo: usuario Paco
+
+```bash
+KEY_PASS='Contraseña segura1234_' ~/PKI_scripts/gen_solicitud.sh \
+  -t usuario -n "Paco Antonio Gutierrez" \
+  -e paco@bocata-jamon.srdsi.lab -C ES -O "Bocata de Jamon" \
+  -o ~/PKI_root/PKI_sub/solicitudes -f
+# genera clave-privada-Paco_Antonio_Gutierrez.key
+#      + solicitud-Paco_Antonio_Gutierrez.csr
+```
+
+Salida:
+
+```console
+Generando solicitud para usuario: Paco Antonio Gutierrez
+Solicitud generada correctamente:
+   Clave privada: /home/user1/PKI_root/PKI_sub/solicitudes/clave-privada-Paco_Antonio_Gutierrez.key (cifrada, RSA 3072)
+   CSR:           /home/user1/PKI_root/PKI_sub/solicitudes/solicitud-Paco_Antonio_Gutierrez.csr
+   Subject:       /C=ES/O=Bocata de Jamon/CN=Paco Antonio Gutierrez/emailAddress=paco@bocata-jamon.srdsi.lab
+[... salida truncada: 4 líneas omitidas ...]
+```
+
+```bash
+CA_PASS='user1Sub_CA' ~/PKI_scripts/emitir_cert.sh \
+  ~/PKI_root/PKI_sub/solicitudes/solicitud-Paco_Antonio_Gutierrez.csr user_ext
+# genera .crt + .p12 (P12_PASS = KEY_PASS por defecto)
+```
+
+Salida:
+
+```console
+Check that the request matches the signature
+Signature ok
+Certificate is to be certified until Oct  7 12:54:39 2036 GMT (3650 days)
+Write out database with 1 new entries
+Database updated
+Certificado emitido: /home/user1/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
+PKCS#12 generado:    /home/user1/PKI_root/PKI_sub/certs.p12/certificado-Paco_Antonio_Gutierrez.p12
+[... salida truncada: 74 líneas omitidas ...]
+```
+
+![Confirmación de emisión y PKCS#12](../../assets/img/lab-pki/paso2-03.png){ width=90% }
+
+```bash
+~/PKI_scripts/revocar_cert.sh \
+  ~/PKI_root/PKI_sub/certs/*Paco*.crt cessationOfOperation
+openssl ca -gencrl -config ~/PKI_root/PKI_sub/ca-sub_openssl.cnf \
+  -passin env:CA_PASS -out ~/PKI_root/PKI_sub/DB/crl-sub.pem
+```
+
+Salida:
+
+```console
+Revocando certificado (motivo: cessationOfOperation):
+   serial=C42D6FD8EADFACE74B94C31BE0EC7AB6
+   subject=C=ES, O=Bocata de Jamon, CN=Paco Antonio Gutierrez, emailAddress=paco@bocata-jamon.srdsi.lab
+Revoking Certificate C42D6FD8EADFACE74B94C31BE0EC7AB6.
+Database updated
+Certificado revocado: /home/user1/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
+Issuer: C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+    Serial Number: C42D6FD8EADFACE74B94C31BE0EC7AB6
+                Cessation Of Operation
+[... salida truncada: 51 líneas omitidas ...]
+```
+
+![Revocación por cese de operación](../../assets/img/lab-pki/paso2-04.png){ width=90% }
+
+# 4. Paso 3 — Servidor OCSP
+
+```bash
+echo "127.10.0.1  ocsp ocsp.bocata-jamon.srdsi.lab" | sudo tee -a /etc/hosts
+mkdir -p ~/PKI_root/PKI_sub/ocsp
+```
+
+Salida:
+
+```console
+127.10.0.1      ocsp.bocata-jamon.srdsi.lab
+127.10.0.1 ocsp.bocata-jamon.srdsi.lab
+drwxrwxr-x 2 user1 user1 4096 oct 10 14:55 /home/user1/PKI_root/PKI_sub/ocsp
+[... salida truncada: 21 líneas omitidas ...]
+```
+
+## 4.1. Solicitud y emisión del certificado OCSP
+
+```bash
+KEY_PASS='user1Sub_CA_ocsp' ~/PKI_scripts/gen_solicitud.sh \
+  -t servicio -n "ocsp" -d ocsp.bocata-jamon.srdsi.lab \
+  -e ocsp@bocata-jamon.srdsi.lab -C ES -S GP -L Donostia \
+   -O "Bocata de Jamon" -U PKI -o ~/PKI_root/PKI_sub/ocsp
+```
+
+Salida:
+
+```console
+Generando solicitud para servicio: ocsp.bocata-jamon.srdsi.lab
+Solicitud generada correctamente:
+   Clave privada: /home/user1/PKI_root/PKI_sub/ocsp//clave-privada-ocsp.bocata-jamon.srdsi.lab.key (cifrada, RSA 3072)
+   CSR:           /home/user1/PKI_root/PKI_sub/ocsp//solicitud-ocsp.bocata-jamon.srdsi.lab.csr
+   Subject:       /C=ES/ST=GP/L=Donostia/O=Bocata de Jamon/OU=PKI/CN=ocsp.bocata-jamon.srdsi.lab/emailAddress=ocsp@bocata-jamon.srdsi.lab
+[... salida truncada: 10 líneas omitidas ...]
+```
+
+```bash
+CA_PASS='user1Sub_CA' ~/PKI_scripts/emitir_cert.sh \
+  ~/PKI_root/PKI_sub/ocsp/solicitud-ocsp.bocata-jamon.srdsi.lab.csr ocsp_ext
+
+mv ~/PKI_root/PKI_sub/ocsp/clave-privada-ocsp.bocata-jamon.srdsi.lab.key \
+   ~/PKI_root/PKI_sub/private/
+chmod 600 ~/PKI_root/PKI_sub/private/clave-privada-ocsp.bocata-jamon.srdsi.lab.key
+```
+
+Salida:
+
+```console
+Certificate is to be certified until Oct  7 12:55:12 2036 GMT (3650 days)
+Write out database with 1 new entries
+Database updated
+Certificado emitido: /home/user1/PKI_root/PKI_sub/certs/certificado-ocsp.bocata-jamon.srdsi.lab.crt
+Entregar al solicitante solo el certificado (no se genera PKCS#12 para ocsp_ext).
+subject=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=ocsp.bocata-jamon.srdsi.lab, emailAddress=ocsp@bocata-jamon.srdsi.lab
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+    OCSP Signing
+renamed '/home/user1/PKI_root/PKI_sub/ocsp/clave-privada-ocsp.bocata-jamon.srdsi.lab.key' -> '/home/user1/PKI_root/PKI_sub/private/clave-privada-ocsp.bocata-jamon.srdsi.lab.key'
+[... salida truncada: 85 líneas omitidas ...]
+```
+
+## 4.2. Arranque del respondedor y consulta
+
+```bash
+openssl ocsp -port 4747 \
+  -index ~/PKI_root/PKI_sub/DB/index.txt \
+  -CA ~/PKI_root/PKI_sub/certificado-subCA.crt \
+  -rsigner ~/PKI_root/PKI_sub/certs/certificado-ocsp.bocata-jamon.srdsi.lab.crt \
+  -rkey ~/PKI_root/PKI_sub/private/clave-privada-ocsp.bocata-jamon.srdsi.lab.key \
+  </dev/null >~/PKI_root/PKI_sub/ocsp/responder.log 2>&1 &
+```
+
+Salida:
+
+```console
+ACCEPT 0.0.0.0:4747 PID=3004
+ocsp: waiting for OCSP client connections...
+-rw-rw-r-- 1 user1 user1 74 oct 10 14:55 /home/user1/PKI_root/PKI_sub/ocsp/responder.log
+[... salida truncada: 12 líneas omitidas ...]
+```
+
+```bash
+cat ~/PKI_root/PKI_sub/certificado-subCA.crt \
+    ~/PKI_root/certificado-rootCA.crt > /tmp/chain.crt
+openssl ocsp -issuer ~/PKI_root/PKI_sub/certificado-subCA.crt \
+  -cert ~/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt \
+  -url http://ocsp.bocata-jamon.srdsi.lab:4747 \
+  -CAfile /tmp/chain.crt -resp_text
+# esperado: certificado-Paco_Antonio_Gutierrez.crt: revoked
+# (y certificado-ocsp.bocata-jamon.srdsi.lab.crt: good)
+```
+
+Salida:
+
+```console
+    OCSP Response Status: successful (0x0)
+      Serial Number: C42D6FD8EADFACE74B94C31BE0EC7AB6
+    Cert Status: revoked
+    Revocation Reason: cessationOfOperation (0x5)
+/home/user1/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt: revoked
+	Reason: cessationOfOperation
+    Cert Status: good
+      Serial Number: C42D6FD8EADFACE74B94C31BE0EC7AB7
+[... salida truncada: 223 líneas omitidas ...]
+```
+
+![Consulta OCSP con resultado good](../../assets/img/lab-pki/paso3-04.png){ width=90% }
+
+# 5. Verificación de certificados
+
+## 5.1. Inspección del certificado (`x509`)
+
+```bash
+openssl x509 -in ~/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt \
+  -noout -text | less
+# muestra subject, issuer, serial, validez, subjectAltName,
+# keyUsage y extendedKeyUsage
+openssl x509 -in <cert>.crt -noout -serial -subject -issuer
+```
+
+Salida:
+
+```console
+subject=C=ES, O=Bocata de Jamon, CN=Paco Antonio Gutierrez, emailAddress=paco@bocata-jamon.srdsi.lab
+issuer=C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+notBefore=Oct 10 12:54:39 2026 GMT
+notAfter=Oct  7 12:54:39 2036 GMT
+[... salida truncada: 11 líneas omitidas ...]
+```
+
+## 5.2. Cadena de certificación
+
+```bash
+cat ~/PKI_root/PKI_sub/certificado-subCA.crt \
+    ~/PKI_root/certificado-rootCA.crt > /tmp/chain.crt
+openssl verify -CAfile ~/PKI_root/certificado-rootCA.crt \
+  -untrusted ~/PKI_root/PKI_sub/certificado-subCA.crt \
+  ~/PKI_root/PKI_sub/certs/certificado-Paco_Antonio_Gutierrez.crt
+```
+
+Salida:
+
+```console
+== verify chain ==
+/home/user1/PKI_root/PKI_sub/certificado-subCA.crt: OK
+V	361007125229Z		E79F4111631FCD10C669EE18C003FFA3	unknown	/C=ES/ST=GP/O=Bocata de Jamon/OU=PKI/CN=bocata_jamon_rootCA
+V	361007125304Z		E79F4111631FCD10C669EE18C003FFA4	unknown	/C=ES/ST=GP/O=Bocata de Jamon/OU=PKI/CN=bocata_jamon_subCA
+[... salida truncada: 39 líneas omitidas ...]
+```
+
+La cadena `chain.crt` (subCA + raíz) permite a los clientes verificar
+cualquier certificado final hasta la raíz de confianza.
+
+## 5.3. Estado por CRL (PEM y DER)
+
+```bash
+# Regenerar y publicar tras cada revocación:
+openssl ca -config ~/PKI_root/PKI_sub/ca-sub_openssl.cnf \
+  -gencrl -passin env:CA_PASS -out ~/PKI_root/PKI_sub/DB/crl-sub.pem
+
+# Inspeccionar la CRL en texto:
+openssl crl -in ~/PKI_root/PKI_sub/DB/crl-sub.pem -noout -text | less
+# (muestra issuer, lastUpdate/nextUpdate y la lista de revocados
+#  con su serial, fecha y motivo, p. ej. cessationOfOperation)
+
+# Convertir a DER para clientes que lo exijan:
+openssl crl -in ~/PKI_root/PKI_sub/DB/crl-sub.pem -inform PEM \
+  -outform DER -out ~/PKI_root/PKI_sub/DB/crl-sub.der
+openssl crl -in ~/PKI_root/PKI_sub/DB/crl-sub.der -inform DER \
+   -noout -text | head -20
+```
+
+Salida:
+
+```console
+Certificate Revocation List (CRL):
+        Version 2 (0x1)
+        Issuer: C=ES, ST=GP, O=Bocata de Jamon, OU=PKI, CN=bocata_jamon_subCA
+        Last Update: Oct 10 12:55:03 2026 GMT
+    Serial Number: C42D6FD8EADFACE74B94C31BE0EC7AB6
+        Revocation Date: Oct 10 12:54:58 2026 GMT
+                Cessation Of Operation
+-rw-rw-r-- 1 user1 user1 743 oct 10 14:55 /home/user1/PKI_root/PKI_sub/DB/crl-sub.pem
+[... salida truncada: 52 líneas omitidas ...]
+```
+
+## 5.4. PKCS#12: exportar, inspeccionar y extraer
+
+`emitir_cert.sh` ya genera el `.p12` para `user_ext`. Operaciones manuales:
+
+```bash
+# Inspeccionar el contenido (sin extraer):
+openssl pkcs12 -in ~/PKI_root/PKI_sub/certs.p12/certificado-Paco_Antonio_Gutierrez.p12 \
+  -info -noout
+# Extraer solo el certificado (sin clave):
+openssl pkcs12 \
+  -in ~/PKI_root/PKI_sub/certs.p12/certificado-Paco_Antonio_Gutierrez.p12 \
+  -nokeys -out /tmp/paco-cert.pem
+# Extraer solo la clave privada (sin certificado):
+openssl pkcs12 \
+  -in ~/PKI_root/PKI_sub/certs.p12/certificado-Paco_Antonio_Gutierrez.p12 \
+   -nocerts -out /tmp/paco-key.pem
+```
+
+Salida:
+
+```console
+MAC: sha256, Iteration 2048
+Certificate bag
+Shrouded Keybag: PBES2, PBKDF2, AES-256-CBC, Iteration 2048, PRF hmacWithSHA256
+-rw------- 1 user1 user1 3683 oct 10 14:54 /home/user1/PKI_root/PKI_sub/certs.p12/certificado-Paco_Antonio_Gutierrez.p12
+[... salida truncada: 11 líneas omitidas ...]
+```
+
+El `.p12` (contraseña = `KEY_PASS` salvo `P12_PASS` distinto) solo lo
+descarga el administrador y se distribuye al usuario en persona:
+contiene el par clave privada + certificado.
+
+# 6. Diseño de la aplicación web de la subCA
+
+La web es solo el frontal de la subCA (no hay frontal para la raíz).
+Dos roles:
+
+- **Usuario**: solicita un certificado con el formulario, sube su `.csr`
+  si es un servicio, y en `Certificados` busca, ve la información
+  detallada, comprueba si está revocado o no y descarga el `.crt`
+  público.
+- **Administrador de la subCA** (acceso restringido): en `Solicitudes`
+  ve la información de cada solicitud y la acepta o deniega (actúa
+  como RA); en `Certificados` busca, ve la información, descarga en
+  PKCS#12 y revoca; en `OCSP` ve si el servicio está Online/Offline
+  con su botón de Apagar/Encender; en `CRL` ve el aviso de
+  revocaciones sin publicar con su botón de publicar.
+
+## 6.1. Solicitar certificado (usuario)
+
+![Boceto a mano del formulario de solicitud](../../assets/img/lab-pki/web/mockup-user-solicitar.png){ width=70% }
+
+El boceto muestra el formulario "Bocata de Jamón" con los campos
+Nombre, Apellidos, Contraseña, Correo, País, Organización, Provincia y
+Departamento, y el botón "Solicitar certificado".
+
+## 6.2. Subir solicitud de servicio (`.csr`)
+
+![Boceto a mano de subida de CSR de servicio](../../assets/img/lab-pki/web/mockup-user-subirservicio.png){ width=90% }
+
+El panel de servicios tiene el botón de seleccionar archivo y subir
+solicitud. Se sube el archivo en formato `.csr`, que queda en
+`solicitudes/` pendiente de revisión del admin (RA).
+
+## 6.3. Certificados (usuario)
+
+![Boceto a mano de certificados del usuario](../../assets/img/lab-pki/web/mockup-user-certificados.png){ width=90% }
+
+La sección `Certificados` permite buscar, ver la información detallada
+de cada certificado, comprobar si está revocado o no (`No revocado` en
+el boceto) y descargar el `.crt` público. El `.p12` no se descarga
+aquí: solo el admin lo descarga y lo entrega en persona.
+
+## 6.4. Panel de administración
+
+![Boceto a mano del panel de administración](../../assets/img/lab-pki/web/mockup-admin.png){ width=70% }
+
+El panel de admin tiene las secciones `Solicitudes`, donde puede ver
+la información de la solicitud y aceptarla o denegarla; `Certificados`,
+donde se pueden buscar certificados, ver su información, descargar en
+formato PKCS#12 y revocar (al pulsar Revocar salta un popup para que el
+administrador rellene el motivo); `OCSP`, donde se ve si el servicio
+está Online/Offline con su botón correspondiente de Apagar/Encender; y
+`CRL`, con un texto que avisa si quedan revocaciones sin publicar y un
+botón de publicar.
+
+## 6.5. Mapeo elemento-UI con operación del procedimiento
+
+| Elemento de la interfaz | Operación del procedimiento |
+|---|---|
+| Formulario de solicitud (usuario) | `gen_solicitud.sh -t usuario/servicio` (crea clave + CSR) |
+| Botón "Solicitar certificado" | Envío de la CSR a `solicitudes/` para revisión del admin (RA) |
+| Subir solicitud (servicios) | Subida del `.csr` con seleccionar archivo; queda en `solicitudes/` pendiente de revisión |
+| Certificados (usuario): buscar | Búsqueda sobre `certs/` / `index.txt` |
+| Certificados (usuario): ver detalle + revocado | `openssl x509 -text` + estado OCSP (`openssl ocsp ... -url ...:4747`) o CRL publicada |
+| Certificados (usuario): Descargar | Descarga del `.crt` público de `certs/` (el `.p12` solo lo descarga el admin) |
+| Solicitudes (admin): ver información | Revisión manual previa que exige `emitir_cert.sh` (el admin actúa como RA) |
+| Botón "Aceptar" (admin) | `emitir_cert.sh <csr> {server_ext,user_ext,ocsp_ext}` |
+| Botón "Denegar" (admin) | Rechazo de la CSR (no se emite; se descarta) |
+| Certificados (admin): buscar y ver información | Búsqueda sobre `certs/` / `index.txt` + `openssl x509 -text` |
+| Certificados (admin): Descargar PKCS#12 | Descarga del `.p12` de `certs.p12` (solo `user_ext`); distribución al usuario en persona |
+| Certificados (admin): Revocar | Popup de motivo + `revocar_cert.sh <crt> [motivo]` |
+| CRL (admin): aviso + Publicar | Texto que avisa si quedan revocaciones sin publicar + `openssl ca -gencrl -out DB/crl-sub.pem` (+ conversión DER si aplica) |
+| OCSP (admin): Online/Offline + Apagar/Encender | Estado del respondedor y arranque/parada de `openssl ocsp -port 4747 ...` |
+| Ver certificado (ambos) | `openssl x509 -text` sobre el `.crt` |
+
+# 7. Tiempo invertido
+
+| Persona | Tarea | Horas |
+|---|---|---|
+| Jon | Puesta en marcha rootCA + subCA en la VM (paso 1) y capturas | 0,5 h |
+| Jorge | Scripts `gen_solicitud.sh` / `emitir_cert.sh` / `revocar_cert.sh` con IA + ajustes manuales de entrada y salida | 1 h |
+| Jorge + Jon | Certificados de usuario (Paco), verificación, revocación y CRL (paso 2) | 1 h |
+| Jon | Respondedor OCSP, consultas y verificación good/revoked (paso 3) | 0,5 h |
+| Jon | Diseño web de la subCA y mockup del formulario | 1,5 h |
+| Jorge | Redacción del guion-informe e integración de salidas y figuras | 2 h |
+
+# 8. Extras
+
+- **SAN con `-addext`**: `gen_solicitud.sh` pide los SAN en la CSR con
+  `openssl req -addext` (requiere OpenSSL >= 1.1.1): `DNS:...` para
+  servicios y `email:...` para usuarios, además de `keyUsage` y
+  `extendedKeyUsage` en usuarios. Los usos finales los fija la CA en su
+  sección (`server_ext`/`user_ext`/`ocsp_ext`) con `copy_extensions=copy`.
+- **Certificados de servicio con SAN**: el ejemplo del OCSP
+  (`-d ocsp.bocata-jamon.srdsi.lab`) muestra un certificado de servicio
+  con `subjectAltName = DNS:...`; el mismo flujo sirve para sitios web
+  (fase 2) cambiando `-n`/`-d`.
+- **Contraseñas por entorno**: `KEY_PASS`/`P12_PASS`/`CA_PASS` evitan
+  exponerlas en `ps` o en el historial (nunca `-p` en máquinas compartidas).
+
+# Anexos
+
+- Ficheros de configuración del enunciado: `ca-root_openssl.cnf`
+  (CA raíz) y `ca-sub_openssl.cnf` (subCA, con secciones `server_ext`,
+  `user_ext`, `ocsp_ext` y `subca_ext`). §2.3 resume los valores usados.
+- Scripts (en `PKI_scripts/`, documentados en §3.1–§3.3):
+  `gen_solicitud.sh` (clave + CSR), `emitir_cert.sh` (firma + PKCS#12
+   para usuarios) y `revocar_cert.sh` (revocación + recordatorio de CRL).

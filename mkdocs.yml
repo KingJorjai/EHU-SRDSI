@@ -102,6 +102,12 @@ nav:
           - GnuPG: tema1/actividades/gnupg.md
           - Criptografía y Ascon: tema1/actividades/criptografia.md
           - Estudio de una CA: tema1/actividades/estudio-ca.md
+      - Lab PKI:
+          - tema1/lab-pki/index.md
+          - Guía rápida: tema1/lab-pki/guia.md
+          - Scripts: tema1/lab-pki/scripts.md
+          - Informe completo: tema1/lab-pki/informe.md
+          - Diseño web: tema1/lab-pki/web.md
   - Tema 2: tema2/index.md
   - Chuletas: chuletas/comandos.md
   - Recursos: recursos/pdfs.md
