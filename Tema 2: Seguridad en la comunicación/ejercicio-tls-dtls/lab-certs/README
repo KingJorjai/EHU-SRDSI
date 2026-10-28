@@ -1,0 +1,22 @@
+Certificados de CA y SUB-CA
+ca-root.crt
+subca.crt
+
+Certificado y clave privada para el servidor www.srdsi.lab
+server.crt
+server.key
+
+Certificado y clave privada  para el cliente
+client.crt
+client.key
+
+Certificado y clave privada para el servidor www.srdsi2.lab
+server2.crt
+server2.key
+
+Certificado y clave privada PQC para el servidor www.srdsi.lab
+serverpq.crt
+serverpq.key
+
+
+Nota: claves privadas sin passphrase

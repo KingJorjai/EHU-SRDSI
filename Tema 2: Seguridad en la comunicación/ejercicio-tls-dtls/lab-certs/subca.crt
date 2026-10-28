@@ -1,0 +1,95 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            87:f9:23:ef:08:e8:5e:1d:43:d4:09:71:57:6c:f8:84
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=ES, ST=GI, O=SRDSI, OU=LABS, CN=CA-SRDSI
+        Validity
+            Not Before: Oct 17 22:59:04 2026 GMT
+            Not After : Oct 14 22:59:04 2036 GMT
+        Subject: C=ES, ST=GI, O=SRDSI, OU=LABS, CN=SUBCA-SRDSI
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:b0:6c:84:0d:b1:ba:ae:c4:b4:e3:38:00:70:96:
+                    5b:5b:e5:f6:aa:bc:90:02:7e:85:06:ea:ca:ee:77:
+                    98:49:0d:e1:8e:b5:c6:78:2a:f7:a6:6b:10:6d:75:
+                    4b:4b:ff:41:11:1b:e0:eb:62:64:a0:79:bf:49:f8:
+                    e1:13:d5:63:dd:9f:61:20:9a:0b:5c:93:fa:a6:00:
+                    da:b2:53:80:b8:2a:25:da:45:1f:1c:c3:63:33:a2:
+                    91:2c:3b:b5:43:9c:c9:39:44:9c:f8:9c:af:94:9c:
+                    e5:f4:d9:57:5e:c5:33:0f:97:79:37:a4:34:cf:dc:
+                    4e:d9:62:69:e2:6e:d1:06:fc:bc:68:f8:fb:86:75:
+                    f2:29:42:39:f4:c1:65:fe:f4:3d:78:4a:2c:d0:7c:
+                    45:7f:e3:28:8a:50:e1:a3:ca:ab:d9:22:ac:12:ee:
+                    a3:b2:26:d4:c7:ab:a7:9d:08:e6:b2:b5:3a:da:fc:
+                    93:76:ae:87:67:73:1b:73:8a:8f:47:26:81:e7:f8:
+                    26:a1:08:91:dd:64:72:e1:05:39:d3:5b:c2:d4:25:
+                    e7:bf:5b:34:ae:1b:9c:98:04:df:d2:f5:db:e1:b0:
+                    40:36:00:6d:0c:31:d5:ce:4f:b2:c1:d0:fd:3b:4c:
+                    64:f9:50:a2:6f:e3:00:20:fc:64:39:a1:ca:4f:cd:
+                    2f:e7
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            Authority Information Access: 
+                CA Issuers - URI:http://ca-root.srdsi.lab/ca-root.crt
+                OCSP - URI:http://ocsp.srdsi.lab:9999
+            X509v3 Subject Key Identifier: 
+                DA:72:FB:0E:DE:13:64:38:2B:73:23:44:DB:6F:E2:D1:70:6F:D2:CC
+            X509v3 Basic Constraints: critical
+                CA:TRUE, pathlen:0
+            X509v3 CRL Distribution Points: 
+                Full Name:
+                  URI:http://ca-root.srdsi.lab/ca-root.crl
+
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication, TLS Web Server Authentication
+            X509v3 Key Usage: critical
+                Certificate Sign, CRL Sign
+            X509v3 Authority Key Identifier: 
+                06:8B:25:C2:CB:94:D8:04:9E:F5:AD:C5:76:46:3F:7B:E2:AD:F9:2A
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        66:d5:c3:a9:cf:3b:3f:e1:8d:cb:db:71:74:b9:cd:90:74:e8:
+        e6:66:91:15:bd:c0:e7:14:61:6f:97:2b:ed:68:e2:ac:2e:e1:
+        ae:5b:a8:22:16:13:db:7d:ff:37:88:df:b3:ae:88:52:7d:df:
+        21:96:16:9a:82:5c:50:30:01:ca:d8:4e:e7:9c:72:b0:e2:ee:
+        dd:7e:b1:e6:68:98:e5:ad:b8:48:18:92:7f:07:2d:13:dd:9d:
+        db:c6:46:a6:83:43:33:4d:56:e8:72:5a:9b:65:b9:53:cd:d8:
+        74:b9:a0:cd:dd:7e:d4:22:3c:dc:5f:1c:cd:3f:ee:4d:6b:4a:
+        1c:ce:08:2a:e3:19:4b:3f:84:61:29:1a:40:a0:0b:53:c7:3c:
+        9a:12:b9:98:d9:5b:08:9f:37:e9:c8:7d:de:3c:6e:f7:ce:ac:
+        1f:56:1e:18:d2:fe:50:70:22:b6:6b:d3:a3:7e:96:c4:5d:a3:
+        de:bc:2e:5d:4a:6c:fb:a4:d9:52:70:0a:6d:0e:3c:56:57:86:
+        4f:0f:1b:7a:30:37:fd:34:0b:d8:99:c6:d4:0a:91:08:ae:8c:
+        9f:0f:34:37:0d:1a:5f:46:98:b5:57:8c:d0:21:88:ac:60:ae:
+        9d:60:6b:d6:81:c9:7e:dc:54:1b:c7:6d:7d:62:12:90:95:e5:
+        90:38:91:b6
+-----BEGIN CERTIFICATE-----
+MIIEUDCCAzigAwIBAgIRAIf5I+8I6F4dQ9QJcVds+IQwDQYJKoZIhvcNAQELBQAw
+TDELMAkGA1UEBhMCRVMxCzAJBgNVBAgMAkdJMQ4wDAYDVQQKDAVTUkRTSTENMAsG
+A1UECwwETEFCUzERMA8GA1UEAwwIQ0EtU1JEU0kwHhcNMjYxMDE3MjI1OTA0WhcN
+MzYxMDE0MjI1OTA0WjBPMQswCQYDVQQGEwJFUzELMAkGA1UECAwCR0kxDjAMBgNV
+BAoMBVNSRFNJMQ0wCwYDVQQLDARMQUJTMRQwEgYDVQQDDAtTVUJDQS1TUkRTSTCC
+ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALBshA2xuq7EtOM4AHCWW1vl
+9qq8kAJ+hQbqyu53mEkN4Y61xngq96ZrEG11S0v/QREb4OtiZKB5v0n44RPVY92f
+YSCaC1yT+qYA2rJTgLgqJdpFHxzDYzOikSw7tUOcyTlEnPicr5Sc5fTZV17FMw+X
+eTekNM/cTtliaeJu0Qb8vGj4+4Z18ilCOfTBZf70PXhKLNB8RX/jKIpQ4aPKq9ki
+rBLuo7Im1Merp50I5rK1Otr8k3auh2dzG3OKj0cmgef4JqEIkd1kcuEFOdNbwtQl
+579bNK4bnJgE39L12+GwQDYAbQwx1c5PssHQ/TtMZPlQom/jACD8ZDmhyk/NL+cC
+AwEAAaOCASgwggEkMGgGCCsGAQUFBwEBBFwwWjAwBggrBgEFBQcwAoYkaHR0cDov
+L2NhLXJvb3Quc3Jkc2kubGFiL2NhLXJvb3QuY3J0MCYGCCsGAQUFBzABhhpodHRw
+Oi8vb2NzcC5zcmRzaS5sYWI6OTk5OTAdBgNVHQ4EFgQU2nL7Dt4TZDgrcyNE22/i
+0XBv0swwEgYDVR0TAQH/BAgwBgEB/wIBADA1BgNVHR8ELjAsMCqgKKAmhiRodHRw
+Oi8vY2Etcm9vdC5zcmRzaS5sYWIvY2Etcm9vdC5jcmwwHQYDVR0lBBYwFAYIKwYB
+BQUHAwIGCCsGAQUFBwMBMA4GA1UdDwEB/wQEAwIBBjAfBgNVHSMEGDAWgBQGiyXC
+y5TYBJ71rcV2Rj974q35KjANBgkqhkiG9w0BAQsFAAOCAQEAZtXDqc87P+GNy9tx
+dLnNkHTo5maRFb3A5xRhb5cr7WjirC7hrluoIhYT233/N4jfs66IUn3fIZYWmoJc
+UDABythO55xysOLu3X6x5miY5a24SBiSfwctE92d28ZGpoNDM01W6HJam2W5U83Y
+dLmgzd1+1CI83F8czT/uTWtKHM4IKuMZSz+EYSkaQKALU8c8mhK5mNlbCJ836ch9
+3jxu986sH1YeGNL+UHAitmvTo36WxF2j3rwuXUps+6TZUnAKbQ48VleGTw8bejA3
+/TQL2JnG1AqRCK6Mnw80Nw0aX0aYtVeM0CGIrGCunWBr1oHJftxUG8dtfWISkJXl
+kDiRtg==
+-----END CERTIFICATE-----

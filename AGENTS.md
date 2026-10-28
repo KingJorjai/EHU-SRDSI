@@ -2,11 +2,30 @@
 
 Repo privado de prácticas SRDSI (Jorge Arévalo y Jon González). Rama: `main`. Sin CI, tests ni linters.
 
-Layout: `lab-pki/` (PKI: `scripts/`, `pki-config-files/`, `docs/`, `informe/`), `lab-openssh/`, `lab-ssl/`, `ascon/`. La VM `SRDSI_Debian13/` no se versiona (ver `.gitignore`).
+## Layout actual (por temas)
+
+Los directorios de prácticas **ya no están en la raíz**: viven dentro de un directorio por tema. Las rutas llevan espacios y `:`; cítalas siempre entre comillas en la shell.
+
+- `General/` — material común del curso (programa, anexo de laboratorios, personalización del entorno, plagio). `SRDSI_26_27_ Bibliografía _ eGela EHU_files/` es el volcado de una web (HTML/CSS/JS), no código del repo.
+- `Tema 1: Introducción a la seguridad informática/`
+  - `lab-pki/` — PKI privada (rootCA + subCA): `scripts/`, `pki-config-files/`, `docs/`, `informe/`.
+  - `actividad-criptografia/` — enunciados y `benchmark_*.txt`; **no contiene fuentes de Ascon**.
+  - `actividad-estudio-CAs/` — PDF del estudio de una CA.
+  - `Material extra/` — material de clase.
+- `Tema 2: Seguridad en la comunicación/`
+  - `lab-ssl/` — SSL/TLS: teoría, `source_files/` (C+OpenSSL), `capturas/`, `run-lab.sh`, `informe/`.
+  - `lab-openssh/` — notas Markdown, enunciados y el informe LaTeX `informe_open_ssh.tex`.
+  - `ejercicio-tls-dtls/` — enunciado `Lab-TLS_y_DTLS.pdf` + `lab-certs/`.
+
+`README.md` está desactualizado (sigue listando `lab-*` y `ascon/` en la raíz). Si `git status` muestra esos directorios antiguos como borrados y los `Tema N/` como no rastreados, es la reorganización pendiente de commit: **no los restaures** con `git restore`/`git checkout`. `.gitignore` también apunta a las rutas antiguas de los binarios de lab-ssl (ver abajo).
+
+La VM `SRDSI_Debian13/` (VirtualBox, usuario `user1`, host `bocata-jamon`, carpeta compartida `/media/sf_SRDSI` == raíz del repo) no se versiona.
 
 Terminología: `script` = programa (p. ej. `run-lab.sh`); `guion` = guía/secuencia de pasos (`guion-capturas.md`). No traducir `script` como `guion`.
 
-## lab-ssl: C + OpenSSL (`lab-ssl/source_files/`)
+## lab-ssl: C + OpenSSL
+
+Rutas relativas a `Tema 2: Seguridad en la comunicación/`.
 
 Enunciado en `lab-ssl/Lab-ssl-actividad.pdf` (teoría en `Lab-ssl-teoria.pdf`). El cliente/servidor de la actividad (`cli-infouser.c`/`serv-infouser.c`) **ya están migrados a OpenSSL** (Ejercicio 1); los ejemplos de la teoría sin migrar son `tcp_*.c` y `ssl_*-auth.c`. El Ejercicio 2 = analizar alertas con cert inexistente / CA desconocida.
 
@@ -15,15 +34,18 @@ Enunciado en `lab-ssl/Lab-ssl-actividad.pdf` (teoría en `Lab-ssl-teoria.pdf`). 
 - Certs ya generados en `certificados/`: dos CAs independientes, servidor (`s-ca_cert.pem`, CN=CA_SERV-SRDSI) y cliente (`c-ca_cert.pem`, CN=CA_CLI-SRDSI), más `s_cert/s_key` y `c_cert/c_key`. Sustituidos el 2026-10-19; caducan el **2037-10-01**.
 - Cliente: fija cifrados (`AES128-SHA256:AES256-CCM:AES256-GCM-SHA384`) + TLS 1.2 (`SSL_CTX_set_max_proto_version(..., TLS1_2_VERSION)`) para descifrar en Wireshark (solo TLSv1.2); el callback escribe `keylog-ssl.log`. **El cliente no presenta certificado** (solo verifica al servidor con `s-ca_cert.pem`); el servidor no pide cert de cliente y usa `SO_REUSEADDR`.
 - Uso: servidor `serv-infouser` (puerto fijo 1064, sin args); cliente `cli-infouser <hostip> <filename>`. Los ejemplos usan `<hostname> <portnum>`.
-- `.gitignore` ignora los binarios de `source_files/` (`tcp-*`, `ssl-*`, `cli/serv-infouser`) y `*.log` (incluye `keylog-ssl.log`).
+- `.gitignore` solo ignora los binarios en la ruta **antigua** `lab-ssl/source_files/`; compilados en la ubicación actual quedan sin ignorar → no los añadas al commit. Sí ignora globalmente `*.log` (incluye `keylog-ssl.log`), pero **no** `*.keylog` (evidencia de capturas, se versiona).
 
-## lab-ssl: automatización y capturas (`lab-ssl/run-lab.sh`)
+## lab-ssl: automatización y capturas
 
-- `run-lab.sh [--gui]` controla la VM por SSH (alias `SRDSI`, carpeta compartida `/media/sf_SRDSI` == este repo): compila, reproduce 3 escenarios con `dumpcap -i lo` y analiza con `tshark`. Evidencia en `lab-ssl/capturas/` (`.pcapng`, `.keylog`, `.tshark.txt`; `.png` con `--gui`). `ws_shot.sh` hace las capturas GUI en un **display virtual Xvfb dentro de la VM** (`Xvfb :99` + `openbox` + `scrot`): no abre ninguna ventana en el host. Con `--gui`, `01_ok` se captura con el frame de *Application Data* seleccionado y un clic (`xdotool`, coord. fija `60,740`) en la fila `Data` para mostrar la fuente **Decrypted TLS**. Pasos y análisis en `lab-ssl/guion-capturas.md`.
+- `run-lab.sh [--gui]` controla la VM por SSH (alias `SRDSI`, carpeta compartida `/media/sf_SRDSI` == raíz del repo): compila, reproduce 3 escenarios con `dumpcap -i lo` y analiza con `tshark`. Evidencia en `lab-ssl/capturas/` (`.pcapng`, `.keylog`, `.tshark.txt`; `.png` con `--gui`). Pasos y análisis en `lab-ssl/guion-capturas.md`.
+- **Gotcha tras la reorganización:** `run-lab.sh` calcula bien `REPO` desde su ubicación, pero `RREPO=/media/sf_SRDSI` sigue concatenando `lab-ssl/...` (layout antiguo). Para ejecutarlo hay que corregir `RREPO`/`SRC`/`CAP` para que incluyan el prefijo `Tema 2: Seguridad en la comunicación/`; `ws_shot.sh` sí deriva host→VM correctamente.
+- `ws_shot.sh` hace las capturas GUI en un **display virtual Xvfb dentro de la VM** (`Xvfb :99` + `openbox` + `scrot`): no abre ninguna ventana en el host. Con `--gui`, `01_ok` se captura con el frame de *Application Data* seleccionado y un clic (`xdotool`, coord. fija `60,740`) en la fila `Data` para mostrar la fuente **Decrypted TLS**.
 - La VM ya tiene instalados `libssl-dev`, `xvfb`, `scrot`, `openbox`, `xdotool`, `dumpcap` y `wireshark`; `sudo` disponible para instalar más paquetes. Se compila con las cabeceras del sistema: `gcc -Wall -O2 -o <bin> <fuente>.c -lssl -lcrypto`.
-- Informe en `lab-ssl/informe/informe.md` → PDF con `make informe` (mismo método que lab-pki: Pandoc + pdflatex + clase `ifreport`); figuras en `lab-ssl/capturas/*.png`.
 
-## lab-pki: scripts openssl (`lab-pki/scripts/`)
+## lab-pki: scripts openssl
+
+Rutas relativas a `Tema 1: Introducción a la seguridad informática/`.
 
 - `gen_solicitud.sh` — clave privada cifrada + CSR (`clave-privada-<nombre>.key`, `solicitud-<nombre>.csr`).
 - `emitir_cert.sh` — firma con la subCA (`openssl ca -batch`); `user_ext` además empaqueta PKCS#12.
@@ -47,12 +69,36 @@ Gotchas:
 - `emitir_cert.sh` NO valida la CSR (revisión manual = el admin es la RA); extensiones solo `server_ext|user_ext|ocsp_ext` con sección en `ca-sub_openssl.cnf`. `user_ext` necesita la clave hermana junto a la CSR.
 - `revocar_cert.sh` consulta `openssl ca -status` antes para no ensuciar `index.txt`. Motivos válidos: `unspecified,keyCompromise,CACompromise,affiliationChanged,superseded,cessationOfOperation,certificateHold`.
 
-## lab-pki: informe (`lab-pki/informe/`)
+## Informes (lab-pki y lab-ssl)
 
-Fuente única `informe.md` (Markdown) → PDF con Pandoc + **pdflatex** + clase `ifreport` (`iflatex/`, UPV/EHU, `[es]`).
+Cada `informe/` tiene su copia de `iflatex/` y un `Makefile`: fuente única `informe.md` (Markdown) → PDF con Pandoc + **pdflatex** + clase `ifreport` (UPV/EHU, `[es]`).
 
 ```bash
 make informe   # informe.pdf (TEXINPUTS=./iflatex: ya en el Makefile)
 ```
 
-Notas verificadas: Pandoc 3.12 no tiene `--documentclass` (usar `-V documentclass=ifreport`); `xelatex` no tiene formato generado e `ifreport.cls` usa `\pdfpagewidth` (incompatible con XeTeX) → quedarse en pdflatex; `babel-spanish` viene del paquete `extra/texlive-langspanish` y se activa con `lang: es` en el YAML. Imágenes con caption son floats: fijadas con `\usepackage{float}` + `\floatplacement{figure}{H}`; solo 6 figuras en el PDF, el resto queda en `img/` como respaldo. Salidas largas en bloques `console` truncadas con marca `[... salida truncada: N líneas ...]`. PENDIENTEs actuales: mockups a mano (`img/web/`) y horas manuales (§7).
+- En lab-pki, `make check` valida `hola-mundo.pdf` (prueba de compilación), **no** `informe.pdf`.
+- Notas verificadas: Pandoc 3.12 no tiene `--documentclass` (usar `-V documentclass=ifreport`); `xelatex` no tiene formato generado e `ifreport.cls` usa `\pdfpagewidth` (incompatible con XeTeX) → quedarse en pdflatex; `babel-spanish` viene del paquete `extra/texlive-langspanish` y se activa con `lang: es` en el YAML. Imágenes con caption son floats: fijadas con `\usepackage{float}` + `\floatplacement{figure}{H}`; solo 6 figuras en el PDF de lab-pki, el resto queda en `img/` como respaldo. Salidas largas en bloques `console` truncadas con marca `[... salida truncada: N líneas ...]`. PENDIENTEs actuales (lab-pki): mockups a mano (`img/web/`) y horas manuales (§7).
+
+## lab-openssh
+
+Rutas relativas a `Tema 2: Seguridad en la comunicación/`.
+
+- Solo documentación: notas de Jon y Jorge (`.md`), enunciados (`Lab_SSH.pdf`, `SSH_PORT-FORWARDING.pdf`) y el informe `informe_open_ssh.tex` (clase `article`, **no** usa `ifreport`).
+- Regenerar el PDF: `pdflatex informe_open_ssh.tex` (repetir para el TOC). Sin Makefile; las figuras `firefox-*.png` están en el mismo directorio.
+
+## ejercicio-tls-dtls
+
+Rutas relativas a `Tema 2: Seguridad en la comunicación/ejercicio-tls-dtls/`.
+
+- `Lab-TLS_y_DTLS.pdf`: 9 ejercicios con `openssl s_server`/`s_client` (TLS 1.2/1.3, DTLS 1.2, session resumption, 0-RTT, PQC), capturando en loopback con Wireshark. No hay scripts ni código en el repo.
+- `lab-certs/`: `ca-root.crt` (CN=CA-SRDSI), `subca.crt` (CN=SUBCA-SRDSI), `server.crt/.key` (CN=www.srdsi.lab), `client.crt/.key` (CN=client) y `serverpq.crt/.key` (misma CN, clave **ML-DSA-65**). Claves sin passphrase; no las cifres.
+- El servidor está firmado por `subca`, no directamente por la raíz: `openssl verify -CAfile ca-root.crt server.crt` falla; hay que pasar la cadena (concatenar `ca-root.crt` + `subca.crt` en `-CAfile`, o `-cert_chain`).
+- Los certificados solo tienen CN, sin SAN. El README de `lab-certs/` menciona `server2.crt/.key` (`www.srdsi2.lab`), pero **no existen** en el repo.
+- `serverpq` requiere OpenSSL con ML-DSA (la VM tiene OpenSSL 3.5.7).
+
+## actividad-criptografia
+
+Rutas relativas a `Tema 1: Introducción a la seguridad informática/`.
+
+- Solo enunciados y logs `benchmark_*.txt`; el código de Ascon/libgcrypt **no está aquí** (se ejecutó en la VM, p. ej. `~/gcrypt-test/ascon-c/build`). No busques fuentes para recompilar.
