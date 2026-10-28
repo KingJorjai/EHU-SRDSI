@@ -108,6 +108,12 @@ nav:
           - Scripts: tema1/lab-pki/scripts.md
           - Informe completo: tema1/lab-pki/informe.md
           - Diseño web: tema1/lab-pki/web.md
-  - Tema 2: tema2/index.md
+  - Tema 2:
+      - tema2/index.md
+      - Teoría:
+          - SSH: tema2/teoria/ssh.md
+          - PGP y S/MIME: tema2/teoria/pgp-smime.md
+          - TLS, DTLS y QUIC: tema2/teoria/tls-dtls.md
+          - IPsec: tema2/teoria/ipsec.md
   - Chuletas: chuletas/comandos.md
   - Recursos: recursos/pdfs.md
