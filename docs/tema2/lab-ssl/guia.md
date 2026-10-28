@@ -87,10 +87,10 @@ En otra terminal, arranca el servidor y el cliente desde `source_files/`. Detén
 
 La captura manual del cliente escribe `keylog-ssl.log` en su directorio de trabajo. Para descifrar en Wireshark, cárgalo en *Edit → Preferences → Protocols → TLS → (Pre)-Master-Secret log filename*. Solo funciona con TLS 1.2, y por eso el cliente fija `SSL_CTX_set_max_proto_version(ctx, TLS1_2_VERSION)`.
 
-Análisis equivalente con `tshark`:
+Análisis equivalente con `tshark` desde la raíz del repositorio:
 
 ```bash
-CAP=../../assets/capturas/lab-ssl
+CAP=docs/assets/capturas/lab-ssl
 
 tshark -r "$CAP/01_ok.pcapng" -o "tls.keylog_file:$CAP/01_ok.keylog" -Y tls
 tshark -r "$CAP/01_ok.pcapng" -o "tls.keylog_file:$CAP/01_ok.keylog" \
@@ -132,5 +132,5 @@ El detalle del handshake y de las alertas está en [Capturas y alertas](capturas
 ./run-lab.sh --gui
 ```
 
-!!! warning "Rutas de la automatización"
-    `run-lab.sh` calcula `REPO` desde su ubicación, pero `RREPO=/media/sf_SRDSI` sigue usando el layout antiguo (`lab-ssl/...` sin el prefijo `Tema 2: Seguridad en la comunicación/`). Para ejecutarlo tras la reorganización hay que ajustar `RREPO`, `SRC` y `CAP`. La guía manual de esta página no depende de esa corrección.
+!!! note "Requisitos de la automatización"
+    `run-lab.sh` ya incluye el prefijo `Tema 2: Seguridad en la comunicación/` en `RREPO`, `SRC` y `CAP`, y `ws_shot.sh` deriva la ruta del repositorio. Solo necesitas la VM encendida, el alias SSH `SRDSI` y la carpeta compartida `/media/sf_SRDSI` apuntando a la raíz del repo.

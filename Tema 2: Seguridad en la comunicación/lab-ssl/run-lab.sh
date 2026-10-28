@@ -23,7 +23,7 @@ VM="${VM:-SRDSI}"
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 CAP_HOST="$REPO/lab-ssl/capturas"
 
-RREPO="/media/sf_SRDSI"
+RREPO="/media/sf_SRDSI/Tema 2: Seguridad en la comunicación"
 SRC="$RREPO/lab-ssl/source_files"
 CAP="$RREPO/lab-ssl/capturas"
 WORK=/tmp/labssl-run

@@ -348,7 +348,10 @@ Ciphersuite: AES256-GCM-SHA384
 Verification: OK
 ```
 
-El cifrado `AES256-GCM-SHA384` con intercambio RSA no proporciona *forward secrecy*: la clave de sesión va cifrada con la clave pública RSA del servidor. Quien obtenga después la clave privada del servidor puede descifrar las capturas antiguas. En Wireshark se puede descifrar aportando la clave privada del servidor (*Preferences → Protocols → TLS → RSA keys list*), sin keylog. Con ECDHE, en cambio, la clave privada del servidor no basta.
+El cifrado `AES256-GCM-SHA384` con intercambio RSA no proporciona *forward secrecy*: la clave de sesión va cifrada con la clave pública RSA del servidor. Quien obtenga después la clave privada del servidor puede descifrar las capturas antiguas. Con ECDHE, en cambio, la clave privada del servidor no basta.
+
+!!! warning "Wireshark 4.7 y la lista de claves RSA"
+    Las versiones antiguas de Wireshark permitían añadir la clave privada RSA en *Preferences → Protocols → TLS → RSA keys list* y descifrar sin keylog. Wireshark 4.7.4 ya no expone esa preferencia (`tls.keys_list` aparece como *obsolete preference*). En el entorno actual, demuestra la ausencia de *forward secrecy* por la estructura del handshake: `Encrypted PreMaster length` y ausencia de `ServerKeyExchange`. El keylog descifra tanto RSA como ECDHE, así que no sirve para demostrar *forward secrecy*.
 
 ## Ejercicios TLS/DTLS y comando asociado
 

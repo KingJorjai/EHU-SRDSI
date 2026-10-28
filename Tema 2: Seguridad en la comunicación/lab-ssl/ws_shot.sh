@@ -6,9 +6,20 @@ set -u
 pcap="$1"; keylog="$2"; filt="${3:-}"; out="$4"; frame="${5:-}"; click="${6:-}"
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
+HOSTREPO="$(git -C "$REPO" rev-parse --show-toplevel 2>/dev/null || printf '%s' "$REPO")"
+REL="${REPO#"$HOSTREPO"}"
+REL="${REL#/}"
+VMROOT="${VMROOT:-/media/sf_SRDSI}"
 case "$out" in
-    "$REPO"/*) vm_out="/media/sf_SRDSI${out#"$REPO"}" ;;   # host=$REPO/... == VM=/media/sf_SRDSI/...
-    *)         vm_out="$out" ;;
+    "$REPO"/*)
+        rel_out="${out#"$REPO"/}"
+        if [ -n "$REL" ]; then
+            vm_out="$VMROOT/$REL/$rel_out"
+        else
+            vm_out="$VMROOT/$rel_out"
+        fi
+        ;;
+    *) vm_out="$out" ;;
 esac
 VM="${VM:-SRDSI}"
 

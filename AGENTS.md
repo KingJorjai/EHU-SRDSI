@@ -50,7 +50,7 @@ Enunciado en `lab-ssl/Lab-ssl-actividad.pdf` (teoría en `Lab-ssl-teoria.pdf`). 
 ## lab-ssl: automatización y capturas
 
 - `run-lab.sh [--gui]` controla la VM por SSH (alias `SRDSI`, carpeta compartida `/media/sf_SRDSI` == raíz del repo): compila, reproduce 3 escenarios con `dumpcap -i lo` y analiza con `tshark`. Evidencia en `lab-ssl/capturas/` (`.pcapng`, `.keylog`, `.tshark.txt`; `.png` con `--gui`). Pasos y análisis en `lab-ssl/guion-capturas.md`.
-- **Gotcha tras la reorganización:** `run-lab.sh` calcula bien `REPO` desde su ubicación, pero `RREPO=/media/sf_SRDSI` sigue concatenando `lab-ssl/...` (layout antiguo). Para ejecutarlo hay que corregir `RREPO`/`SRC`/`CAP` para que incluyan el prefijo `Tema 2: Seguridad en la comunicación/`; `ws_shot.sh` sí deriva host→VM correctamente.
+- `run-lab.sh` usa `RREPO=/media/sf_SRDSI/Tema 2: Seguridad en la comunicación` y `ws_shot.sh` deriva la ruta relativa desde `git rev-parse --show-toplevel`; si cambia el layout, revisa ambos. Requiere el alias SSH `SRDSI` y la carpeta compartida `/media/sf_SRDSI` apuntando a la raíz del repo.
 - `ws_shot.sh` hace las capturas GUI en un **display virtual Xvfb dentro de la VM** (`Xvfb :99` + `openbox` + `scrot`): no abre ninguna ventana en el host. Con `--gui`, `01_ok` se captura con el frame de *Application Data* seleccionado y un clic (`xdotool`, coord. fija `60,740`) en la fila `Data` para mostrar la fuente **Decrypted TLS**.
 - La VM ya tiene instalados `libssl-dev`, `xvfb`, `scrot`, `openbox`, `xdotool`, `dumpcap` y `wireshark`; `sudo` disponible para instalar más paquetes. Se compila con las cabeceras del sistema: `gcc -Wall -O2 -o <bin> <fuente>.c -lssl -lcrypto`.
 

@@ -92,10 +92,10 @@ La diferencia entre ambos errores es el punto en que se rompe el handshake:
 
 ## 4. Reproducir el análisis con `tshark`
 
-Los comandos siguientes se ejecutan desde cualquier directorio; `CAP` apunta a las capturas del sitio:
+Los comandos siguientes se ejecutan **desde la raíz del repositorio**; `CAP` apunta a las capturas del sitio:
 
 ```bash
-CAP=../../assets/capturas/lab-ssl
+CAP=docs/assets/capturas/lab-ssl
 
 # Listado TLS del escenario correcto, descifrado con el keylog
 tshark -r "$CAP/01_ok.pcapng" \

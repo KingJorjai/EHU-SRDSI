@@ -11,7 +11,7 @@ Las prácticas se realizan en una máquina virtual gestionada con **VirtualBox**
 
 | Elemento | Valor de laboratorio |
 | -------- | -------------------- |
-| Carpeta de la imagen | `SRDSI-Debian13` (≈ 1,5 GB) |
+| Carpeta de la imagen | `SRDSI_Debian13` (≈ 1,5 GB) |
 | Sistema | Debian 13, monoprocesador, 4 GB RAM, disco SCSI de 30 GB |
 | Nombre del sistema | `demo` (a personalizar) |
 | Usuario | `user1` / contraseña `user1` |
