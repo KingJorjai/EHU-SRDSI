@@ -1,0 +1,36 @@
+/* Impresión: oculta navegación y aprovecha el ancho de la página. */
+@media print {
+  .md-header,
+  .md-sidebar,
+  .md-footer,
+  .md-top,
+  .md-search,
+  .md-content__button,
+  .md-typeset .headerlink {
+    display: none !important;
+  }
+
+  .md-main__inner,
+  .md-content {
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  .md-typeset {
+    font-size: 9pt;
+  }
+
+  .md-typeset pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .md-typeset a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .md-typeset h1 {
+    margin-bottom: 0.4em;
+  }
+}

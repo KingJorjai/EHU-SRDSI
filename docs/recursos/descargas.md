@@ -4,9 +4,12 @@ Material listo para abrir o guardar. Incluye el sitio completo sin conexión y l
 
 ## Sitio offline (ZIP)
 
-[:material-download: Descargar EHU-SRDSI-docs-offline.zip](/recursos/EHU-SRDSI-docs-offline.zip){ .md-button .md-button--primary }
+<a class="md-button md-button--primary" href="../EHU-SRDSI-docs-offline.zip">Descargar EHU-SRDSI-docs-offline.zip</a>
 
 El ZIP lo genera GitHub Actions en cada publicación: construye una variante offline del sitio (con búsqueda empaquetada), la comprime y copia el resultado a `site/recursos/`. También queda como *artifact* de la ejecución del workflow.
+
+!!! note "Si ya estás en la versión offline"
+    Este botón solo funciona en la versión publicada en GitHub Pages. Si has abierto el ZIP, ya tienes todo el contenido descargado y no necesitas volver a descargarlo.
 
 ### Cómo usarlo
 
@@ -25,6 +28,10 @@ Abre `http://localhost:8000` en el navegador.
 
 !!! note "Artifact de GitHub Actions"
     En la pestaña **Actions** del repositorio, abre la ejecución del workflow de documentación y descarga el artifact `EHU-SRDSI-docs-offline`. Los artifacts caducan según la retención configurada; el enlace `/recursos/EHU-SRDSI-docs-offline.zip` apunta a la copia publicada con el sitio.
+
+## Chuleta imprimible
+
+La [chuleta de comandos](../chuletas/comandos.md) está pensada para imprimirse: usa `Ctrl+P` (o `Cmd+P`) y el navegador ocultará la navegación. También puedes guardarla como PDF desde el diálogo de impresión.
 
 ## PDFs principales
 

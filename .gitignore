@@ -28,3 +28,6 @@ site/
 site-offline/
 docs/assets/
 EHU-SRDSI-docs-offline.zip
+
+# Lockfile accidental de npm (no hay package.json)
+/package-lock.json

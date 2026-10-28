@@ -92,4 +92,8 @@ copy_dir "$T2/ejercicio-tls-dtls/lab-certs"      "$DEST/certs/lab-certs"
 copy "$T1/actividad-criptografia/benchmark_ascon.txt" "$DEST/benchmarks/benchmark_ascon.txt"
 copy "$T1/actividad-criptografia/benchmark_all.txt"   "$DEST/benchmarks/benchmark_all.txt"
 
+# Los .md que viajan junto a las imágenes (p. ej. MANIFIESTO.md) no deben
+# convertirse en páginas del sitio.
+find "$DEST" -type f -name '*.md' -delete
+
 echo "Assets preparados en $DEST ($(find "$DEST" -type f | wc -l) ficheros)."
