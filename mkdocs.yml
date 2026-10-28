@@ -130,5 +130,14 @@ nav:
           - Código: tema2/lab-ssl/codigo.md
           - Capturas y alertas: tema2/lab-ssl/capturas.md
           - Informe completo: tema2/lab-ssl/informe.md
-  - Chuletas: chuletas/comandos.md
-  - Recursos: recursos/pdfs.md
+  - Chuletas:
+      - Comandos: chuletas/comandos.md
+      - Antes del examen: chuletas/antes-del-examen.md
+      - Alertas TLS: chuletas/alertas-tls.md
+      - Configuración OpenSSL: chuletas/openssl-config.md
+  - Recursos:
+      - PDFs: recursos/pdfs.md
+      - Código: recursos/codigo.md
+      - Certificados: recursos/certificados.md
+      - Benchmarks: recursos/benchmarks.md
+      - Descargas: recursos/descargas.md
