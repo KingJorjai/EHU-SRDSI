@@ -80,7 +80,12 @@ copyright: Documentación de laboratorio SRDSI · UPV/EHU
 
 nav:
   - Inicio: index.md
-  - Guía: guia/index.md
+  - Guía:
+      - guia/index.md
+      - Programa: guia/programa.md
+      - Evaluación: guia/evaluacion.md
+      - VM y entorno: guia/vm-entorno.md
+      - Bibliografía: guia/bibliografia.md
   - Tema 1: tema1/index.md
   - Tema 2: tema2/index.md
   - Chuletas: chuletas/comandos.md
