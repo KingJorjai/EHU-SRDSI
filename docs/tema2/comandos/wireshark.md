@@ -252,6 +252,35 @@ Por qué ocurre:
 - **Certificado inexistente**: el servidor no carga `s_cert.pem`; con los cifrados fijados por el cliente (intercambio RSA) no puede negociar y responde `handshake_failure` al `ClientHello`. El servidor registra `no shared cipher`.
 - **CA desconocida**: el cliente confía en `c-ca_cert.pem` en vez de `s-ca_cert.pem`. El handshake llega al `Certificate` del servidor, pero el cliente no puede construir la cadena y envía `unknown_ca`. El cliente registra `certificate verify failed`.
 
+## MACsec (802.1AE)
+
+MACsec no es TLS: se analiza en el nivel de enlace. En Wireshark aparece como **MACSEC**, con EtherType `0x88e5`.
+
+| Qué buscar | Campo / filtro | Nota |
+| --- | --- | --- |
+| Tramas MACsec | `eth.type == 0x88e5` o `macsec` | Protocolo `MACSEC` |
+| SecTAG | `macsec.TCI`, `macsec.AN`, `macsec.SL` | Cabecera 802.1AE |
+| Cifrado | `macsec.TCI.E == 1` | Bit E |
+| Texto cambiado | `macsec.TCI.C == 1` | Bit C |
+| SCI | `macsec.SCI` | MAC + puerto |
+| PN | `macsec.PN` | Packet number |
+| ICV | `macsec.ICV` | 16 bytes |
+| EtherType interior | `macsec.etype` | Solo con `encrypt off` |
+| Verificación | `macsec.verify_info.verified == 0` | `False` sin SAK |
+| ARP | `arp` | Red no protegida o interior con `encrypt off` |
+| MKA/EAPOL | `eapol` | Vacío con claves manuales |
+
+Columnas útiles: `macsec.SCI`, `macsec.PN`, `macsec.TCI.E`, `macsec.AN` y `macsec.ICV`.
+
+Valores observados en el laboratorio:
+
+- `encrypt on`: TCI `0x0b` (`SC,E,C`), payload `Data`, ICV distinto en cada trama.
+- `encrypt off`: TCI `0x08` (`SC`), Wireshark ve `ICMP`/`ICMPv6` y `macsec.etype`.
+- `macsec.verify_info.verified = False` porque Wireshark no tiene la SAK; no significa que MACsec falle.
+- No hay MKA/EAPOL si se usan claves manuales; la preferencia `macsec.mka` solo sirve si hay SAK distribuidas por MKA.
+
+Para verlo con capturas reales: [Actividad MACsec](../actividades/macsec.md).
+
 ## Capturas GUI sin abrir ventanas (VM)
 
 El script `ws_shot.sh` del laboratorio usa un display virtual dentro de la VM (`Xvfb :99`, `openbox`, `scrot`) para hacer capturas de Wireshark sin abrir ninguna ventana en el host. No es necesario para el análisis con `tshark`, pero permite generar las figuras del informe de forma reproducible.
@@ -272,4 +301,7 @@ El script `ws_shot.sh` del laboratorio usa un display virtual dentro de la VM (`
 - [OpenSSL TLS/DTLS](openssl-tls.md)
 - [TLS, DTLS y QUIC (teoría)](../teoria/tls-dtls.md)
 - [SSH y túneles](ssh.md)
+- [Actividad MACsec](../actividades/macsec.md)
+- [Nivel de enlace (teoría)](../teoria/nivel-enlace.md)
 - [Transparencias — TLS, DTLS y QUIC](../../assets/pdf/SRDSI_T2-3.pdf)
+- [Transparencias — Nivel de enlace](../../assets/pdf/SRDSI_T2-5.pdf)

@@ -81,6 +81,17 @@ La actividad de T2-5 pide comparar estos algoritmos; la tabla anterior es la res
 - **MACsec**: autentica y cifra la trama, y protege ARP/NDP, DHCP, STP y VLAN.
 - **802.1X/EAP**: controla quién entra en el puerto antes de dar acceso.
 
+## Demostración en el laboratorio
+
+La [actividad MACsec](../actividades/macsec.md) comprueba estos conceptos con dos VM y Wireshark:
+
+- **ARP spoofing** contra 10.0.3.x: envenena la caché y tumba el ping.
+- **ARP spoofing** contra 1.1.1.x: no afecta porque el ARP viaja dentro de MACsec.
+- **MAC flooding**: genera mucho tráfico con MAC aleatorias, pero MACsec sigue funcionando.
+- **ICV alterado**: la trama se descarta y aumentan los errores RX.
+- **Replay**: se descarta con `replay on`; con `replay off` se acepta.
+- **Metadatos**: MAC, SCI, PN, tamaños y tiempos siguen visibles; MACsec no da anonimato.
+
 ## Ideas clave para el examen
 
 - PAP envía credenciales en claro; CHAP usa desafío-respuesta; EAP transporta métodos.

@@ -32,7 +32,7 @@ Repo público de prácticas de **Seguridad, Rendimiento y Disponibilidad de Serv
   - `lab-openssh/` — notas Markdown, enunciados y `informe_open_ssh.tex` (clase `article`).
   - `ejercicio-tls-dtls/` — `Lab-TLS_y_DTLS.pdf` + `lab-certs/`.
   - `SRDSI_T2-5_parcial.pdf` — teoría 2.5, seguridad en el nivel de enlace (parcial).
-  - `actividad-macsec/` — enunciado `Lab_macsec_comandos.pdf`, `capturas/` e `informe/`.
+  - `actividad-macsec/` — enunciado `Lab_macsec_comandos.pdf`, `capturas/`, `informe/` y `ataques/`.
 - `docs/` — fuente MkDocs del sitio:
   - `guia/`, `tema1/{teoria,comandos,actividades,lab-pki}/`, `tema2/{teoria,comandos,actividades,lab-ssl}/`, `chuletas/`, `recursos/`.
   - T2-5 y MACsec: `docs/tema2/teoria/nivel-enlace.md` y `docs/tema2/actividades/macsec.md`.
@@ -161,7 +161,11 @@ OpenSSH y TLS/DTLS:
 - VM1: `SRDSI_Debian13` (`bocata-jamon`, host-only 192.168.56.110). VM2: `SRDSI_Debian13_DNS` (`bocata-jamon2`, host-only 192.168.56.111).
 - MACsec va sobre la interfaz de una **NAT Network** `macsecnet` (10.0.3.0/24), que en el guest es `enp0s9`. La host-only se usa para administración.
 - MV1: `macsec0` 1.1.1.1/24, TX key 01, RX key 02. MV2: `macsec1` 1.1.1.2/24, TX key 02, RX key 01.
-- Evidencia: `actividad-macsec/capturas/` (`.pcapng`, `.txt`, `.png`). Scripts de captura: `screenshot-terminal.sh` y `screenshot-wireshark.sh`.
+- `setup-macsec.sh mv1|mv2 [--replay]` reaplica la configuración tras reiniciar (interfaz, IPs, claves, SA, `replay on window 0`).
+- Evidencia: `actividad-macsec/capturas/` (`.pcapng`, `.txt`, `.png`). Scripts de captura: `screenshot-terminal.sh` y `screenshot-wireshark.sh` (este último acepta un filtro de Wireshark como tercer argumento).
+- Ataques: `actividad-macsec/ataques/{arp-spoof,mac-flood,forge-icv,replay}.py` (Scapy 2.6.1). El atacante usa `enp0s10` en MV1 (10.0.3.99), no `enp0s9`; una macvlan sobre `enp0s9` no se puede crear mientras exista `macsec0`.
+- Resultados: ARP spoofing tumba 10.0.3.x pero no 1.1.1.x; MAC flooding no interrumpe MACsec; ICV alterado suma errores RX y no obtiene reply; replay se descarta con `replay on` y se acepta con `replay off`.
+- La entrada ARP de la puerta de enlace 10.0.3.1 es **PERMANENTE**; para el ataque se usa la entrada dinámica de 10.0.3.11. La NAT Network no equivale a un switch físico para MAC flooding.
 - No hay `tcpdump` en las VM; se usa `dumpcap` y se analiza con `tshark` en el host.
 
 ## Limitaciones y gotchas
@@ -173,7 +177,7 @@ OpenSSH y TLS/DTLS:
 - Wireshark muestra las tramas MACsec como `[UNVERIFIED]` sin la SAK; `ip macsec show` solo muestra el ID de clave y ceros, no la clave completa. Con `encrypt off`, el payload es visible pero la autenticación sigue activa.
 - `lab-certs/server2.crt` no existe; los certs no tienen SAN.
 - Material carga Roboto desde Google Fonts. En el ZIP offline hay fallback tipográfico; si se quiere 100 % offline, habría que autoalojar fuentes y tocar el tema.
-- `docs/assets/` ocupa ~88 MB y no se versiona. No lo añadas a git.
+- `docs/assets/` ocupa ~100 MB y no se versiona. No lo añadas a git.
 - No hay tests ni linters. La única verificación automática es `mkdocs build --strict` y el workflow de Pages.
 
 ## No tocar / no commitear

@@ -1,0 +1,23 @@
+### ICV alterado (forged) — MV2, macsec1
+Antes:
+RX:  bytes packets errors dropped  missed   mcast
+      7098      81      3     880       0       0
+Después de 3 tramas con ICV alterado:
+RX:  bytes packets errors dropped  missed   mcast
+      7098      81      6     880       0       0
+
+### Replay con replay on — MV2, macsec1
+Antes:
+RX:  bytes packets errors dropped  missed   mcast
+      1218      13      0       0       0       0
+Después de 3 replays de PN 105:
+RX:  bytes packets errors dropped  missed   mcast
+      1260      14      0       3       0       0
+
+### Replay con replay off — MV2, macsec1
+Antes:
+RX:  bytes packets errors dropped  missed   mcast
+      1218      13      0       0       0       0
+Después de 3 replays de PN 104:
+RX:  bytes packets errors dropped  missed   mcast
+      1554      17      0       0       0       0

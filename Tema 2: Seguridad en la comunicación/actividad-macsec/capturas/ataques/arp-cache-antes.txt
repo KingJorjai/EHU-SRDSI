@@ -1,0 +1,1 @@
+10.0.3.11 dev enp0s9 lladdr 08:00:27:17:ce:47 REACHABLE 

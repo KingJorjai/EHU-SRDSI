@@ -72,6 +72,7 @@ La [chuleta de comandos](../chuletas/comandos.md) está pensada para imprimirse:
 - [Informe Lab PKI](../assets/pdf/informe-pki.pdf)
 - [Informe Lab SSL](../assets/pdf/informe-ssl.pdf)
 - [Informe Lab OpenSSH](../assets/pdf/informe-openssh.pdf)
+- [Informe Actividad MACsec](../assets/pdf/informe-macsec.pdf)
 
 ## Otros recursos
 

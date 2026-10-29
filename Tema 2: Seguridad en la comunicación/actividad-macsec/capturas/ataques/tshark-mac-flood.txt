@@ -1,0 +1,24 @@
+### MAC flooding — resumen
+1	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	MACSEC
+2	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	MACSEC
+3	02:fa:1a:de:76:3f	ff:ff:ff:ff:ff:ff	0x0800	UDP
+4	02:bb:87:83:f1:5f	ff:ff:ff:ff:ff:ff	0x0800	UDP
+5	02:fa:be:54:29:ad	ff:ff:ff:ff:ff:ff	0x0800	UDP
+6	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	MACSEC
+7	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	MACSEC
+8	02:02:03:80:a1:89	ff:ff:ff:ff:ff:ff	0x0800	UDP
+9	02:bf:44:53:bd:e8	ff:ff:ff:ff:ff:ff	0x0800	UDP
+10	02:2d:50:50:54:aa	ff:ff:ff:ff:ff:ff	0x0800	UDP
+11	02:e1:eb:fb:87:eb	ff:ff:ff:ff:ff:ff	0x0800	UDP
+12	02:95:f8:30:77:8a	ff:ff:ff:ff:ff:ff	0x0800	UDP
+13	02:4c:33:d7:69:34	ff:ff:ff:ff:ff:ff	0x0800	UDP
+14	02:41:c7:e9:0d:5e	ff:ff:ff:ff:ff:ff	0x0800	UDP
+15	02:35:b7:3c:c9:53	ff:ff:ff:ff:ff:ff	0x0800	UDP
+16	02:b9:62:83:32:2b	ff:ff:ff:ff:ff:ff	0x0800	UDP
+17	02:8f:69:ac:e4:67	ff:ff:ff:ff:ff:ff	0x0800	UDP
+18	02:07:94:98:b0:8f	ff:ff:ff:ff:ff:ff	0x0800	UDP
+19	02:65:d1:81:dc:a9	ff:ff:ff:ff:ff:ff	0x0800	UDP
+20	02:03:40:db:ef:da	ff:ff:ff:ff:ff:ff	0x0800	UDP
+
+MACs de origen únicas: 233
+Tramas totales: 272

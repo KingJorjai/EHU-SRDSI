@@ -23,7 +23,7 @@ Protocolos y esquemas de seguridad en la comunicación: SSH, PGP, TLS/DTLS e IPs
 - [Laboratorio OpenSSH](actividades/openssh.md)
 - [Ejercicios PGP](actividades/pgp.md)
 - [Ejercicios TLS y DTLS](actividades/tls-dtls.md)
-- [Actividad MACsec](actividades/macsec.md)
+- [Actividad MACsec: configuración, ataques y Wireshark](actividades/macsec.md)
 
 ## Laboratorios
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Captura Wireshark en un display virtual dentro de la VM.
-# Uso: screenshot-wireshark.sh <png_salida> <pcap>
+# Uso: screenshot-wireshark.sh <png_salida> <pcap> [filtro]
 set -u
-OUT="$1"; PCAP="$2"
+OUT="$1"; PCAP="$2"; FILTER="${3:-macsec}"
 export DISPLAY=:99
 
 pkill -x wireshark 2>/dev/null
@@ -27,7 +27,7 @@ done
 openbox --config-file /tmp/openbox-macsec.xml >/tmp/openbox-macsec.log 2>&1 &
 sleep 1
 
-wireshark -r "$PCAP" -Y "macsec" >/tmp/wireshark-macsec.log 2>&1 &
+wireshark -r "$PCAP" -Y "$FILTER" >/tmp/wireshark-macsec.log 2>&1 &
 sleep 15
 scrot "$OUT"
 rc=$?

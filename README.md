@@ -32,6 +32,7 @@
 - Ejercicios resueltos de GnuPG, PGP, TLS/DTLS, OpenSSH y modelo de amenazas.
 - Laboratorios de PKI, SSL, OpenSSH y **MACsec**, con informes y capturas.
 - Teoría de nivel de enlace: PPP, EAP, 802.1X, MACsec y WLAN.
+- Ataques de enlace y retos Wireshark: ARP spoofing, MAC flooding, ICV alterado y replay.
 - PDFs, chuletas y checklist para el examen.
 
 ## Cómo usarlo

@@ -127,6 +127,80 @@ Repite el `ping` y la captura. Ahora Wireshark puede leer el paquete interior: v
 | Confidencialidad | Sí | No |
 | Integridad/autenticación | Sí | Sí |
 
+## Ataques de enlace
+
+Para las pruebas de ataque se añadió a MV1 una segunda interfaz `enp0s10` en la misma NAT Network `macsecnet` (10.0.3.99) y se usó Scapy. El atacante **no tiene la SAK**. Todo se hizo en la red aislada; después se paró el atacante y se restauraron las cachés ARP.
+
+### ARP spoofing
+
+- **Red no protegida (10.0.3.x):** MV2 cambió su entrada ARP de 10.0.3.11 a la MAC falsa `02:00:00:00:00:01`; el ping a 10.0.3.11 perdió el 100% de los paquetes.
+- **Red protegida (1.1.1.x):** las tramas ARP falsas llegaron a `enp0s9`, pero la entrada de 1.1.1.2 siguió en `macsec0` con la MAC real de MV2; el ping por MACsec continuó.
+- La puerta de enlace 10.0.3.1 tenía una entrada **PERMANENTE**; por eso el ataque se dirigió a la entrada dinámica de 10.0.3.11.
+
+![Efecto del ARP spoofing en MV2](../../assets/img/lab-macsec/ataque-arp-terminal.png)
+
+![ARP spoofing y MACsec en Wireshark](../../assets/img/lab-macsec/ataque-arp-spoof.png)
+
+### MAC flooding
+
+Se enviaron 800 tramas con MAC de origen aleatoria desde `enp0s10`; en MV2 se capturaron 272 (233 MAC distintas, 230 UDP, 34 MACsec, 8 ARP). El ping por MACsec siguió funcionando (16/16). La NAT Network de VirtualBox no equivale a un switch físico: no se produjo una caída visible, pero el patrón de flooding y la defensa (port security, VLANs, MACsec) quedan documentados.
+
+![MAC flooding en Wireshark](../../assets/img/lab-macsec/ataque-mac-flood.png)
+
+### ICV alterado y replay
+
+- **ICV alterado:** 3 copias de una trama válida (PN 184) modificada. MV2 no respondió y `macsec1` pasó de 3 a 6 errores RX. Una trama de control válida (PN 187) sí obtuvo reply (PN 193).
+- **Replay on:** 3 replays de PN 105; MV2 los descartó (`dropped` 0 → 3) y no hubo respuesta.
+- **Replay off:** 3 replays de PN 104; MV2 los aceptó y generó replies PN 117/118.
+
+| Prueba | Resultado |
+| --- | --- |
+| ARP spoof 10.0.3.11 | Caché envenenada; ping 100% perdido |
+| ARP spoof 1.1.1.2 | Sin efecto; MACsec sigue |
+| MAC flooding | 800 enviadas, 272 capturadas; MACsec sigue |
+| ICV alterado | 3 errores RX; sin respuesta |
+| Replay on | 3 descartes; sin respuesta |
+| Replay off | Aceptado; replies 117/118 |
+
+![Tramas con ICV alterado](../../assets/img/lab-macsec/ataque-forged-icv.png)
+
+![Replay con replay on](../../assets/img/lab-macsec/ataque-replay-on.png)
+
+![Replay con replay off](../../assets/img/lab-macsec/ataque-replay-off.png)
+
+## Wireshark: qué buscar
+
+| Concepto | Campo / filtro | Dónde se ve |
+| --- | --- | --- |
+| MACsec / 802.1AE | `eth.type == 0x88e5`, `macsec` | Protocolo y detalle Ethernet |
+| SecTAG | `macsec.TCI`, `macsec.AN`, `macsec.SL` | Árbol 802.1AE Security Tag |
+| Cifrado | `macsec.TCI.E` | Bit E del TCI |
+| Texto cambiado | `macsec.TCI.C` | Bit C del TCI |
+| SCI | `macsec.SCI` | MAC + puerto |
+| PN | `macsec.PN` | Packet number |
+| ICV | `macsec.ICV` | Últimos 16 bytes |
+| EtherType interior | `macsec.etype` | Solo con `encrypt off` |
+| Verificación | `macsec.verify_info.verified` | `False` sin SAK |
+| ARP | `arp` | Red no protegida o interior con `encrypt off` |
+| MKA/EAPOL | `eapol` | Vacío con claves manuales |
+
+- `encrypt on`: TCI `0x0b` (`SC,E,C`); payload `Data`; ICV distinto por trama.
+- `encrypt off`: TCI `0x08` (`SC`); se ve `ICMP`/`ICMPv6` y `macsec.etype`.
+- SCI MV1 `08002717ce470001`; SCI MV2 `080027d103ae0001`.
+- PN 119–122 en la captura original; PN 184/187 en las pruebas de forja.
+
+??? question "Retos y respuestas"
+    1. **¿Qué MAC y puerto forman el SCI de MV1?** `08:00:27:17:ce:47`, puerto 1.
+    2. **¿Qué bits del TCI cambian con `encrypt off`?** Se apagan `E` y `C`; queda `SC` (de `0x0b` a `0x08`).
+    3. **¿Dónde está el PN y cómo cambia?** `macsec.PN`; aumenta por SCI y sirve para detectar repeticiones.
+    4. **¿Por qué Wireshark marca `[UNVERIFIED]`?** Porque no tiene la SAK; no significa que MACsec falle.
+    5. **¿Qué diferencia hay entre `Data` e `ICMP`?** `Data` es payload cifrado; `ICMP` aparece con `encrypt off`.
+    6. **¿Por qué no se ve ARP con cifrado activo?** Porque el ARP de 1.1.1.x viaja dentro de MACsec; solo se ve `0x88e5`.
+    7. **¿Qué pasa si cambias la clave RX?** El ICV no valida; el receptor descarta y el ping falla.
+    8. **¿Qué pasa con una trama de PN antiguo?** Con `replay on` se descarta; con `replay off` se acepta.
+    9. **¿Qué metadatos siguen visibles?** MAC, SCI, PN, tamaños y tiempos; MACsec no da anonimato.
+    10. **¿Por qué no hay MKA/EAPOL?** Porque se usan claves manuales; en producción MKA/802.1X negociaría las SAK.
+
 ## Problemas típicos
 
 - **Misma MAC/IP en la VM clonada**: regenera las MAC y cambia la IP host-only de la VM2; si no, las dos VM chocan.
@@ -144,6 +218,13 @@ Repite el `ping` y la captura. Ahora Wireshark puede leer el paquete interior: v
 - [Salida de `ip macsec show` en MV2](../../assets/capturas/lab-macsec/ip-macsec-show-mv2.txt)
 - [Análisis `tshark` con cifrado](../../assets/capturas/lab-macsec/tshark-macsec-on.txt)
 - [Análisis `tshark` sin cifrado](../../assets/capturas/lab-macsec/tshark-macsec-off.txt)
+- [ARP spoofing contra 10.0.3.11](../../assets/capturas/lab-macsec/ataques/arp-spoof-victim.pcapng)
+- [ARP spoofing contra 1.1.1.2](../../assets/capturas/lab-macsec/ataques/arp-spoof-macsec.pcapng)
+- [MAC flooding](../../assets/capturas/lab-macsec/ataques/mac-flood.pcapng)
+- [Tramas con ICV alterado](../../assets/capturas/lab-macsec/ataques/forged-icv4.pcapng)
+- [Replay con replay on](../../assets/capturas/lab-macsec/ataques/replay-on.pcapng)
+- [Replay con replay off](../../assets/capturas/lab-macsec/ataques/replay-off.pcapng)
+- [Estadísticas de los ataques](../../assets/capturas/lab-macsec/ataques/stats-ataques.txt)
 
 ## Relacionado
 
