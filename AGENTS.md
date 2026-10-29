@@ -31,8 +31,11 @@ Repo público de prácticas de **Seguridad, Rendimiento y Disponibilidad de Serv
   - `lab-ssl/` — SSL/TLS: `source_files/` (C+OpenSSL), `capturas/`, `run-lab.sh`, `ws_shot.sh`, `informe/`.
   - `lab-openssh/` — notas Markdown, enunciados y `informe_open_ssh.tex` (clase `article`).
   - `ejercicio-tls-dtls/` — `Lab-TLS_y_DTLS.pdf` + `lab-certs/`.
+  - `SRDSI_T2-5_parcial.pdf` — teoría 2.5, seguridad en el nivel de enlace (parcial).
+  - `actividad-macsec/` — enunciado `Lab_macsec_comandos.pdf`, `capturas/` e `informe/`.
 - `docs/` — fuente MkDocs del sitio:
   - `guia/`, `tema1/{teoria,comandos,actividades,lab-pki}/`, `tema2/{teoria,comandos,actividades,lab-ssl}/`, `chuletas/`, `recursos/`.
+  - T2-5 y MACsec: `docs/tema2/teoria/nivel-enlace.md` y `docs/tema2/actividades/macsec.md`.
 - `assets/banner.svg`, `assets/preview.png` — solo para el README; no forman parte del sitio.
 - `mkdocs.yml`, `mkdocs.offline.yml`, `requirements.txt`, `scripts/prepare_docs_assets.sh`, `.github/workflows/docs.yml` — construcción, bundle offline y despliegue.
 - `docs/superpowers/` — planes internos excluidos del sitio con `exclude_docs`; no añadir a `nav`.
@@ -76,6 +79,7 @@ CA_PASS=xxx ./scripts/revocar_cert.sh certificado-Nombre.crt cessationOfOperatio
 cd "Tema 1: Introducción a la seguridad informática/lab-pki/informe" && make informe
 cd "Tema 2: Seguridad en la comunicación/lab-ssl/informe" && make informe
 cd "Tema 2: Seguridad en la comunicación/lab-openssh" && pdflatex informe_open_ssh.tex
+cd "Tema 2: Seguridad en la comunicación/actividad-macsec/informe" && make informe
 
 # Estado del despliegue
 gh run list --workflow docs.yml --limit 1
@@ -149,10 +153,24 @@ OpenSSH y TLS/DTLS:
 - No hay SAN; `server2.crt/.key` se menciona en el README de `lab-certs/` pero **no existe**.
 - `serverpq` usa ML-DSA-65. El host de documentación tiene OpenSSL 4.0.3; la VM, OpenSSL 3.5.7. Ambos soportan ML-DSA.
 
+### Actividad MACsec
+
+- Enunciado: `actividad-macsec/Lab_macsec_comandos.pdf`. Teoría: `SRDSI_T2-5_parcial.pdf`.
+- Páginas: `docs/tema2/teoria/nivel-enlace.md` y `docs/tema2/actividades/macsec.md`.
+- Informe: `actividad-macsec/informe/informe.md` → `make informe` (Pandoc + pdflatex + `iflatex`).
+- VM1: `SRDSI_Debian13` (`bocata-jamon`, host-only 192.168.56.110). VM2: `SRDSI_Debian13_DNS` (`bocata-jamon2`, host-only 192.168.56.111).
+- MACsec va sobre la interfaz de una **NAT Network** `macsecnet` (10.0.3.0/24), que en el guest es `enp0s9`. La host-only se usa para administración.
+- MV1: `macsec0` 1.1.1.1/24, TX key 01, RX key 02. MV2: `macsec1` 1.1.1.2/24, TX key 02, RX key 01.
+- Evidencia: `actividad-macsec/capturas/` (`.pcapng`, `.txt`, `.png`). Scripts de captura: `screenshot-terminal.sh` y `screenshot-wireshark.sh`.
+- No hay `tcpdump` en las VM; se usa `dumpcap` y se analiza con `tshark` en el host.
+
 ## Limitaciones y gotchas
 
 - La VM no siempre está accesible. No simules capturas ni conexiones: documenta el comando, marca **VM** y usa pruebas locales cuando sea posible.
+- La VM2 (`SRDSI_Debian13_DNS`) se clonó de la VM1 y traía **las mismas MAC/IP**. Se regeneraron sus MAC, se le asignó `192.168.56.111` en host-only y se usó NAT port-forward `localhost:2222` para el primer arranque. No arranques las dos sin corregir eso.
 - `run-lab.sh`/`ws_shot.sh` dependen del alias SSH `SRDSI` y de `/media/sf_SRDSI` apuntando a la raíz del repo. Si cambia el layout, revisa ambos.
+- En la actividad MACsec, el PDF usa `enp0s3`/`ens33`, pero en este entorno `enp0s3` es NAT y no conecta las VM. Usa `enp0s9` (NAT Network `macsecnet`); si el EtherType `0x88e5` no pasara, cambia esa NIC a **Internal Network**.
+- Wireshark muestra las tramas MACsec como `[UNVERIFIED]` sin la SAK; `ip macsec show` solo muestra el ID de clave y ceros, no la clave completa. Con `encrypt off`, el payload es visible pero la autenticación sigue activa.
 - `lab-certs/server2.crt` no existe; los certs no tienen SAN.
 - Material carga Roboto desde Google Fonts. En el ZIP offline hay fallback tipográfico; si se quiere 100 % offline, habría que autoalojar fuentes y tocar el tema.
 - `docs/assets/` ocupa ~88 MB y no se versiona. No lo añadas a git.
@@ -161,6 +179,7 @@ OpenSSH y TLS/DTLS:
 ## No tocar / no commitear
 
 - `docs/assets/`, `site/`, `site-offline/`, `.venv/`, `EHU-SRDSI-docs-offline.zip`, `package-lock.json`.
+- `SRDSI_Debian13/`, `SRDSI_Debian13_DNS/` y `/SRDSI/`: son VM locales, no se versionan.
 - Los PDFs, slides, enunciados y código de ejemplo originales: se enlazan, no se reescriben.
 - No cambies el tema ni la estructura de `nav` sin revisar la sintaxis específica de Material y el build offline.
 

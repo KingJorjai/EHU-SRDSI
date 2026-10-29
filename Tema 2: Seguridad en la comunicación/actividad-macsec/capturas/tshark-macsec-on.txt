@@ -1,0 +1,65 @@
+### Resumen MACsec (encrypt on)
+1	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	MACSEC	MACsec frame [UNVERIFIED]
+2	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	MACSEC	MACsec frame [UNVERIFIED]
+3	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	MACSEC	MACsec frame [UNVERIFIED]
+4	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	MACSEC	MACsec frame [UNVERIFIED]
+5	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	MACSEC	MACsec frame [UNVERIFIED]
+6	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	MACSEC	MACsec frame [UNVERIFIED]
+7	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	MACSEC	MACsec frame [UNVERIFIED]
+8	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	MACSEC	MACsec frame [UNVERIFIED]
+
+### Detalle del primer frame (encrypt on)
+Frame 1: Packet, 130 bytes on wire (1040 bits), 130 bytes captured (1040 bits) on interface enp0s9, id 0
+    Section number: 1
+    Interface id: 0 (enp0s9)
+        Interface name: enp0s9
+    Encapsulation type: Ethernet (1)
+    Arrival Time: Oct 29, 2026 10:26:47.177669132 CET
+    UTC Arrival Time: Oct 29, 2026 09:26:47.177669132 UTC
+    Epoch Arrival Time: 1793266007.177669132
+    [Time shift for this packet: 0.000000000 seconds]
+    [Time since reference or first frame: 0.000000000 seconds]
+    Frame Number: 1
+    Frame Length: 130 bytes (1040 bits)
+    Capture Length: 130 bytes (1040 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: eth:ethertype:macsec:data]
+    Character encoding: ASCII (0)
+Ethernet II, Src: PCSSystemtec_17:ce:47 (08:00:27:17:ce:47), Dst: PCSSystemtec_d1:03:ae (08:00:27:d1:03:ae)
+    Destination: PCSSystemtec_d1:03:ae (08:00:27:d1:03:ae)
+        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Source: PCSSystemtec_17:ce:47 (08:00:27:17:ce:47)
+        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Type: 802.1AE (MACsec) (0x88e5)
+    [Stream index: 0]
+802.1AE Security Tag
+    0010 11.. = TCI: 0x0b, VER: 0x0, SC, E, C
+        0... .... = VER: 0x0
+        .0.. .... = ES: Not set
+        ..1. .... = SC: Set
+        ...0 .... = SCB: Not set
+        .... 1... = E: Set
+        .... .1.. = C: Set
+    .... ..00 = AN: 0x0
+    ..00 0000 = Short length: 0
+    Packet number: 119
+    SCI: 08002717ce470001
+        System Identifier: PCSSystemtec_17:ce:47 (08:00:27:17:ce:47)
+        Port Identifier: 1
+    ICV: 41d299da836f0e9cc3e69b161c8bb628
+    [Verification Info]
+        [Frame Verification Successful: False]
+Data (86 bytes)
+
+0000  74 aa fb b5 c8 bc 4f 7b ba 0c 84 71 92 92 a8 ef   t.....O{...q....
+0010  8d f7 27 f3 5a fe a2 19 78 d0 ea ec db b1 2c b4   ..'.Z...x.....,.
+0020  05 3e e3 b8 69 60 39 e9 de b4 d4 6b 1e 7b 6d ef   .>..i`9....k.{m.
+0030  bc af 47 5f 91 93 c2 a9 02 bb 56 f3 86 d1 f0 4f   ..G_......V....O
+0040  8a 26 5a 00 e0 49 b9 2b 8f 13 bb fd 2b 53 10 83   .&Z..I.+....+S..
+0050  ae 75 86 b4 bc 47                                 .u...G
+    Data: 74aafbb5c8bc4f7bba0c84719292a8ef8df727f35afea21978d0eaecdbb12cb4053ee3b8696039e9deb4d46b1e7b6defbcaf475f9193c2a902bb56f386d1f04f8a265a00e049b92b8f13bbfd2b531083ae7586b4bc47
+    [Length: 86]
+

@@ -9,6 +9,7 @@ Protocolos y esquemas de seguridad en la comunicación: SSH, PGP, TLS/DTLS e IPs
 - [PGP y S/MIME](teoria/pgp-smime.md)
 - [TLS, DTLS y QUIC](teoria/tls-dtls.md)
 - [IPsec](teoria/ipsec.md)
+- [Seguridad en el nivel de enlace](teoria/nivel-enlace.md)
 
 ## Comandos
 
@@ -22,6 +23,7 @@ Protocolos y esquemas de seguridad en la comunicación: SSH, PGP, TLS/DTLS e IPs
 - [Laboratorio OpenSSH](actividades/openssh.md)
 - [Ejercicios PGP](actividades/pgp.md)
 - [Ejercicios TLS y DTLS](actividades/tls-dtls.md)
+- [Actividad MACsec](actividades/macsec.md)
 
 ## Laboratorios
 

@@ -13,7 +13,7 @@ T2="$ROOT/Tema 2: Seguridad en la comunicación"
 G="$ROOT/General"
 
 rm -rf "$DEST"
-mkdir -p "$DEST"/{pdf,img/lab-pki,img/lab-openssh,capturas/lab-ssl,scripts,config,codigo/lab-ssl,certs/lab-ssl,certs/lab-certs,benchmarks}
+mkdir -p "$DEST"/{pdf,img/lab-pki,img/lab-openssh,img/lab-macsec,capturas/lab-ssl,capturas/lab-macsec,scripts,config,codigo/lab-ssl,certs/lab-ssl,certs/lab-certs,benchmarks}
 
 copy() {
     local src=$1 dst=$2
@@ -63,6 +63,9 @@ copy "$T2/lab-openssh/Lab_SSH.pdf"           "$DEST/pdf/lab-openssh.pdf"
 copy "$T2/lab-openssh/SSH_PORT-FORWARDING.pdf" "$DEST/pdf/lab-openssh-port-forwarding.pdf"
 copy "$T2/lab-openssh/informe_open_ssh.pdf"  "$DEST/pdf/informe-openssh.pdf"
 copy "$T2/ejercicio-tls-dtls/Lab-TLS_y_DTLS.pdf" "$DEST/pdf/lab-tls-dtls.pdf"
+copy "$T2/SRDSI_T2-5_parcial.pdf"            "$DEST/pdf/SRDSI_T2-5.pdf"
+copy "$T2/actividad-macsec/Lab_macsec_comandos.pdf" "$DEST/pdf/lab-macsec-comandos.pdf"
+copy "$T2/actividad-macsec/informe/informe.pdf"     "$DEST/pdf/informe-macsec.pdf"
 
 # ------------------------------------------------------------------ imágenes
 copy_dir "$T1/lab-pki/informe/img"   "$DEST/img/lab-pki"
@@ -70,6 +73,8 @@ for f in "$T2/lab-openssh"/*.png; do
     [ -e "$f" ] && cp -a "$f" "$DEST/img/lab-openssh/"
 done
 copy_dir "$T2/lab-ssl/capturas"      "$DEST/capturas/lab-ssl"
+copy_dir "$T2/actividad-macsec/informe/img" "$DEST/img/lab-macsec"
+copy_dir "$T2/actividad-macsec/capturas"   "$DEST/capturas/lab-macsec"
 
 # ------------------------------------------------------------------ scripts y configs
 for f in "$T1/lab-pki/scripts"/*.sh; do

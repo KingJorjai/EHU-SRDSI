@@ -1,0 +1,114 @@
+### Resumen MACsec (encrypt off)
+1	08:00:27:d1:03:ae	33:33:00:00:00:16	0x88e5	ICMPv6	Multicast Listener Report Message v2 [UNVERIFIED]
+2	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	ICMP	Echo (ping) request  id=0x0004, seq=1/256, ttl=64 [UNVERIFIED]
+3	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	ICMP	Echo (ping) reply    id=0x0004, seq=1/256, ttl=64 (request in 2) [UNVERIFIED]
+4	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	ICMP	Echo (ping) request  id=0x0004, seq=2/512, ttl=64 [UNVERIFIED]
+5	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	ICMP	Echo (ping) reply    id=0x0004, seq=2/512, ttl=64 (request in 4) [UNVERIFIED]
+6	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	ICMP	Echo (ping) request  id=0x0004, seq=3/768, ttl=64 [UNVERIFIED]
+7	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	ICMP	Echo (ping) reply    id=0x0004, seq=3/768, ttl=64 (request in 6) [UNVERIFIED]
+8	08:00:27:17:ce:47	08:00:27:d1:03:ae	0x88e5	ICMP	Echo (ping) request  id=0x0004, seq=4/1024, ttl=64 [UNVERIFIED]
+9	08:00:27:d1:03:ae	08:00:27:17:ce:47	0x88e5	ICMP	Echo (ping) reply    id=0x0004, seq=4/1024, ttl=64 (request in 8) [UNVERIFIED]
+
+### Detalle del primer frame (encrypt off)
+Frame 1: Packet, 122 bytes on wire (976 bits), 122 bytes captured (976 bits) on interface enp0s9, id 0
+    Section number: 1
+    Interface id: 0 (enp0s9)
+        Interface name: enp0s9
+    Encapsulation type: Ethernet (1)
+    Arrival Time: Oct 29, 2026 10:27:08.418671563 CET
+    UTC Arrival Time: Oct 29, 2026 09:27:08.418671563 UTC
+    Epoch Arrival Time: 1793266028.418671563
+    [Time shift for this packet: 0.000000000 seconds]
+    [Time since reference or first frame: 0.000000000 seconds]
+    Frame Number: 1
+    Frame Length: 122 bytes (976 bits)
+    Capture Length: 122 bytes (976 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: eth:ethertype:macsec:ethertype:ipv6:ipv6.hopopts:icmpv6]
+    Character encoding: ASCII (0)
+Ethernet II, Src: PCSSystemtec_d1:03:ae (08:00:27:d1:03:ae), Dst: IPv6mcast_16 (33:33:00:00:00:16)
+    Destination: IPv6mcast_16 (33:33:00:00:00:16)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...1 .... .... .... .... = IG bit: Group address (multicast/broadcast)
+    Source: PCSSystemtec_d1:03:ae (08:00:27:d1:03:ae)
+        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Type: 802.1AE (MACsec) (0x88e5)
+    [Stream index: 0]
+802.1AE Security Tag
+    0010 00.. = TCI: 0x08, VER: 0x0, SC
+        0... .... = VER: 0x0
+        .0.. .... = ES: Not set
+        ..1. .... = SC: Set
+        ...0 .... = SCB: Not set
+        .... 0... = E: Not set
+        .... .0.. = C: Not set
+    .... ..00 = AN: 0x0
+    ..00 0000 = Short length: 0
+    Packet number: 127
+    SCI: 080027d103ae0001
+        System Identifier: PCSSystemtec_d1:03:ae (08:00:27:d1:03:ae)
+        Port Identifier: 1
+    ICV: 75dae3ce93a6b7da5f48643af709db29
+    [Verification Info]
+        [Frame Verification Successful: False]
+Ethertype: IPv6 (0x86dd)
+Internet Protocol Version 6, Src: fe80::a00:27ff:fed1:3ae, Dst: ff02::16
+    0110 .... = Version: 6
+    .... 0000 0000 .... .... .... .... .... = Traffic Class: 0x00 (DSCP: CS0, ECN: Not-ECT)
+        .... 0000 00.. .... .... .... .... .... = Differentiated Services Codepoint: Default (0)
+        .... .... ..00 .... .... .... .... .... = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    .... 0000 0000 0000 0000 0000 = Flow Label: 0x00000
+    Payload Length: 36
+    Next Header: HOPOPT (0)
+    Hop Limit: 1
+    Source Address: fe80::a00:27ff:fed1:3ae
+        [Address Space: Link-Local Unicast]
+        [Special-Purpose Allocation: Link-Local Unicast]
+            [Source: True]
+            [Destination: True]
+            [Forwardable: False]
+            [Globally Reachable: False]
+            [Reserved-by-Protocol: True]
+    Destination Address: ff02::16
+        [Address Space: Multicast]
+        [.... .... 0000 .... = Multicast Flags: 0x0]
+            .... .... 0... .... = Reserved: 0
+            .... .... .0.. .... = Rendezvous Point (RP): False
+            .... .... ..0. .... = Network Prefix: False
+            .... .... ...0 .... = Transient: False
+        [.... .... .... 0010 = Multicast Scope: Link-Local scope (0x2)]
+    [Source SLAAC MAC: PCSSystemtec_d1:03:ae (08:00:27:d1:03:ae)]
+    [Stream index: 0]
+    IPv6 Hop-by-Hop Option
+        Next Header: IPv6-ICMP (58)
+        Length: 0
+        [Length: 8 bytes]
+        Router Alert
+            Type: Router Alert (0x05)
+                00.. .... = Action: Skip and continue (0)
+                ..0. .... = May Change: No
+                ...0 0101 = Low-Order Bits: 0x05
+            Length: 2
+            Router Alert: MLD (0)
+        PadN
+            Type: PadN (0x01)
+                00.. .... = Action: Skip and continue (0)
+                ..0. .... = May Change: No
+                ...0 0001 = Low-Order Bits: 0x01
+            Length: 0
+            PadN: <none>
+Internet Control Message Protocol v6
+    Type: Multicast Listener Report Message v2 (143)
+    Code: 0
+    Checksum: 0x380b [correct]
+    [Checksum Status: Good]
+    Reserved: 0000
+    Number of Multicast Address Records: 1
+    Multicast Address Record Changed to exclude: ff02::1:ffd1:3ae
+        Record Type: Changed to exclude (4)
+        Aux Data Len: 0
+        Number of Sources: 0
+        Multicast Address: ff02::1:ffd1:3ae
+

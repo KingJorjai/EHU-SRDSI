@@ -119,6 +119,7 @@ nav:
           - PGP y S/MIME: tema2/teoria/pgp-smime.md
           - TLS, DTLS y QUIC: tema2/teoria/tls-dtls.md
           - IPsec: tema2/teoria/ipsec.md
+          - Nivel de enlace: tema2/teoria/nivel-enlace.md
       - Comandos:
           - SSH y túneles: tema2/comandos/ssh.md
           - OpenSSL TLS/DTLS: tema2/comandos/openssl-tls.md
@@ -128,6 +129,7 @@ nav:
           - OpenSSH: tema2/actividades/openssh.md
           - TLS y DTLS: tema2/actividades/tls-dtls.md
           - PGP: tema2/actividades/pgp.md
+          - MACsec: tema2/actividades/macsec.md
       - Lab SSL:
           - tema2/lab-ssl/index.md
           - Guía rápida: tema2/lab-ssl/guia.md

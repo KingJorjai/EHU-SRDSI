@@ -30,7 +30,8 @@
 - Teoría resumida de los temas 1 y 2.
 - Comandos de OpenSSL, GnuPG, SSH, TLS/DTLS, Wireshark y GDB.
 - Ejercicios resueltos de GnuPG, PGP, TLS/DTLS, OpenSSH y modelo de amenazas.
-- Laboratorios de PKI, SSL y OpenSSH, con informes y capturas.
+- Laboratorios de PKI, SSL, OpenSSH y **MACsec**, con informes y capturas.
+- Teoría de nivel de enlace: PPP, EAP, 802.1X, MACsec y WLAN.
 - PDFs, chuletas y checklist para el examen.
 
 ## Cómo usarlo
@@ -69,7 +70,7 @@ El sitio se publica automáticamente en GitHub Pages al hacer push a `main`.
 
 - `General/` — programa, anexo de laboratorios, entorno y bibliografía.
 - `Tema 1: Introducción a la seguridad informática/` — teoría, actividad de criptografía, estudio de CA y laboratorio PKI.
-- `Tema 2: Seguridad en la comunicación/` — teoría, laboratorio SSL, laboratorio OpenSSH y ejercicios TLS/DTLS.
+- `Tema 2: Seguridad en la comunicación/` — teoría, laboratorio SSL, laboratorio OpenSSH, ejercicios TLS/DTLS y actividad MACsec.
 - `docs/` — fuente del sitio MkDocs publicado.
 - `mkdocs.yml`, `mkdocs.offline.yml`, `requirements.txt` y `scripts/` — construcción y bundle offline.
 - `.github/workflows/docs.yml` — construcción y despliegue en GitHub Pages.

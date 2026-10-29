@@ -19,6 +19,7 @@ Los ficheros se copian a `docs/assets/pdf/` al construir el sitio. Puedes abrirl
 - [Tema 2 — Comunicación (2)](../assets/pdf/SRDSI_T2-2.pdf)
 - [Tema 2 — Comunicación (3)](../assets/pdf/SRDSI_T2-3.pdf)
 - [Tema 2 — Comunicación (4)](../assets/pdf/SRDSI_T2-4.pdf)
+- [Tema 2 — Nivel de enlace (T2-5, parcial)](../assets/pdf/SRDSI_T2-5.pdf)
 
 ## Enunciados y actividades
 
@@ -32,12 +33,14 @@ Los ficheros se copian a `docs/assets/pdf/` al construir el sitio. Puedes abrirl
 - [Laboratorio OpenSSH](../assets/pdf/lab-openssh.pdf)
 - [SSH port forwarding](../assets/pdf/lab-openssh-port-forwarding.pdf)
 - [Ejercicios TLS y DTLS](../assets/pdf/lab-tls-dtls.pdf)
+- [Lab MACsec — comandos](../assets/pdf/lab-macsec-comandos.pdf)
 
 ## Informes resueltos
 
 - [Informe Lab PKI](../assets/pdf/informe-pki.pdf)
 - [Informe Lab SSL](../assets/pdf/informe-ssl.pdf)
 - [Informe Lab OpenSSH](../assets/pdf/informe-openssh.pdf)
+- [Informe Actividad MACsec](../assets/pdf/informe-macsec.pdf)
 
 ## Referencia
 
