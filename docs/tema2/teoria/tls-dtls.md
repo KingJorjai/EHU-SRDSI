@@ -133,6 +133,19 @@ DTLS 1.2 (RFC 6347) se basa en TLS 1.2. DTLS 1.3 (RFC 9147) sigue TLS 1.3: núme
 - No usa el Record de TLS: define sus propias tramas, protege payload y cabeceras y aplica control de congestión (RFC 9002).
 - HTTP/3 sustituye la pila HTTP/2 + TCP + TLS por HTTP/3 + QUIC.
 
+## Noise protocol framework
+
+**Noise** no es un protocolo concreto: es un **framework** para construir protocolos criptográficos. Se elige un patrón de handshake en la fase de diseño y, durante el uso, no hay negociación: ambos extremos siguen el protocolo diseñado.
+
+- Ofrece distintos **patrones de handshake** (por ejemplo, `N`, `K`, `X`, `XX`, `IK`), con propiedades diferentes de autenticación y confidencialidad.
+- Cada intercambio DH deriva un nuevo conjunto de claves simétricas; la **chaining key** (`ck`) y el hash (`h`) encadenan el estado y autentican los mensajes siguientes.
+- La autenticación es **continuada**: cada mensaje del handshake se autentica con el estado acumulado, y `h` se usa como *associated data* en AEAD.
+- Lo usan, entre otros, **WhatsApp**, **WireGuard**, **I2P** y **Lightning**.
+- Hay propuestas experimentales para incorporar mecanismos cuánticos, como **NoisePQC++**.
+
+!!! note "Noise frente a TLS"
+    TLS negocia algoritmos y versiones en el handshake. Noise fija el patrón y los algoritmos en el diseño: menos flexibilidad, pero menos superficie de negociación y un protocolo más pequeño y predecible.
+
 ## Criptografía post-cuántica
 
 - **ML-KEM** se usa para el intercambio de claves y **ML-DSA** para firmas y certificados; el Record sigue usando criptografía simétrica, resistente a ataques cuánticos. El acuerdo híbrido (p. ej. `X25519MLKEM768`) combina un grupo clásico y uno post-cuántico: aporta *hybrid forward secrecy* y protege si uno de los dos falla.
@@ -148,6 +161,7 @@ DTLS 1.2 (RFC 6347) se basa en TLS 1.2. DTLS 1.3 (RFC 9147) sigue TLS 1.3: núme
 - Session IDs y tickets permiten reanudar; en TLS 1.3 la reanudación es PSK.
 - 0-RTT ahorra latencia pero es vulnerable a replay: solo para datos idempotentes.
 - DTLS añade temporizadores, época/secuencia, cookies y vuelos; DTLS 1.3 hereda TLS 1.3.
+- Noise es un framework, no un protocolo: el patrón se fija en diseño y no hay negociación en tiempo de ejecución.
 - PQC se aplica al handshake (ML-KEM/ML-DSA), no al cifrado simétrico de los datos.
 
 ## Actividades relacionadas
@@ -158,3 +172,4 @@ DTLS 1.2 (RFC 6347) se basa en TLS 1.2. DTLS 1.3 (RFC 9147) sigue TLS 1.3: núme
 - [Análisis con Wireshark](../comandos/wireshark.md)
 - [Enunciado TLS/DTLS](../../assets/pdf/lab-tls-dtls.pdf)
 - [Transparencias de TLS, DTLS y QUIC](../../assets/pdf/SRDSI_T2-3.pdf#page=6)
+- [Noise protocol framework (pp. 76–77)](../../assets/pdf/SRDSI_T2-3.pdf#page=76)

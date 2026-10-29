@@ -76,6 +76,15 @@ Verifica la identidad de una persona o entidad con uno o varios factores:
 
 En los protocolos **desafío-respuesta** (*challenge-response*) el password no viaja en claro: participa en un cálculo junto con el desafío. Un **nonce** es un número que el protocolo utiliza una sola vez. En la autenticación criptográfica, la entidad demuestra el conocimiento de su clave.
 
+### Autenticación con criptografía simétrica y asimétrica ([p. 33](../../assets/pdf/SRDSI_T1-3.pdf#page=33))
+
+| Esquema | Cómo se demuestra la identidad | Ventaja | Limitación |
+| --- | --- | --- | --- |
+| **Simétrica** | Reto-respuesta con una clave compartida: el verificador envía un nonce y el otro extremo responde con un valor derivado de la clave. | Rápida y sencilla. | Requiere una clave compartida previa y no escala bien a muchos usuarios. |
+| **Asimétrica** | El titular demuestra posesión de su clave privada (firma o descifra un nonce) y el verificador lo comprueba con la clave pública. | No necesita un secreto compartido de antemano. | Más lenta y exige validar que la clave pública pertenece al titular. |
+
+En ambos casos el **nonce** evita la repetición y vincula la respuesta al reto concreto. La autenticación asimétrica no elimina el problema de confianza: si no se valida la clave pública, aparece el ataque de intermediario.
+
 ## Protocolos fallidos y ataque de intermediario ([p. 30](../../assets/pdf/SRDSI_T1-3.pdf#page=30))
 
 Las transparencias muestran varios protocolos de autenticación fallidos: no basta con un intercambio simple de identificadores o con confiar en una clave pública sin autenticarla. Dos lecciones:
@@ -109,6 +118,7 @@ La defensa pasa por **autenticar la clave pública**: certificados, firmas o un 
 - La firma se genera con la clave privada y se verifica con la pública.
 - DSA está obsoleto en FIPS 186-5; RSA, ECDSA y EdDSA siguen siendo los referentes clásicos.
 - La autenticación puede combinar factores; el nonce evita reutilización.
+- La autenticación simétrica exige una clave compartida previa; la asimétrica exige validar la clave pública.
 - Sin validar la clave pública, el protocolo cae ante un MiM.
 
 ## Actividades relacionadas

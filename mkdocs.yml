@@ -114,6 +114,7 @@ nav:
   - Tema 2:
       - tema2/index.md
       - Teoría:
+          - Protocolos por niveles: tema2/teoria/protocolos-por-niveles.md
           - SSH: tema2/teoria/ssh.md
           - PGP y S/MIME: tema2/teoria/pgp-smime.md
           - TLS, DTLS y QUIC: tema2/teoria/tls-dtls.md

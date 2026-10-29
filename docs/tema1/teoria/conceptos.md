@@ -77,6 +77,15 @@ Estas categorías aparecen en RFC 4949 y se relacionan con la tríada clásica: 
 - **Defensa en profundidad** (*Defense in Depth* o modelo de perímetro): capas de seguridad (física, perímetro, red interna, aplicación, políticas, procedimientos y concienciación) para aumentar la fiabilidad.
 - **Zero Trust**: “nunca confiar, siempre verificar”. Control de acceso continuo y granular, autenticación y autorización dinámicas, mínimo privilegio y monitorización constante, con independencia de la ubicación. Referencia: NIST SP 1800-35.
 
+## Contexto actual: cuántica e IA ([p. 23](../../assets/pdf/SRDSI_T1-1.pdf#page=23))
+
+- **Computación cuántica**: el algoritmo de Shor amenaza la criptografía de clave pública (RSA, ECC, Diffie-Hellman). La criptografía simétrica y las funciones hash resisten mejor, aunque conviene aumentar tamaños de clave.
+- **Q-Day**: momento en que un ordenador cuántico pueda romper la criptografía de clave pública. Las estimaciones hablan de la década de 2030 o más, pero el riesgo llega antes por **“harvest now, decrypt later”**: capturar tráfico hoy y descifrarlo cuando haya capacidad cuántica ([p. 29](../../assets/pdf/SRDSI_T1-1.pdf#page=29)).
+- **QKD e internet cuántico**: la distribución cuántica de claves usa un canal cuántico para detectar interceptación. Es una tecnología complementaria, no una sustitución automática de toda la criptografía.
+- **Criptografía post-cuántica (PQC)**: NIST publicó en agosto de 2024 los primeros estándares finales (FIPS 203 ML-KEM, FIPS 204 ML-DSA y FIPS 205 SLH-DSA). RFC 9958 resume la migración para ingenieros ([p. 31](../../assets/pdf/SRDSI_T1-1.pdf#page=31)).
+- **Inteligencia artificial**: ayuda a detectar ataques en tiempo real, automatizar parches y clasificar alertas; pero también abarata el phishing creíble, los *deepfakes* y la búsqueda automatizada de vulnerabilidades ([p. 32](../../assets/pdf/SRDSI_T1-1.pdf#page=32)).
+- **Informes de amenazas**: IBM X-Force y SANS publican informes periódicos con tendencias y vectores de ataque ([p. 47](../../assets/pdf/SRDSI_T1-1.pdf#page=47)).
+
 ## Ideas clave para el examen
 
 - La seguridad es un proceso y un problema de gestión de riesgo, no un producto.
@@ -85,6 +94,8 @@ Estas categorías aparecen en RFC 4949 y se relacionan con la tríada clásica: 
 - Las cuatro consecuencias de RFC 4949 son divulgación, interrupción, engaño y usurpación.
 - Un mecanismo puede implantar varios servicios y un servicio puede requerir varios mecanismos.
 - La defensa en profundidad usa capas; Zero Trust elimina la confianza implícita en la red.
+- **Q-Day** y *harvest now, decrypt later* justifican migrar ya a **PQC** (ML-KEM, ML-DSA, SLH-DSA).
+- La **IA** mejora la defensa, pero también amplifica phishing, deepfakes y automatización de ataques.
 
 ## Actividades relacionadas
 

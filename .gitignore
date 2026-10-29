@@ -1,5 +1,6 @@
 # VM (6 GB + logs: fuera del repo)
 SRDSI_Debian13/
+/SRDSI/
 *.vdi
 
 # Restos de compilación LaTeX
