@@ -387,15 +387,15 @@ Preguntas y respuestas:
 
 # 8. Tiempo dedicado
 
-| Tarea | Tiempo |
-|---|---|
-| Preparación y clonado de las VM | 30 min |
-| Configuración de red y MACsec | 25 min |
-| Pruebas, capturas y análisis | 20 min |
-| Ataques de enlace y análisis Wireshark | 90 min |
-| Redacción del informe | 60 min |
-| Documentación del sitio | 30 min |
-| **Total** | **4 h 15 min** |
+| Tarea | Tiempo | Responsable |
+|---|---|---|
+| Preparación y clonado de las VM | 30 min | Jorge y Jon |
+| Configuración de red y MACsec | 25 min | Jorge y Jon |
+| Pruebas, capturas y análisis | 20 min | Jorge y Jon |
+| Ataques de enlace y análisis Wireshark | 90 min | Jorge y Jon |
+| Redacción del informe | 60 min | Jorge |
+| Documentación del sitio | 30 min | Jorge y Jon |
+| **Total** | **4 h 15 min** | Jorge 2 h 45 min · Jon 1 h 30 min |
 
 # 9. Conclusiones
 
