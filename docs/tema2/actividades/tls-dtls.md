@@ -5,10 +5,10 @@
 Esta página resuelve los **9 ejercicios** del enunciado `Lab-TLS_y_DTLS.pdf`: handshake TLS 1.2 y TLS 1.3, interoperabilidad, *forward secrecy*, autenticación de cliente, reutilización de sesión, 0-RTT, DTLS 1.2 y criptografía post-cuántica (PQC). Cada apartado incluye el objetivo, los comandos, una salida real resumida, la interpretación y los filtros de Wireshark.
 
 !!! note "Versiones, certificados y alcance"
-    Comandos comprobados con **OpenSSL 4.0.3** en el host y **Wireshark/tshark 4.7.4**. Se usan los certificados de `Tema 2: Seguridad en la comunicación/ejercicio-tls-dtls/lab-certs/`; no se ha modificado el material original. Las capturas y los ficheros de sesión se generaron en directorios temporales (`/tmp`) y **no se versionan**. En la VM del laboratorio la versión de OpenSSL es 3.5.7 y también están instalados `dumpcap`, `tshark` y Wireshark.
+    Comandos comprobados con **OpenSSL 4.0.3** en el host y **Wireshark/tshark 4.7.4**. Se usan los certificados de `Tema 2: Seguridad en la comunicación/ejercicio-tls-dtls/lab-certs/`; no se ha modificado el material original. Las capturas y los ficheros de sesión se han generado en directorios temporales (`/tmp`) y **no se versionan**. En la VM del laboratorio la versión de OpenSSL es 3.5.7 y también están instalados `dumpcap`, `tshark` y Wireshark.
 
 !!! warning "Puertos y capturas"
-    Los ejemplos usan los puertos `4433` (TLS) y `4434` (DTLS). En las pruebas se emplearon puertos temporales altos para no chocar con otros procesos; el puerto no cambia el resultado. `dumpcap` necesita privilegios de captura: en el host el usuario pertenece al grupo `wireshark`; si no, usa `sudo dumpcap` o ejecuta la captura en la VM.
+    Los ejemplos usan los puertos `4433` (TLS) y `4434` (DTLS). En las pruebas se han empleado puertos temporales altos para no chocar con otros procesos; el puerto no cambia el resultado. `dumpcap` necesita privilegios de captura: en el host el usuario pertenece al grupo `wireshark`; si no, usa `sudo dumpcap` o ejecuta la captura en la VM.
 
 ## Preparación
 
@@ -894,4 +894,4 @@ Requisitos: OpenSSL con soporte ML-DSA (3.5 o superior; aquí 4.0.3). Si el clie
 - [Recursos y PDFs](../../recursos/pdfs.md): material del curso.
 
 !!! note "Material original"
-    Las fuentes del laboratorio están en `Tema 2: Seguridad en la comunicación/ejercicio-tls-dtls/`: `Lab-TLS_y_DTLS.pdf`, `lab-certs/` y su `README`. Esta página no modifica ese material; las salidas mostradas se obtuvieron con los certificados y claves originales en directorios temporales.
+    Las fuentes del laboratorio están en `Tema 2: Seguridad en la comunicación/ejercicio-tls-dtls/`: `Lab-TLS_y_DTLS.pdf`, `lab-certs/` y su `README`. Esta página no modifica ese material; las salidas mostradas se han obtenido con los certificados y claves originales en directorios temporales.

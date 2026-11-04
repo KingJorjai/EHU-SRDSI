@@ -48,7 +48,7 @@ LISTEN     0           10                     0.0.0.0:23                  0.0.0.
 LISTEN     0           128                       [::]:22                     [::]:*
 ```
 
-Telnet se habilitó descomentando su línea en `/etc/inetd.conf` y reiniciando `inetd`:
+Telnet se ha habilitado descomentando su línea en `/etc/inetd.conf` y reiniciando `inetd`:
 
 ```text
 telnet  stream  tcp  nowait  root  /usr/sbin/tcpd  /usr/sbin/telnetd
@@ -183,7 +183,7 @@ Offending ED25519 key in /home/user1/.ssh/known_hosts:1
 Host key verification failed.
 ```
 
-La línea `Offending ... key in ...:1` indica la entrada conflictiva. En el informe se observó además que, tras borrar `known_hosts`, `ssh` avisaba de que no podía determinar la autenticidad del host, mostraba la clave ED25519 y preguntaba si se quería continuar; al aceptar, la guardaba permanentemente.
+La línea `Offending ... key in ...:1` indica la entrada conflictiva. En el informe se ha observado además que, tras borrar `known_hosts`, `ssh` avisaba de que no podía determinar la autenticidad del host, mostraba la clave ED25519 y preguntaba si se quería continuar; al aceptar, la guardaba permanentemente.
 
 ### 3.3. Corrección
 
@@ -257,7 +257,7 @@ Si el servicio web está en la propia máquina SSH, el destino es `localhost:80`
 ssh -L 12000:localhost:80 user@host
 ```
 
-En el informe se usó un servicio HTTPS remoto (`ehu.eus:443`) para disponer de un destino real. Para el enunciado, con Apache en la máquina remota, sirve `ssh -L 12000:localhost:80 user@host`.
+En el informe se ha usado un servicio HTTPS remoto (`ehu.eus:443`) para disponer de un destino real. Para el enunciado, con Apache en la máquina remota, sirve `ssh -L 12000:localhost:80 user@host`.
 
 Opciones útiles:
 
@@ -303,7 +303,7 @@ Con el túnel activo, la petición llega al servicio remoto:
 
 ![Firefox con el túnel: se alcanza el servicio remoto](../../assets/img/lab-openssh/firefox-withtunnel.png)
 
-En el informe se usó HTTPS y Firefox mostró `SSL_ERROR_BAD_CERT_DOMAIN`: el certificado presentado es válido para `ehu.eus`, no para `localhost`. Ese error **no significa que el túnel haya fallado**; significa que se alcanzó el servicio HTTPS remoto y falló la comprobación del nombre del certificado. Con HTTP en el puerto 80 no aparece ese aviso; si el sitio redirige a HTTPS o usa HSTS, puede seguir apareciendo.
+En el informe se ha usado HTTPS y Firefox mostró `SSL_ERROR_BAD_CERT_DOMAIN`: el certificado presentado es válido para `ehu.eus`, no para `localhost`. Ese error **no significa que el túnel haya fallado**; significa que se ha alcanzado el servicio HTTPS remoto y falló la comprobación del nombre del certificado. Con HTTP en el puerto 80 no aparece ese aviso; si el sitio redirige a HTTPS o usa HSTS, puede seguir apareciendo.
 
 Para una prueba sin navegador:
 
@@ -443,7 +443,7 @@ Authenticated to localhost ([::1]:22) using "publickey".
 **Resultado**: el segundo login se autentica con `publickey` y no con `password`. La contraseña de la cuenta remota sigue existiendo, pero ya no se usa para esta conexión.
 
 !!! note "Si sigue pidiendo contraseña"
-    Revisa con `ssh -vv` si el cliente ofrece la clave y si el servidor la acepta. Causas habituales: `authorized_keys` en otra ruta (`AuthorizedKeysFile`), permisos incorrectos en el *home*, `PubkeyAuthentication no`, usuario equivocado o una clave distinta de la que se copió. Prueba también `ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes user2@localhost`.
+    Revisa con `ssh -vv` si el cliente ofrece la clave y si el servidor la acepta. Causas habituales: `authorized_keys` en otra ruta (`AuthorizedKeysFile`), permisos incorrectos en el *home*, `PubkeyAuthentication no`, usuario equivocado o una clave distinta de la que se ha copiado. Prueba también `ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes user2@localhost`.
 
 ## 6. Ejercicio 5: gestión de claves con `ssh-agent`
 
@@ -545,7 +545,7 @@ echo "$SSH_AUTH_SOCK"
 env | grep SSH_
 ```
 
-Si el agente se arrancó en otra terminal, hay que exportar allí las variables o repetir `eval "$(ssh-agent -s)"`. En un escritorio, el gestor de sesión o el llavero pueden arrancar el agente automáticamente. En `tmux`/`screen`, cada nueva ventana hereda el entorno de la sesión, así que suele funcionar sin más.
+Si el agente se ha arrancado en otra terminal, hay que exportar allí las variables o repetir `eval "$(ssh-agent -s)"`. En un escritorio, el gestor de sesión o el llavero pueden arrancar el agente automáticamente. En `tmux`/`screen`, cada nueva ventana hereda el entorno de la sesión, así que suele funcionar sin más.
 
 Comprobación de que `ssh` usa el agente:
 

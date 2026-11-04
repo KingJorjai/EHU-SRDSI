@@ -1,6 +1,6 @@
 # Certificados y claves de laboratorio
 
-Inventario de los certificados publicados en `docs/assets/certs/`. Son **sintéticos**, se generaron para las prácticas y solo valen para el laboratorio. No los uses en ningún sistema real.
+Inventario de los certificados publicados en `docs/assets/certs/`. Son **sintéticos**, se han generado para las prácticas y solo valen para el laboratorio. No los uses en ningún sistema real.
 
 !!! danger "Solo laboratorio"
     Algunas claves privadas se publican sin passphrase. Cualquiera puede leerlas. No protegen nada real: son material didáctico.

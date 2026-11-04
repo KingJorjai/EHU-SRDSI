@@ -126,7 +126,7 @@ Lab PKI:
 - `-t servicio` exige `-d`, `-e`, `-C`, `-O`; la política exige C/O iguales a los de la CA. `-t usuario` exige `-e`.
 - `emitir_cert.sh` NO valida la CSR (la RA es el admin); extensiones válidas: `server_ext`, `user_ext`, `ocsp_ext`.
 - El informe está en `Tema 1: .../lab-pki/informe/informe.md`; los pendientes del informe son mockups a mano (`img/web/`) y horas manuales (§7), no fallos del sitio.
-- Ascon: el código no está en el repo; los benchmarks se ejecutaron en la VM (`~/gcrypt-test/ascon-c/build`). La página `docs/tema1/actividades/criptografia.md` resume los resultados.
+- Ascon: el código no está en el repo; los benchmarks se han ejecutado en la VM (`~/gcrypt-test/ascon-c/build`). La página `docs/tema1/actividades/criptografia.md` resume los resultados.
 
 ## Tema 2
 
@@ -171,7 +171,7 @@ OpenSSH y TLS/DTLS:
 ## Limitaciones y gotchas
 
 - La VM no siempre está accesible. No simules capturas ni conexiones: documenta el comando, marca **VM** y usa pruebas locales cuando sea posible.
-- La VM2 (`SRDSI_Debian13_DNS`) se clonó de la VM1 y traía **las mismas MAC/IP**. Se regeneraron sus MAC, se le asignó `192.168.56.111` en host-only y se usó NAT port-forward `localhost:2222` para el primer arranque. No arranques las dos sin corregir eso.
+- La VM2 (`SRDSI_Debian13_DNS`) se ha clonado de la VM1 y traía **las mismas MAC/IP**. Se han regenerado sus MAC, se le asignó `192.168.56.111` en host-only y se ha usado NAT port-forward `localhost:2222` para el primer arranque. No arranques las dos sin corregir eso.
 - `run-lab.sh`/`ws_shot.sh` dependen del alias SSH `SRDSI` y de `/media/sf_SRDSI` apuntando a la raíz del repo. Si cambia el layout, revisa ambos.
 - En la actividad MACsec, el PDF usa `enp0s3`/`ens33`, pero en este entorno `enp0s3` es NAT y no conecta las VM. Usa `enp0s9` (NAT Network `macsecnet`); si el EtherType `0x88e5` no pasara, cambia esa NIC a **Internal Network**.
 - Wireshark muestra las tramas MACsec como `[UNVERIFIED]` sin la SAK; `ip macsec show` solo muestra el ID de clave y ceros, no la clave completa. Con `encrypt off`, el payload es visible pero la autenticación sigue activa.

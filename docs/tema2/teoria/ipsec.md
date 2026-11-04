@@ -7,7 +7,7 @@ IPsec protege las comunicaciones en la **capa de red**, de forma transparente a 
 ## Qué es IPsec
 
 - Extensión de IP que proporciona **confidencialidad**, **autenticación del emisor**, **integridad** y **control de acceso**.
-- Nació para IPv6 (recomendado) y se portó a IPv4 (opcional). El estándar actual es IPsec v3 (RFC 4301, RFC 6071).
+- Nació para IPv6 (recomendado) y se ha portado a IPv4 (opcional). El estándar actual es IPsec v3 (RFC 4301, RFC 6071).
 - Usos: VPN de sitio a sitio y de acceso remoto, protección nodo a nodo (por ejemplo, protocolos de routing) y refuerzo del comercio electrónico.
 - No protege la aplicación: si el tráfico sale en claro antes de IPsec, IPsec no lo arregla.
 

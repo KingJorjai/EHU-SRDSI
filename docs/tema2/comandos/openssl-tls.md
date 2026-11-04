@@ -5,7 +5,7 @@
 [:material-file-pdf-box: Transparencias — TLS, DTLS y QUIC (PDF)](../../assets/pdf/SRDSI_T2-3.pdf){ .md-button }
 
 !!! note "Versiones y certificados"
-    Comandos verificados con **OpenSSL 4.0.3** en el host, usando los certificados de `Tema 2: Seguridad en la comunicación/ejercicio-tls-dtls/lab-certs/`. En la VM del laboratorio hay OpenSSL 3.5.7. Los ejemplos usan puertos altos (`4433`–`4435`); en las pruebas se usaron puertos temporales equivalentes. `server2.crt`/`server2.key` **no existen** en el repositorio, aunque el README los mencione.
+    Comandos verificados con **OpenSSL 4.0.3** en el host, usando los certificados de `Tema 2: Seguridad en la comunicación/ejercicio-tls-dtls/lab-certs/`. En la VM del laboratorio hay OpenSSL 3.5.7. Los ejemplos usan puertos altos (`4433`–`4435`); en las pruebas se han usado puertos temporales equivalentes. `server2.crt`/`server2.key` **no existen** en el repositorio, aunque el README los mencione.
 
 ## Preparar el directorio y la cadena
 

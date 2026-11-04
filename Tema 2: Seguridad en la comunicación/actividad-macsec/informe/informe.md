@@ -42,14 +42,14 @@ MACsec puede **autenticar** (proteger la integridad) y **cifrar** el payload. En
 
 # 3. Entorno y topología
 
-Se usaron dos VM Debian 13 sobre VirtualBox 7.2.22:
+Se han usado dos VM Debian 13 sobre VirtualBox 7.2.22:
 
 | VM | Hostname | Rol | `enp0s3` (NAT) | `enp0s8` (host-only) | `enp0s9` (NAT Network) |
 |---|---|---|---|---|---|
 | MV1 | `bocata-jamon` | extremo A | 10.0.2.15/24 | 192.168.56.110/24 | 10.0.3.11/24 |
 | MV2 | `bocata-jamon2` | extremo B | 10.0.2.15/24 | 192.168.56.111/24 | 10.0.3.12/24 |
 
-La red **NAT Network `macsecnet`** (10.0.3.0/24) conecta las dos VM y transporta las tramas MACsec. La red **host-only** (192.168.56.0/24) se usa para administración desde el anfitrión. La VM2 se creó como clon de la VM1; hubo que regenerar sus MAC y cambiar su IP host-only para que no chocaran.
+La red **NAT Network `macsecnet`** (10.0.3.0/24) conecta las dos VM y transporta las tramas MACsec. La red **host-only** (192.168.56.0/24) se usa para administración desde el anfitrión. La VM2 se ha creado como clon de la VM1; hubo que regenerar sus MAC y cambiar su IP host-only para que no chocaran.
 
 | VM | Interfaz MACsec | MAC de `enp0s9` | IP MACsec | Clave TX | Clave RX |
 |---|---|---|---|---|---|
@@ -62,7 +62,7 @@ La red **NAT Network `macsecnet`** (10.0.3.0/24) conecta las dos VM y transporta
 
 ## 4.1. Preparar las interfaces
 
-En ambas VM se levantó la interfaz de la NAT Network y se le asignó una IP para comprobar la conectividad antes de MACsec:
+En ambas VM se ha levantado la interfaz de la NAT Network y se le asignó una IP para comprobar la conectividad antes de MACsec:
 
 ```bash
 sudo ip link set enp0s9 up
@@ -117,13 +117,13 @@ ping -c 4 1.1.1.1       # desde MV2
 
 ## 4.6. Capturar el tráfico
 
-En MV1 se capturó la interfaz inferior `enp0s9` mientras se hacía `ping` por `macsec0`:
+En MV1 se ha capturado la interfaz inferior `enp0s9` mientras se hacía `ping` por `macsec0`:
 
 ```bash
 sudo dumpcap -i enp0s9 -w macsec-on.pcapng -a duration:6
 ```
 
-La captura se analizó en el anfitrión con `tshark`/Wireshark. Para el caso sin cifrado se cambió `encrypt` a `off` en ambas VM y se repitió la captura.
+La captura se ha analizado en el anfitrión con `tshark`/Wireshark. Para el caso sin cifrado se ha cambiado `encrypt` a `off` en ambas VM y se ha repetido la captura.
 
 ![Estado de MACsec en MV1](img/ip-macsec-mv1.png){ width=92% }
 
@@ -229,9 +229,9 @@ El detalle muestra la secuencia `eth:ethertype:macsec:ethertype:ipv6:icmpv6`: MA
 
 ## 6.1. Montaje del atacante
 
-Para las pruebas de ataque se añadió a MV1 una segunda interfaz (`enp0s10`) en la misma NAT Network `macsecnet`, con IP 10.0.3.99/24 y MAC `08:00:27:72:b5:6f`. El atacante **no tiene la SAK** de MACsec; para el ARP spoofing usa una MAC falsa (`02:00:00:00:00:01`) y actúa como *blackhole*.
+Para las pruebas de ataque se ha añadido a MV1 una segunda interfaz (`enp0s10`) en la misma NAT Network `macsecnet`, con IP 10.0.3.99/24 y MAC `08:00:27:72:b5:6f`. El atacante **no tiene la SAK** de MACsec; para el ARP spoofing usa una MAC falsa (`02:00:00:00:00:01`) y actúa como *blackhole*.
 
-Herramientas: Scapy 2.6.1 (`arp-spoof.py`, `mac-flood.py`, `replay.py`, `forge-icv.py`), `arping`, `dumpcap` y `tshark`. Todo se ejecutó en la red aislada; al terminar cada prueba se paró el atacante, se restauraron las cachés ARP y se dejó MACsec de nuevo operativo.
+Herramientas: Scapy 2.6.1 (`arp-spoof.py`, `mac-flood.py`, `replay.py`, `forge-icv.py`), `arping`, `dumpcap` y `tshark`. Todo se ha ejecutado en la red aislada; al terminar cada prueba se ha parado el atacante, se han restaurado las cachés ARP y se ha dejado MACsec de nuevo operativo.
 
 ## 6.2. ARP spoofing contra la red no protegida
 
@@ -261,11 +261,11 @@ La captura `arp-spoof-victim.pcapng` muestra las tramas ARP (`0x0806`) del ataca
 
 ![Efecto del ARP spoofing en MV2](img/ataque-arp-terminal.png){ width=95% }
 
-> La puerta de enlace 10.0.3.1 tenía una entrada ARP **PERMANENTE**; por eso el ataque se dirigió a la entrada dinámica de 10.0.3.11. Es un detalle importante: una entrada estática o permanente no se puede envenenar con ARP.
+> La puerta de enlace 10.0.3.1 tenía una entrada ARP **PERMANENTE**; por eso el ataque se ha dirigido a la entrada dinámica de 10.0.3.11. Es un detalle importante: una entrada estática o permanente no se puede envenenar con ARP.
 
 ## 6.3. ARP spoofing contra la IP protegida por MACsec
 
-Se repitió el ataque contra 1.1.1.2, enviando ARP replies a MV1 con `psrc=1.1.1.2` y MAC falsa `02:00:00:00:00:02`. Las tramas llegaron a `enp0s9` (se ven en `arp-spoof-macsec.pcapng`), pero la entrada de vecino de MV1 siguió apuntando a `macsec0` y a la MAC real de MV2:
+Se ha repetido el ataque contra 1.1.1.2, enviando ARP replies a MV1 con `psrc=1.1.1.2` y MAC falsa `02:00:00:00:00:02`. Las tramas llegaron a `enp0s9` (se ven en `arp-spoof-macsec.pcapng`), pero la entrada de vecino de MV1 siguió apuntando a `macsec0` y a la MAC real de MV2:
 
 ```console
 $ ip neigh show 1.1.1.2
@@ -279,7 +279,7 @@ El ARP legítimo de 1.1.1.x viaja **dentro** de MACsec. El atacante no tiene la 
 
 ## 6.4. Trama MACsec con ICV alterado
 
-Se capturó una trama MACsec válida (PN 184), se modificó un byte antes del ICV y se reenviaron tres copias. En MV2 se capturaron las tres tramas (`forged-icv4.pcapng`) y **no hubo respuesta**; además, las estadísticas de `macsec1` pasaron de 3 a 6 errores RX.
+Se ha capturado una trama MACsec válida (PN 184), se ha modificado un byte antes del ICV y se han reenviado tres copias. En MV2 se han capturado las tres tramas (`forged-icv4.pcapng`) y **no hubo respuesta**; además, las estadísticas de `macsec1` pasaron de 3 a 6 errores RX.
 
 | Prueba | RX errors | Respuestas |
 | --- | ---: | ---: |
@@ -293,7 +293,7 @@ La trama de control sí obtuvo respuesta, lo que confirma que el fallo es de la 
 
 ## 6.5. Replay
 
-Con `replay on window 0`, se capturó una trama válida (PN 105), se avanzó el PN con pings y se reenvió la trama antigua tres veces. En MV2 se vieron las tres copias (PN 105) y **ninguna respuesta**; las estadísticas pasaron de 0 a 3 descartes.
+Con `replay on window 0`, se ha capturado una trama válida (PN 105), se ha avanzado el PN con pings y se ha reenviado la trama antigua tres veces. En MV2 se han visto las tres copias (PN 105) y **ninguna respuesta**; las estadísticas pasaron de 0 a 3 descartes.
 
 ```console
 # replay on
@@ -334,7 +334,7 @@ La conclusión es importante: **la protección contra replay no está activa por
 
 # 8. Conclusiones
 
-MACsec permite proteger el enlace Ethernet sin cambiar las aplicaciones ni la configuración IP. En el laboratorio se comprobó que:
+MACsec permite proteger el enlace Ethernet sin cambiar las aplicaciones ni la configuración IP. En el laboratorio se ha comprobado que:
 
 - Las dos VM se comunican por `macsec0`/`macsec1` con `ping`.
 - Las tramas usan EtherType `0x88e5` y llevan cabecera 802.1AE e ICV.
@@ -346,7 +346,7 @@ MACsec permite proteger el enlace Ethernet sin cambiar las aplicaciones ni la co
 - El replay se descarta solo si `replay on` está activo; con `replay off` la trama antigua se acepta.
 - MACsec no oculta los metadatos (MAC, SCI, PN, tamaños, tiempos) ni sustituye a MKA/802.1X para la gestión de claves.
 
-Como limitaciones, se usaron claves manuales y una red virtual de VirtualBox; en un despliegue real se usaría **MKA/802.1X** para negociar las claves y, si la NIC lo permite, *offload* hardware. También conviene recordar que MACsec protege el enlace, no el extremo a extremo: para eso siguen siendo necesarios TLS, IPsec u otras capas.
+Como limitaciones, se han usado claves manuales y una red virtual de VirtualBox; en un despliegue real se usaría **MKA/802.1X** para negociar las claves y, si la NIC lo permite, *offload* hardware. También conviene recordar que MACsec protege el enlace, no el extremo a extremo: para eso siguen siendo necesarios TLS, IPsec u otras capas.
 
 # 9. Referencias
 

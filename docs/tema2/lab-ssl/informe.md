@@ -4,7 +4,7 @@
 **Autoría:** Jorge Arévalo y Jon González · **Fecha:** octubre de 2026.
 
 !!! note "Informe entregado"
-    Este es el informe original de la práctica adaptado al formato del sitio. Los resultados, salidas de comandos y figuras se conservan tal como se entregaron; solo se han cambiado las rutas de las imágenes y se ha eliminado el preámbulo LaTeX.
+    Este es el informe original de la práctica adaptado al formato del sitio. Los resultados, salidas de comandos y figuras se conservan tal como se han entregado; solo se han cambiado las rutas de las imágenes y se ha eliminado el preámbulo LaTeX.
 
 # 1. Introducción y objetivo
 

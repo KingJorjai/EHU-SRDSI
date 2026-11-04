@@ -168,7 +168,7 @@ if (( EMPAQUETAR )); then
     if ! ( umask 077
            openssl pkcs12 -export -out "$P12" -in "$CRT" -inkey "$KEY" \
                -passin env:KEY_PASS -passout env:P12_PASS ); then
-        die 4 "el certificado se emitió ($CRT) pero falló la creación del PKCS#12."
+        die 4 "el certificado se ha emitido ($CRT) pero falló la creación del PKCS#12."
     fi
     echo "PKCS#12 generado:    $P12"
 else

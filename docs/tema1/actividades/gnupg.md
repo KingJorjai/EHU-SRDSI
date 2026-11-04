@@ -6,7 +6,7 @@
 Esta página resuelve las actividades de **confidencialidad, integridad, firma digital y gestión de claves** de T1-3 (pp. 9–14 y 24–28) y T1-4 (pp. 34–39). Los comandos están comprobados con **GnuPG 2.4.9** y `libgcrypt 1.12.4` en Debian 13.
 
 !!! note "Qué se ha ejecutado"
-    Todas las pruebas se hicieron en llaveros temporales con `GNUPGHOME=$(mktemp -d)`. No se tocó el llavero real. Las claves, huellas y tiempos son de una ejecución concreta: sirven para interpretar la salida, no como valores fijos.
+    Todas las pruebas se han hecho en llaveros temporales con `GNUPGHOME=$(mktemp -d)`. No se ha tocado el llavero real. Las claves, huellas y tiempos son de una ejecución concreta: sirven para interpretar la salida, no como valores fijos.
 
 ## Preparar un llavero de laboratorio
 

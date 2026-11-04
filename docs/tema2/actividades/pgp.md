@@ -281,7 +281,7 @@ Interpretación:
 
 1. **Dos paquetes `tag=1` (PKESK)**, uno por receptor. Los *key IDs* `F3C23D80DB7BB1CA` y `4A264F5A020D5314` son las subclaves de cifrado de Bob y Carol.
 2. **Un único `tag=18` (SEIPD)** con `mdc_method: 2`: todo el contenido comparte una sola clave de sesión y lleva MDC.
-3. **`tag=8` (Compressed Data)**: el contenido se comprimió antes de cifrar.
+3. **`tag=8` (Compressed Data)**: el contenido se ha comprimido antes de cifrar.
 4. **`tag=11` (Literal Data)**: el mensaje original, con nombre, modo y fecha.
 
 ### 3.3 Descifrar con cada receptor
@@ -420,7 +420,7 @@ unset GNUPGHOME
 | Mensaje de GnuPG | Causa habitual | Qué hacer |
 | --- | --- | --- |
 | `decryption failed: No secret key` | Ningún PKESK corresponde a una clave privada del llavero. | Importar la clave privada correcta o comprobar que eres destinatario. |
-| `Unusable public key` | La clave del destinatario no tiene subclave de cifrado, está caducada/revocada, o se forzó la primaria con `!`. | Usar la subclave `[E]` o quitar el `!` del *fingerprint*. |
+| `Unusable public key` | La clave del destinatario no tiene subclave de cifrado, está caducada/revocada, o se ha forzado la primaria con `!`. | Usar la subclave `[E]` o quitar el `!` del *fingerprint*. |
 | `WARNING: message was not integrity protected` | Mensaje legacy con `tag=9`, sin MDC. | No confiar en él; pedir que se reenvíe con formato moderno. |
 | `BAD signature` | Los datos han cambiado o la firma no corresponde. | Rechazar el mensaje. |
 | `Can't check signature: No public key` | Falta la clave pública del emisor. | Importar su clave pública y verificar la huella por un canal independiente. |

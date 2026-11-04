@@ -12,7 +12,7 @@ Ascon es una **familia de algoritmos simétricos** diseñada para dispositivos c
 - **AEAD** (*Authenticated Encryption with Associated Data*): cifra y autentica a la vez, con datos asociados que se autentican pero no se cifran.
 - **Hash y XOF** (*Extendable Output Function*): funciones de resumen y salida de longitud variable.
 
-Fue presentada en 2014 y seleccionada por el NIST en febrero de 2023 como base de la criptografía ligera. El estándar se publicó como **NIST SP 800-232** en agosto de 2025.
+Fue presentada en 2014 y seleccionada por el NIST en febrero de 2023 como base de la criptografía ligera. El estándar se ha publicado como **NIST SP 800-232** en agosto de 2025.
 
 ### 1.1 La permutación Ascon-p
 

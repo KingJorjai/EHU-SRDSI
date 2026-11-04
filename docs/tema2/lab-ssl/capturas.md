@@ -1,6 +1,6 @@
 # Capturas y alertas TLS
 
-Análisis de las tres capturas del laboratorio. El tráfico se tomó en la interfaz de *loopback* con `dumpcap -i lo`; el análisis textual se generó con `tshark`. Para la sintaxis de las herramientas y de los filtros, consulta [Wireshark y capturas](../comandos/wireshark.md).
+Análisis de las tres capturas del laboratorio. El tráfico se ha tomado en la interfaz de *loopback* con `dumpcap -i lo`; el análisis textual se ha generado con `tshark`. Para la sintaxis de las herramientas y de los filtros, consulta [Wireshark y capturas](../comandos/wireshark.md).
 
 | Escenario | Captura | Keylog | Análisis textual | Figura |
 | --- | --- | --- | --- | --- |

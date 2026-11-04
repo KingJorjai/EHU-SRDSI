@@ -30,7 +30,7 @@ Tareas realizadas:
 
 Los scripts `gen_solicitud.sh`, `emitir_cert.sh` y `revocar_cert.sh`
 (en `PKI_scripts/`) automatizan la generación de solicitudes, la emisión
-y la revocación. Se generaron con IA y se ajustaron manualmente para que
+y la revocación. Se han generado con IA y se han ajustado manualmente para que
 la entrada y la salida fueran las que necesitábamos. Este informe
 documenta el guion completo con capturas de la ejecución.
 Las capturas de los hitos principales van intercaladas; el resto se

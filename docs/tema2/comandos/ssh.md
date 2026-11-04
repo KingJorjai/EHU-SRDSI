@@ -6,7 +6,7 @@ OpenSSH es la implementación de referencia de SSH-2: sustituye a Telnet, cifra 
 [:material-file-pdf-box: Enunciado — Laboratorio OpenSSH (PDF)](../../assets/pdf/lab-openssh.pdf){ .md-button }
 
 !!! note "Versiones y alcance"
-    Cliente comprobado con **OpenSSH 10.6p1** en el host de documentación. En la VM Debian 13 del laboratorio se observó **OpenSSH 10.0p2** con OpenSSL 3.5.7. En el host **no hay `sshd` escuchando**, así que los comandos marcados **VM** se documentan con el resultado esperado y deben probarse en la VM (`SRDSI`, `user1@192.168.56.110`).
+    Cliente comprobado con **OpenSSH 10.6p1** en el host de documentación. En la VM Debian 13 del laboratorio se ha observado **OpenSSH 10.0p2** con OpenSSL 3.5.7. En el host **no hay `sshd` escuchando**, así que los comandos marcados **VM** se documentan con el resultado esperado y deben probarse en la VM (`SRDSI`, `user1@192.168.56.110`).
 
 ## Conexión básica
 
@@ -446,7 +446,7 @@ sudo sshd -t && sudo systemctl reload ssh
 
 ## Telnet: comparación en el laboratorio
 
-Telnet envía la sesión en claro; sirve para demostrar por qué SSH es necesario. En la VM se instaló y se habilitó en `inetd` (**VM**):
+Telnet envía la sesión en claro; sirve para demostrar por qué SSH es necesario. En la VM se ha instalado y se ha habilitado en `inetd` (**VM**):
 
 ```bash
 sudo apt install telnet telnetd

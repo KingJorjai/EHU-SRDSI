@@ -123,7 +123,7 @@ Lectura:
 
 1. **Dos paquetes `tag=1` (PKESK)**: uno por destinatario. Cada uno lleva la clave de sesión cifrada con la clave pública correspondiente (`keyid` distinto).
 2. **`tag=18` (SEIPD)**: datos cifrados con integridad. `mdc_method: 2` indica que incluye el código de detección de modificaciones.
-3. **`tag=8` (Compressed Data)**: el contenido se comprimió antes de cifrar.
+3. **`tag=8` (Compressed Data)**: el contenido se ha comprimido antes de cifrar.
 4. **`tag=11` (Literal Data)**: el mensaje original, con nombre y fecha.
 
 ### Tabla de tags OpenPGP

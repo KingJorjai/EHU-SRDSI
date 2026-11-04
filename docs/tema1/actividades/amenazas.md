@@ -82,7 +82,7 @@ La noticia se incluye como **ejemplo documentado**, no como parte del servicio f
 2. **Categoría y metacategorías** (1): por qué se eligen Software y Social Engineering.
 3. **Los cuatro patrones** (4, una por patrón): descripción, requisitos, consecuencias y prevención.
 4. **Relaciones** (1): cómo se encadenan y qué patrón habilita a cuál.
-5. **Noticia** (1): qué pasó, qué patrón se materializó y qué contramedida lo habría reducido.
+5. **Noticia** (1): qué pasó, qué patrón se ha materializado y qué contramedida lo habría reducido.
 6. **Riesgo y priorización** (1): probabilidad, impacto y orden de implantación de contramedidas.
 7. **Conclusiones** (1): qué amenazas quedan fuera del alcance y qué se revisará en la siguiente iteración.
 

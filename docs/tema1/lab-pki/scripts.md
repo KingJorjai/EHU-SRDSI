@@ -89,7 +89,7 @@ Los usos finales del certificado los fija la CA con `server_ext`/`user_ext`, no 
 
 | Mensaje | Causa |
 | --- | --- |
-| `falta la contraseña: use -p <password> o defina ... KEY_PASS` | No se definió `KEY_PASS` ni `-p`. |
+| `falta la contraseña: use -p <password> o defina ... KEY_PASS` | No se ha definido `KEY_PASS` ni `-p`. |
 | `para tipo 'servicio' se requiere -d dns` | Falta un campo obligatorio del servicio. |
 | `email no válido: '...'` | Correo mal formado. |
 | `ya existen ... use -f para sobrescribirlos` | La clave o la CSR ya están en el directorio. |
@@ -173,7 +173,7 @@ El script **no valida la CSR**: asume la revisión manual del administrador (RA)
 | `1` | CSR o clave ilegible, `KEY_PASS` ausente o clave que no corresponde a la CSR. |
 | `2` | Extensión no válida o sección `[ext]` ausente en la configuración. |
 | `3` | Configuración/directorio incorrecto, `openssl` ausente o salida ya existente. |
-| `4` | El `.crt` se emitió, pero falló la creación del `.p12` (el `.crt` se conserva). |
+| `4` | El `.crt` se ha emitido, pero falló la creación del `.p12` (el `.crt` se conserva). |
 
 ### Validaciones
 
@@ -189,8 +189,8 @@ El script **no valida la CSR**: asume la revisión manual del administrador (RA)
 | --- | --- |
 | `falta la contraseña de la clave privada: defina KEY_PASS` | `user_ext` sin `KEY_PASS`. |
 | `no existe la clave privada '...' (debe estar junto a la solicitud)` | La clave no acompaña a la CSR o el nombre no coincide. |
-| `la clave privada '...' no corresponde a la solicitud` | Se cruzaron clave y CSR. |
-| `ya existe ...; no se sobrescribe` | El certificado o el `.p12` ya se emitieron. |
+| `la clave privada '...' no corresponde a la solicitud` | Se han cruzado clave y CSR. |
+| `ya existe ...; no se sobrescribe` | El certificado o el `.p12` ya se han emitido. |
 | `la sección [x] no está definida` | La extensión no está en `ca-sub_openssl.cnf`. |
 | `The mandatory countryName field was missing` | La CSR no lleva `C`/`O` que exige la política. |
 | `TXT_DB error number 2` | Ya existe una entrada con ese `subject` y `unique_subject` está activo. |
@@ -289,7 +289,7 @@ openssl ca -gencrl -batch -config ~/PKI_root/PKI_sub/ca-sub_openssl.cnf \
 | --- | --- |
 | `motivo '...' no válido` | Motivo fuera de la lista. |
 | `'...' no es un certificado X.509 válido en formato PEM` | Ruta incorrecta o fichero corrupto. |
-| `el certificado (serial ...) ya está revocado` | Se intentó revocar dos veces. |
+| `el certificado (serial ...) ya está revocado` | Se ha intentado revocar dos veces. |
 | `el serial ... no figura en la base de datos de esta CA` | El certificado lo emitió otra CA o `index.txt` no es el correcto. |
 
 ### Ejemplo: revocar a Paco y publicar la CRL

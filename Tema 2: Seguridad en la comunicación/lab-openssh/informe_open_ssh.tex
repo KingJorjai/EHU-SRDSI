@@ -52,20 +52,20 @@ funcionalidad adicional de OpenSSH no se incluyen, porque todavía no se dispone
 de resultados o capturas de esas pruebas.
 
 \section{Entorno y preparación}
-Las pruebas se realizaron en Debian GNU/Linux, en la máquina
+Las pruebas se han realizado en Debian GNU/Linux, en la máquina
 \texttt{bocata-jamon}, utilizando los usuarios \texttt{user1} y
 \texttt{user2}. La versión observada fue OpenSSH 10.0p2, sobre el núcleo
 \texttt{6.12.107+deb13-amd64}.
 
-Se instalaron Telnet y su servidor:
+Se han instalado Telnet y su servidor:
 \begin{lstlisting}[language=bash]
 user1@bocata-jamon:~$ sudo apt install telnet telnetd
 \end{lstlisting}
-Después se descomentó en \texttt{/etc/inetd.conf} la siguiente línea:
+Después se ha descomentado en \texttt{/etc/inetd.conf} la siguiente línea:
 \begin{lstlisting}
 telnet stream tcp nowait root /usr/sbin/tcpd /usr/sbin/telnetd
 \end{lstlisting}
-Finalmente se reinició el servicio:
+Finalmente se ha reiniciado el servicio:
 \begin{lstlisting}[language=bash]
 user1@bocata-jamon:~$ sudo systemctl restart inetd
 \end{lstlisting}
@@ -80,20 +80,20 @@ user1@bocata-jamon:~$
 \end{lstlisting}
 
 \section{Comparación entre Telnet y SSH con Wireshark}
-Se preparó Wireshark para escuchar en la interfaz de loopback. La conexión
+Se ha preparado Wireshark para escuchar en la interfaz de loopback. La conexión
 Telnet transmite la sesión sin cifrado, por lo que el contenido de la
 conversación puede observarse al seguir el flujo TCP. SSH, en cambio, negocia
 los algoritmos criptográficos y, después del intercambio de claves y de
 \texttt{SSH2\_MSG\_NEWKEYS}, protege el contenido de la sesión.
 
-En las pruebas se utilizó la opción de Wireshark \emph{Follow Stream} sobre el
+En las pruebas se ha utilizado la opción de Wireshark \emph{Follow Stream} sobre el
 flujo correspondiente a SSHv2. Las capturas de Wireshark se añadirán a esta
 sección cuando estén disponibles; no se simulan aquí resultados que no han
 sido aportados.
 
 \section{Ejercicio 1: conexión SSH en modo verbose}
 \subsection{Procedimiento}
-Se realizaron las siguientes conexiones desde \texttt{user1} hacia
+Se han realizado las siguientes conexiones desde \texttt{user1} hacia
 \texttt{user2}:
 \begin{lstlisting}[language=bash]
 user1@bocata-jamon:~$ ssh -v user2@localhost
@@ -135,14 +135,14 @@ shell. Al cerrar la sesión se observan el cierre del canal y el código de sali
 0.
 
 \subsection{Resultado}
-La conexión se estableció correctamente. El análisis muestra que SSH separa la
+La conexión se ha establecido correctamente. El análisis muestra que SSH separa la
 negociación criptográfica, la autenticación y la apertura de la sesión. La
 contraseña se introduce después de establecer el canal protegido, por lo que
 no queda expuesta como texto legible en la red.
 
 \section{Ejercicio 2: comprobación de la clave del host}
 
-En esta prueba se compararon dos estados del cliente SSH:
+En esta prueba se han comparado dos estados del cliente SSH:
 \texttt{ssh1}, que corresponde a la versión configurada, y \texttt{ssh2}, que
 corresponde a la versión instalada de cero.
 
@@ -179,12 +179,12 @@ la clave.
 
 \section{Ejercicio 3: reenvío local de puertos}
 \subsection{Configuración del túnel}
-Desde la máquina local se ejecutó:
+Desde la máquina local se ha ejecutado:
 \begin{lstlisting}[language=bash]
 user1@bocata-jamon:~$ ssh -L 12000:ehu.eus:443 user1@SRDSI
 \end{lstlisting}
 La opción \texttt{-L} crea un puerto local, el 12000, cuyo tráfico se envía a
-través de SSH hacia \texttt{ehu.eus:443}. El túnel se comprobó mediante:
+través de SSH hacia \texttt{ehu.eus:443}. El túnel se ha comprobado mediante:
 \begin{lstlisting}[language=bash]
 user1@bocata-jamon:~$ sudo netstat -tanp | grep 12000
 tcp 0 0 127.0.0.1:12000 0.0.0.0:* LISTEN 324823/ssh
@@ -194,7 +194,7 @@ La salida muestra que un proceso \texttt{ssh} estaba escuchando en
 \texttt{127.0.0.1:12000} y en \texttt{::1:12000}.
 
 \subsection{Prueba desde Firefox}
-Se intentó acceder a \texttt{localhost:12000} desde Firefox antes y después de
+Se ha intentado acceder a \texttt{localhost:12000} desde Firefox antes y después de
 establecer el túnel.
 
 \begin{figure}[htbp]
@@ -217,30 +217,30 @@ servidor en \texttt{localhost:12000} (figura~\ref{fig:notunnel}).
 Con el túnel activo, Firefox recibió una respuesta HTTPS, pero mostró el error
 \texttt{SSL\_ERROR\_BAD\_CERT\_DOMAIN}. La pantalla indica que el certificado
 es válido para nombres de \texttt{ehu.eus}, no para \texttt{localhost:12000}.
-Por tanto, la captura demuestra que se alcanzó el servicio HTTPS remoto a través
+Por tanto, la captura demuestra que se ha alcanzado el servicio HTTPS remoto a través
  del reenvío, pero la navegación no terminó con una página cargada debido a la
 comprobación del nombre del certificado.
 
 \section{Ejercicio 4: autenticación mediante clave pública}
-Primero se comprobó que la conexión de \texttt{user1} a \texttt{user2} pedía la
+Primero se ha comprobado que la conexión de \texttt{user1} a \texttt{user2} pedía la
 contraseña:
 \begin{lstlisting}[language=bash]
 user1@bocata-jamon:~$ ssh user2@localhost
 \end{lstlisting}
-Después se generó para \texttt{user1} un par de claves ED25519:
+Después se ha generado para \texttt{user1} un par de claves ED25519:
 \begin{lstlisting}[language=bash]
 user1@bocata-jamon:~$ ssh-keygen
 \end{lstlisting}
-La clave privada se guardó en \texttt{~/.ssh/id\_ed25519} y la pública en
-\texttt{~/.ssh/id\_ed25519.pub}. La clave pública se copió a la cuenta remota
+La clave privada se ha guardado en \texttt{~/.ssh/id\_ed25519} y la pública en
+\texttt{~/.ssh/id\_ed25519.pub}. La clave pública se ha copiado a la cuenta remota
 con:
 \begin{lstlisting}[language=bash]
 user1@bocata-jamon:~$ ssh-copy-id user2@localhost
 \end{lstlisting}
 Este comando pidió la contraseña para instalar la clave en
 \texttt{~user2/.ssh/authorized\_keys}. Después, al ejecutar de nuevo
-\texttt{ssh user2@localhost}, la conexión se realizó sin pedir la contraseña de
-la cuenta remota. Solo se copió la clave pública; la clave privada permaneció en
+\texttt{ssh user2@localhost}, la conexión se ha realizado sin pedir la contraseña de
+la cuenta remota. Solo se ha copiado la clave pública; la clave privada permaneció en
 \texttt{user1}.
 
 \section{Conclusiones}
@@ -248,9 +248,9 @@ Las pruebas realizadas muestran la diferencia principal entre Telnet y SSH:
 Telnet no cifra la sesión, mientras que SSH negocia algoritmos criptográficos,
 verifica la identidad del servidor y protege la autenticación y la sesión.
 
-También se comprobó el reenvío local de puertos. Sin el túnel, el puerto local
+También se ha comprobado el reenvío local de puertos. Sin el túnel, el puerto local
 12000 no aceptaba la conexión. Con el túnel, la petición llegó al servicio
-HTTPS de \texttt{ehu.eus}; el error observado se debió a que el certificado
+HTTPS de \texttt{ehu.eus}; el error observado se ha debido a que el certificado
 remoto no corresponde al nombre \texttt{localhost}. Finalmente, la
 autenticación mediante clave pública permitió conectarse sin introducir de
 nuevo la contraseña de \texttt{user2}.

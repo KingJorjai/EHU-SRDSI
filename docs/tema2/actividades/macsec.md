@@ -6,7 +6,7 @@ Práctica de **MACsec (IEEE 802.1AE)** con dos máquinas virtuales Debian 13 con
 [:material-file-pdf-box: Informe completo (PDF)](../../assets/pdf/informe-macsec.pdf){ .md-button }
 
 !!! warning "Requiere dos VM"
-    La actividad necesita dos máquinas con una interfaz L2 común. En este repositorio se usaron `MV1` (`bocata-jamon`) y `MV2` (`bocata-jamon2`) sobre la NAT Network `macsecnet`. Los pasos que dependen de la VM están marcados como **VM**.
+    La actividad necesita dos máquinas con una interfaz L2 común. En este repositorio se han usado `MV1` (`bocata-jamon`) y `MV2` (`bocata-jamon2`) sobre la NAT Network `macsecnet`. Los pasos que dependen de la VM están marcados como **VM**.
 
 ## Topología
 
@@ -15,7 +15,7 @@ Práctica de **MACsec (IEEE 802.1AE)** con dos máquinas virtuales Debian 13 con
 | MV1 | 192.168.56.110/24 | 10.0.3.11/24 | `macsec0` 1.1.1.1/24 |
 | MV2 | 192.168.56.111/24 | 10.0.3.12/24 | `macsec1` 1.1.1.2/24 |
 
-La host-only se usa para administrar las VM desde el anfitrión. La NAT Network `macsecnet` (10.0.3.0/24) es la red L2 por la que viajan las tramas MACsec. La VM2 se clonó de la VM1: hubo que regenerar sus MAC y cambiar su IP host-only para evitar conflictos.
+La host-only se usa para administrar las VM desde el anfitrión. La NAT Network `macsecnet` (10.0.3.0/24) es la red L2 por la que viajan las tramas MACsec. La VM2 se ha clonado de la VM1: hubo que regenerar sus MAC y cambiar su IP host-only para evitar conflictos.
 
 ![Topología MACsec](../../assets/img/lab-macsec/topologia.png)
 
@@ -129,13 +129,13 @@ Repite el `ping` y la captura. Ahora Wireshark puede leer el paquete interior: v
 
 ## Ataques de enlace
 
-Para las pruebas de ataque se añadió a MV1 una segunda interfaz `enp0s10` en la misma NAT Network `macsecnet` (10.0.3.99) y se usó Scapy. El atacante **no tiene la SAK**. Todo se hizo en la red aislada; después se paró el atacante y se restauraron las cachés ARP.
+Para las pruebas de ataque se ha añadido a MV1 una segunda interfaz `enp0s10` en la misma NAT Network `macsecnet` (10.0.3.99) y se ha usado Scapy. El atacante **no tiene la SAK**. Todo se hizo en la red aislada; después se ha parado el atacante y se han restaurado las cachés ARP.
 
 ### ARP spoofing
 
 - **Red no protegida (10.0.3.x):** MV2 cambió su entrada ARP de 10.0.3.11 a la MAC falsa `02:00:00:00:00:01`; el ping a 10.0.3.11 perdió el 100% de los paquetes.
 - **Red protegida (1.1.1.x):** las tramas ARP falsas llegaron a `enp0s9`, pero la entrada de 1.1.1.2 siguió en `macsec0` con la MAC real de MV2; el ping por MACsec continuó.
-- La puerta de enlace 10.0.3.1 tenía una entrada **PERMANENTE**; por eso el ataque se dirigió a la entrada dinámica de 10.0.3.11.
+- La puerta de enlace 10.0.3.1 tenía una entrada **PERMANENTE**; por eso el ataque se ha dirigido a la entrada dinámica de 10.0.3.11.
 
 ![Efecto del ARP spoofing en MV2](../../assets/img/lab-macsec/ataque-arp-terminal.png)
 
@@ -143,7 +143,7 @@ Para las pruebas de ataque se añadió a MV1 una segunda interfaz `enp0s10` en l
 
 ### MAC flooding
 
-Se enviaron 800 tramas con MAC de origen aleatoria desde `enp0s10`; en MV2 se capturaron 272 (233 MAC distintas, 230 UDP, 34 MACsec, 8 ARP). El ping por MACsec siguió funcionando (16/16). La NAT Network de VirtualBox no equivale a un switch físico: no se produjo una caída visible, pero el patrón de flooding y la defensa (port security, VLANs, MACsec) quedan documentados.
+Se han enviado 800 tramas con MAC de origen aleatoria desde `enp0s10`; en MV2 se han capturado 272 (233 MAC distintas, 230 UDP, 34 MACsec, 8 ARP). El ping por MACsec siguió funcionando (16/16). La NAT Network de VirtualBox no equivale a un switch físico: no se produjo una caída visible, pero el patrón de flooding y la defensa (port security, VLANs, MACsec) quedan documentados.
 
 ![MAC flooding en Wireshark](../../assets/img/lab-macsec/ataque-mac-flood.png)
 

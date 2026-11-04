@@ -119,7 +119,7 @@ El binario `benchmark` recorre hashes, MAC, cifrados y clave pública. Compara s
 
 ### ascon-c
 
-El código de Ascon **no está en el repositorio**: se compiló en la VM (`~/gcrypt-test/ascon-c/build`). Los binarios del log se ejecutan desde `build/`:
+El código de Ascon **no está en el repositorio**: se ha compilado en la VM (`~/gcrypt-test/ascon-c/build`). Los binarios del log se ejecutan desde `build/`:
 
 ```bash
 cd ~/gcrypt-test/ascon-c/build
