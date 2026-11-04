@@ -277,20 +277,7 @@ $ ping -c 3 1.1.1.2
 
 El ARP legítimo de 1.1.1.x viaja **dentro** de MACsec. El atacante no tiene la SAK y no puede fabricar una trama MACsec válida; un ARP plano en `enp0s9` no modifica la entrada de `macsec0`.
 
-## 6.4. MAC flooding
-
-Se enviaron 800 tramas con MAC de origen aleatoria desde `enp0s10`. En MV2 se capturaron 272 tramas: 233 MAC de origen distintas, 230 UDP, 34 MACsec y 8 ARP. El ping por MACsec siguió funcionando (16/16).
-
-```console
-$ ping -c 16 -i 0.5 1.1.1.1
-16 packets transmitted, 16 received, 0% packet loss
-```
-
-La NAT Network de VirtualBox no mostró una caída visible del servicio; su comportamiento no equivale al de un switch físico con tabla CAM. El valor de la prueba está en identificar el patrón de flooding y en la defensa: **port security**, VLANs y MACsec. La captura `mac-flood.pcapng` permite ver las MAC aleatorias y la convivencia con el tráfico MACsec.
-
-![MAC flooding en Wireshark](img/ataque-mac-flood.png){ width=100% }
-
-## 6.5. Trama MACsec con ICV alterado
+## 6.4. Trama MACsec con ICV alterado
 
 Se capturó una trama MACsec válida (PN 184), se modificó un byte antes del ICV y se reenviaron tres copias. En MV2 se capturaron las tres tramas (`forged-icv4.pcapng`) y **no hubo respuesta**; además, las estadísticas de `macsec1` pasaron de 3 a 6 errores RX.
 
@@ -304,7 +291,7 @@ La trama de control sí obtuvo respuesta, lo que confirma que el fallo es de la 
 
 ![Tramas con ICV alterado](img/ataque-forged-icv.png){ width=100% }
 
-## 6.6. Replay
+## 6.5. Replay
 
 Con `replay on window 0`, se capturó una trama válida (PN 105), se avanzó el PN con pings y se reenvió la trama antigua tres veces. En MV2 se vieron las tres copias (PN 105) y **ninguna respuesta**; las estadísticas pasaron de 0 a 3 descartes.
 
@@ -333,59 +320,7 @@ La conclusión es importante: **la protección contra replay no está activa por
 
 ![Replay con replay off](img/ataque-replay-off.png){ width=95% }
 
-## 6.7. Wireshark: qué buscar
-
-| Concepto | Campo / filtro | Dónde se ve |
-| --- | --- | --- |
-| MACsec / 802.1AE | `eth.type == 0x88e5`, `macsec` | Columna Protocol y detalle Ethernet |
-| SecTAG | `macsec.TCI`, `macsec.AN`, `macsec.SL` | Árbol 802.1AE Security Tag |
-| Cifrado | `macsec.TCI.E` | Bit E del TCI |
-| Texto cambiado | `macsec.TCI.C` | Bit C del TCI |
-| SCI | `macsec.SCI` | SCI = MAC + puerto |
-| PN | `macsec.PN` | Packet number |
-| ICV | `macsec.ICV` | Últimos 16 bytes |
-| EtherType interior | `macsec.etype` | Solo con `encrypt off` |
-| Verificación | `macsec.verify_info.verified` | `False` sin SAK |
-| ARP | `arp` | Tráfico de enlace no protegido o interior con `encrypt off` |
-| MKA/EAPOL | `eapol` | Vacío con claves manuales |
-
-Valores observados:
-
-- TCI `0x0b` con `encrypt on` (`SC,E,C`); TCI `0x08` con `encrypt off` (`SC`).
-- SCI MV1 `08002717ce470001`; SCI MV2 `080027d103ae0001`.
-- PN 119–122 en la captura original; PN 184/187 en las pruebas de forja.
-- ICV distinto en cada trama.
-
-Preguntas y respuestas:
-
-1. **¿Qué MAC y puerto forman el SCI de MV1?** `08:00:27:17:ce:47`, puerto 1.
-2. **¿Qué bits del TCI cambian con `encrypt off`?** Se apagan `E` y `C`; queda `SC`. Pasa de `0x0b` a `0x08`.
-3. **¿Dónde está el PN y cómo cambia?** En `macsec.PN`; aumenta por SCI y sirve para detectar repeticiones.
-4. **¿Por qué Wireshark marca `[UNVERIFIED]`?** Porque no tiene la SAK; no significa que MACsec falle.
-5. **¿Qué diferencia hay entre `Data` e `ICMP`?** `Data` es payload cifrado; `ICMP` aparece cuando `encrypt off` y el payload es visible.
-6. **¿Por qué no se ve ARP con cifrado activo?** Porque el ARP de 1.1.1.x viaja dentro de MACsec; solo se ve el EtherType `0x88e5`.
-7. **¿Qué pasa si cambias la clave RX?** El ICV no valida; el receptor descarta las tramas y el ping falla.
-8. **¿Qué pasa con una trama de PN antiguo?** Con `replay on` se descarta; con `replay off` se acepta y puede generar respuesta.
-9. **¿Qué metadatos siguen visibles?** MAC de origen/destino, SCI, PN, tamaños y tiempos; MACsec no da anonimato.
-10. **¿Por qué no hay MKA/EAPOL?** Porque se usan claves manuales; en producción MKA/802.1X negociaría las SAK.
-
-# 7. Problemas y soluciones
-
-- **La VM clonada tenía las mismas MAC e IP que la original.** Si se arrancaban las dos, la red host-only entraba en conflicto. Se regeneraron las MAC de la VM2 y se le asignó `192.168.56.111`. Para el primer arranque se desconectó su host-only y se usó un *port forward* NAT `localhost:2222 -> 22`; después se reconectó la host-only.
-- **El PDF de la actividad usa `enp0s3` y nombres como `ens33`.** En este entorno `enp0s3` es la NAT (10.0.2.15), que no conecta las dos VM. Se usó `enp0s9`, la interfaz de la NAT Network `macsecnet`. La NAT Network sí transportó el EtherType `0x88e5` en esta prueba; si no lo hiciera, la alternativa sería una **Internal Network**.
-- **`tcpdump` no estaba instalado en las VM.** Se usó `dumpcap`, que ya venía con Wireshark, y el análisis se hizo con `tshark` en el anfitrión.
-- **`ifconfig` no es necesario.** Se usó `ip addr add`, que es la herramienta actual de `iproute2`.
-- **Wireshark muestra `[UNVERIFIED]`.** Es esperado: MACsec usa una SAK que no hemos configurado en Wireshark. Para verificarlo/descifrarlo habría que usar MKA o proporcionar la clave al disector.
-- **`ip macsec show` no muestra la clave completa.** Muestra el ID de clave y ceros; la clave real no se imprime por seguridad.
-- **El cifrado es software (`offload: off`).** La NIC virtual no ofrece offload MACsec; el kernel cifra y autentica las tramas.
-- **La puerta de enlace 10.0.3.1 tenía ARP PERMANENTE.** El ARP spoofing no la modificó; la prueba se dirigió a la entrada dinámica de 10.0.3.11. Es una lección: las entradas estáticas/permanentes no se envenenan.
-- **El atacante necesita una interfaz propia en la misma L2.** Se añadió `enp0s10` a MV1 en `macsecnet`; no se usó `enp0s9` para no interferir con MACsec. Una macvlan sobre `enp0s9` no se puede crear mientras existe `macsec0`.
-- **El MAC flooding no tumbó la NAT Network.** Se enviaron 800 tramas y se capturaron 272 (233 MAC únicas); el switch virtual no equivale a un switch físico. MACsec siguió funcionando. Se documenta el resultado real, sin exagerarlo.
-- **La trama forjada se detecta por ICV.** Las 3 copias alteradas no obtuvieron respuesta y `macsec1` pasó de 3 a 6 errores RX; una trama de control válida sí obtuvo reply.
-- **El replay solo se detiene con `replay on`.** Con `replay on window 0` los 3 replays se descartaron (dropped 0 -> 3); con `replay off` se aceptaron y generaron replies.
-- **Limpieza:** tras cada prueba se paró el atacante, se restauró la caché ARP (`ip neigh replace`/`del`) y se volvió a dejar MACsec operativo.
-
-# 8. Tiempo dedicado
+# 7. Tiempo dedicado
 
 | Tarea | Tiempo | Responsable |
 |---|---|---|
@@ -397,7 +332,7 @@ Preguntas y respuestas:
 | Documentación del sitio | 30 min | Jon |
 | **Total** | **4 h 15 min** | Jorge 1 h 50 min · Jon 2 h 25 min |
 
-# 9. Conclusiones
+# 8. Conclusiones
 
 MACsec permite proteger el enlace Ethernet sin cambiar las aplicaciones ni la configuración IP. En el laboratorio se comprobó que:
 
@@ -407,14 +342,13 @@ MACsec permite proteger el enlace Ethernet sin cambiar las aplicaciones ni la co
 - Con `encrypt off`, MACsec sigue autenticando pero el payload es visible.
 - La clave, el SCI y el PN son los elementos que identifican y protegen cada asociación.
 - El ARP spoofing funciona contra la red no protegida 10.0.3.x (caché envenenada y ping perdido), pero **no** contra la IP 1.1.1.x protegida por MACsec.
-- El MAC flooding genera mucho tráfico con MAC aleatorias, pero no interrumpe el tráfico MACsec en esta red virtual.
 - Una trama con ICV alterado se descarta (errores RX) y no obtiene respuesta.
 - El replay se descarta solo si `replay on` está activo; con `replay off` la trama antigua se acepta.
 - MACsec no oculta los metadatos (MAC, SCI, PN, tamaños, tiempos) ni sustituye a MKA/802.1X para la gestión de claves.
 
 Como limitaciones, se usaron claves manuales y una red virtual de VirtualBox; en un despliegue real se usaría **MKA/802.1X** para negociar las claves y, si la NIC lo permite, *offload* hardware. También conviene recordar que MACsec protege el enlace, no el extremo a extremo: para eso siguen siendo necesarios TLS, IPsec u otras capas.
 
-# 10. Referencias
+# 9. Referencias
 
 1. IEEE 802.1AE-2018, *MAC Security*.
 2. `man ip-macsec` y documentación de `iproute2`.
