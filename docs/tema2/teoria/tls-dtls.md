@@ -44,16 +44,17 @@ En TLS 1.3 la negociación se separa: el **key exchange** y la **autenticación*
 
 ## Handshake TLS 1.2
 
-```mermaid
-sequenceDiagram
-    participant C as Cliente
-    participant S as Servidor
-    C->>S: ClientHello (versión, random, suites, SNI, extensiones)
-    S-->>C: ServerHello (suite, random) + Certificate
-    S-->>C: ServerKeyExchange (ECDHE) + ServerHelloDone
-    C->>S: ClientKeyExchange + ChangeCipherSpec + Finished
-    S-->>C: ChangeCipherSpec + Finished
-```
+**Handshake TLS 1.2** (2-RTT):
+
+| Paso | Origen → Destino | Mensaje |
+| --- | --- | --- |
+| 1 | Cliente → Servidor | `ClientHello` (versión, random, suites, SNI, extensiones) |
+| 2 | Servidor → Cliente | `ServerHello` (suite, random) + `Certificate` |
+| 3 | Servidor → Cliente | `ServerKeyExchange` (ECDHE) + `ServerHelloDone` |
+| 4 | Cliente → Servidor | `ClientKeyExchange` + `ChangeCipherSpec` + `Finished` |
+| 5 | Servidor → Cliente | `ChangeCipherSpec` + `Finished` |
+
+El servidor envía su certificado y los parámetros de intercambio de clave en mensajes separados. El cliente verifica el certificado y envía su parte del intercambio.
 
 1. **Fase 1**: se negocian versión, algoritmos y compresión.
 2. **Fase 2**: el servidor se autentica y envía los parámetros de intercambio.
@@ -79,16 +80,17 @@ Del `key_block` salen las claves MAC, las claves de cifrado y los IV de cliente 
 - La derivación usa **HKDF** y solo AEAD. Las claves de aplicación se separan de las del handshake.
 - Extensiones clave: **ALPN**, **SNI**, **ECH** (TLS Encrypted Client Hello, RFC 9849) y `supported_versions`.
 
-```mermaid
-sequenceDiagram
-    participant C as Cliente
-    participant S as Servidor
-    C->>S: ClientHello + key_share
-    S-->>C: ServerHello + key_share
-    S-->>C: EncryptedExtensions + Certificate + CertVerify + Finished
-    C->>S: Finished
-    Note over C,S: 1-RTT; datos de aplicación
-```
+**Handshake TLS 1.3** (1-RTT):
+
+| Paso | Origen → Destino | Mensaje |
+| --- | --- | --- |
+| 1 | Cliente → Servidor | `ClientHello` + `key_share` |
+| 2 | Servidor → Cliente | `ServerHello` + `key_share` |
+| 3 | Servidor → Cliente | `EncryptedExtensions` + `Certificate` + `CertVerify` + `Finished` |
+| 4 | Cliente → Servidor | `Finished` |
+| 5 | Ambos | Datos de aplicación (cifrados) |
+
+Todo el handshake tras el `ServerHello` va cifrado. Los mensajes 3 y 4 se envían en un solo vuelo, lo que reduce la latencia a 1-RTT.
 
 ### Resumption, tickets y PSK
 

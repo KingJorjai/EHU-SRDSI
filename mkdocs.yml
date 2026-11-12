@@ -43,6 +43,7 @@ plugins:
   - search:
       lang: es
   - glightbox
+  - privacy
 
 markdown_extensions:
   - admonition

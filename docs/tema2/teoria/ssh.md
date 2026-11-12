@@ -16,13 +16,13 @@ SSH es el protocolo de referencia para administrar sistemas y transportar tráfi
 
 SSH se organiza en tres protocolos que se apoyan en TCP:
 
-```mermaid
-flowchart TB
-    APP["Aplicaciones: shell, scp, sftp, X11, túneles"] --> CONN["Connection Protocol (RFC 4254)<br/>canales y multiplexación"]
-    CONN --> AUTH["User Authentication Protocol (RFC 4252)<br/>identidad del usuario"]
-    AUTH --> TRANS["Transport Layer Protocol (RFC 4253)<br/>confidencialidad, integridad y host key"]
-    TRANS --> TCP["TCP/IP"]
-```
+**Arquitectura SSH (de arriba a abajo):**
+
+- **Aplicaciones**: shell, scp, sftp, X11, túneles.
+- **Connection Protocol** (RFC 4254): canales y multiplexación.
+- **User Authentication Protocol** (RFC 4252): identidad del usuario.
+- **Transport Layer Protocol** (RFC 4253): confidencialidad, integridad y host key.
+- **TCP/IP**.
 
 La **capa de transporte** autentica al servidor y protege la conexión; la de **autenticación** identifica al usuario; la de **conexión** multiplexa canales lógicos. SSH-2 es la única versión recomendable: SSH-1 está obsoleto.
 
@@ -67,15 +67,12 @@ El cliente abre el servicio `ssh-userauth` y envía `SSH_MSG_USERAUTH_REQUEST`. 
 
 Flujo típico con clave pública:
 
-```mermaid
-sequenceDiagram
-    participant C as Cliente
-    participant S as Servidor
-    C->>S: USERAUTH_REQUEST (publickey, clave pública)
-    S-->>C: USERAUTH_PK_OK (método aceptado)
-    C->>S: USERAUTH_REQUEST + firma
-    S-->>C: USERAUTH_SUCCESS
-```
+**Autenticación por clave pública en SSH:**
+
+1. Cliente → Servidor: `USERAUTH_REQUEST` (publickey, clave pública).
+2. Servidor → Cliente: `USERAUTH_PK_OK` (método aceptado).
+3. Cliente → Servidor: `USERAUTH_REQUEST` + firma.
+4. Servidor → Cliente: `USERAUTH_SUCCESS`.
 
 `MaxAuthTries` limita los intentos. El agente SSH (`ssh-agent`) mantiene las claves privadas desbloqueadas y evita copiarlas por la red.
 
@@ -102,19 +99,14 @@ El túnel cifra de extremo a extremo el tráfico TCP de una aplicación y evita 
 | **Remoto** | `ssh -R [bind:]rport:host:port usuario@servidor` | El servidor abre un puerto y lo reenvía a `host:port` visto desde el cliente. |
 | **Dinámico** | `ssh -D 1080 usuario@servidor` | El cliente actúa como proxy SOCKS; decide el destino cada aplicación. |
 
-```mermaid
-sequenceDiagram
-    participant A as Aplicación local
-    participant C as Cliente SSH
-    participant S as Servidor SSH
-    participant T as Destino
-    A->>C: TCP a localhost:lport
-    C->>S: CHANNEL_OPEN direct-tcpip
-    S->>T: Conexión TCP a host:port
-    T-->>S: Datos
-    S-->>C: Datos por el canal cifrado
-    C-->>A: Datos
-```
+**Reenvío local de puertos (SSH tunnel):**
+
+1. Aplicación local → Cliente SSH: TCP a `localhost:lport`.
+2. Cliente SSH → Servidor SSH: `CHANNEL_OPEN direct-tcpip`.
+3. Servidor SSH → Destino: conexión TCP a `host:port`.
+4. Destino → Servidor SSH: datos.
+5. Servidor SSH → Cliente SSH: datos por el canal cifrado.
+6. Cliente SSH → Aplicación local: datos.
 
 `-N` evita abrir shell y `-f` pasa a segundo plano. El reenvío remoto puede requerir `GatewayPorts`; por defecto escucha solo en loopback. Un túnel no autentica al destino final: la seguridad depende de no exponer puertos y de verificar la host key.
 

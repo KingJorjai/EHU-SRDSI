@@ -17,14 +17,13 @@ El correo electrónico es el caso de uso clásico de la criptografía de extremo
 
 PGP proporciona **confidencialidad**, **integridad**, **autenticación del emisor** y **no repudio** (con firma). No ofrece forward secrecy: comprometer la clave privada permite descifrar mensajes antiguos.
 
-```mermaid
-flowchart LR
-    M["Mensaje"] --> S["Firma con clave privada del emisor"]
-    S --> C["Compresión"]
-    C --> E["Cifrado simétrico con clave de sesión"]
-    E --> K["Clave de sesión cifrada con la clave pública del destinatario"]
-    K --> O["Mensaje OpenPGP"]
-```
+**Esquema PGP (envío de un mensaje):**
+
+1. Mensaje → Firma con clave privada del emisor.
+2. Compresión.
+3. Cifrado simétrico con clave de sesión aleatoria.
+4. Clave de sesión cifrada con la clave pública del destinatario.
+5. Mensaje OpenPGP (combinación de paquetes).
 
 Orden importante: **firmar → comprimir → cifrar**. Se firma el mensaje sin comprimir para que la verificación no dependa del algoritmo de compresión; después se comprime para reducir tamaño y, por último, se cifra. Al recibir se invierte: descifrar → descomprimir → verificar.
 

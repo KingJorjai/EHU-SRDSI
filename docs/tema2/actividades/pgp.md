@@ -41,25 +41,24 @@ El orden de las operaciones es **firmar → comprimir → cifrar**. Al recibir s
 
 El receptor recibe un mensaje OpenPGP con uno o varios PKESK y un bloque SEIPD. Debe localizar el PKESK dirigido a su clave, recuperar la clave de sesión y descifrar el contenido. Si el mensaje está firmado, después verifica la firma y decide si la clave del emisor es fiable.
 
-```mermaid
-flowchart TD
-    A["Mensaje OpenPGP<br/>PKESK(s) + SEIPD"] --> B["Separar y recorrer paquetes"]
-    B --> C{"¿Hay un PKESK<br/>para mi clave?"}
-    C -- "No" --> X["No soy destinatario:<br/>no puedo descifrar"]
-    C -- "Sí" --> D["Descifrar la clave de sesión<br/>con mi clave privada"]
-    D --> E["Descifrar tag=18<br/>con la clave de sesión"]
-    E --> F["Comprobar integridad:<br/>MDC tag=19 o AEAD"]
-    F -- "Fallo" --> Y["Rechazar el mensaje"]
-    F -- "Correcta" --> G["Descomprimir tag=8"]
-    G --> H{"¿Incluye firma?<br/>tag=4 + tag=2"}
-    H -- "No" --> J["Entregar el mensaje"]
-    H -- "Sí" --> I["Verificar la firma con<br/>la clave pública del emisor"]
-    I --> K{"¿Firma válida y<br/>clave fiable?"}
-    K -- "No" --> L["Aviso: BAD signature,<br/>clave desconocida o no fiable"]
-    K -- "Sí" --> M["Mensaje autenticado<br/>y de confianza"]
-    J --> N["Texto original"]
-    M --> N
-```
+**Descifrado de un mensaje PGP (esquema):**
+
+1. Mensaje OpenPGP: PKESK(s) + SEIPD.
+2. Separar y recorrer paquetes.
+3. ¿Hay un PKESK para mi clave?
+   - No: no soy destinatario; no puedo descifrar.
+   - Sí: descifrar la clave de sesión con mi clave privada.
+4. Descifrar tag=18 con la clave de sesión.
+5. Comprobar integridad (MDC tag=19 o AEAD):
+   - Fallo: rechazar el mensaje.
+   - Correcta: descomprimir tag=8.
+6. ¿Incluye firma (tag=4 + tag=2)?
+   - No: entregar el mensaje.
+   - Sí: verificar la firma con la clave pública del emisor.
+7. ¿Firma válida y clave fiable?
+   - No: aviso BAD signature, clave desconocida o no fiable.
+   - Sí: mensaje autenticado y de confianza.
+8. Entregar texto original.
 
 | Paso | Qué ocurre | Paquete o dato | Señal en GnuPG |
 | --- | --- | --- | --- |
@@ -79,19 +78,15 @@ flowchart TD
 
 Todos los destinatarios comparten **una sola clave de sesión** y, por tanto, **un solo bloque SEIPD**. Lo que se repite es la clave de sesión cifrada: un PKESK por destinatario.
 
-```mermaid
-flowchart LR
-    M["Mensaje"] --> S["Firma opcional<br/>tag=4 + tag=2"]
-    S --> C["Comprimir<br/>tag=8"]
-    C --> K["Clave de sesión aleatoria"]
-    K --> E["Cifrar el contenido<br/>tag=18 SEIPD"]
-    K --> PB["Cifrar la clave de sesión<br/>con la clave pública de Bob"]
-    K --> PC["Cifrar la clave de sesión<br/>con la clave pública de Carol"]
-    E --> O["Mensaje OpenPGP"]
-    PB --> O
-    PC --> O
-    O --> R["PKESK Bob + PKESK Carol + un único SEIPD"]
-```
+**Construcción de un mensaje PGP para varios destinatarios:**
+
+1. Mensaje → firma opcional (tag=4 + tag=2).
+2. Comprimir (tag=8).
+3. Generar clave de sesión aleatoria.
+4. Cifrar el contenido → tag=18 (SEIPD).
+5. Cifrar la clave de sesión con la clave pública de Bob → PKESK Bob.
+6. Cifrar la clave de sesión con la clave pública de Carol → PKESK Carol.
+7. Mensaje OpenPGP = PKESK Bob + PKESK Carol + un único SEIPD.
 
 | Se repite por receptor | Se comparte |
 | --- | --- |
@@ -120,13 +115,13 @@ tag=11 Literal Data
 tag=2  Signature
 ```
 
-```mermaid
-flowchart LR
-    A["tag=8<br/>Compressed Data"] --> B["tag=4<br/>One-Pass Signature"]
-    B --> C["tag=11<br/>Literal Data"]
-    C --> D["tag=2<br/>Signature"]
-    A -. "si --compress-algo none" .-> B
-```
+**Estructura de paquetes de un mensaje firmado con GnuPG:**
+
+- `tag=8` Compressed Data
+  - `tag=4` One-Pass Signature
+  - `tag=11` Literal Data
+  - `tag=2` Signature
+- Con `--compress-algo none`, la compresión se omite.
 
 | Paquete | Papel |
 | --- | --- |

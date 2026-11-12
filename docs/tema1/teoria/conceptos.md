@@ -35,14 +35,11 @@ Las transparencias sitúan la **seguridad de la información** en el nivel estra
 | **Servicio** | Servicio de seguridad que usa uno o varios mecanismos para mejorar la protección. |
 | **Protocolo** | Normas que rigen la comunicación entre entidades del mismo nivel para prestar servicios a las capas superiores. |
 
-```mermaid
-flowchart LR
-    A[Amenaza] -->|aprovecha| V[Vulnerabilidad]
-    V -->|afecta a| R[Recurso]
-    A -->|se materializa en| I[Incidente o ataque]
-    I -->|genera| C[Consecuencias]
-    M[Mecanismo o contramedida] -->|reduce| R
-```
+**Relación entre amenaza, vulnerabilidad y recurso:**
+
+- Una **amenaza** aprovecha una **vulnerabilidad** para afectar a un **recurso**.
+- Si se materializa, genera un **incidente o ataque** y sus **consecuencias**.
+- Un **mecanismo o contramedida** reduce el riesgo sobre el recurso.
 
 ## Elementos a proteger
 

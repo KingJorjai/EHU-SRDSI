@@ -5,4 +5,5 @@ INHERIT: mkdocs.yml
 plugins:
   - search:
       lang: es
+  - privacy
   - offline

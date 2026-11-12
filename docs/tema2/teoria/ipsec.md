@@ -38,15 +38,11 @@ En modo túnel el gateway añade una nueva cabecera IP y el paquete original que
 | **IPcomp** (RFC 3173) | Compresión del payload antes del cifrado ESP. |
 | **Algoritmos** (RFC 8221) | Cifrado, autenticación e integridad recomendados. |
 
-```mermaid
-flowchart LR
-    T["Tráfico IP"] --> SPD["SPD: política"]
-    SPD -->|DISCARD| D["Descartar"]
-    SPD -->|BYPASS| P["Pasar sin IPsec"]
-    SPD -->|PROTECT| SAD["SAD: SA aplicable"]
-    SAD --> ESP["AH / ESP"]
-    ESP --> R["Red"]
-```
+**Procesamiento de salida en IPsec:**
+
+1. Tráfico IP → SPD (política de seguridad).
+2. SPD decide: **DISCARD** (descartar), **BYPASS** (pasar sin IPsec) o **PROTECT**.
+3. Si PROTECT: SAD (SA aplicable) → AH/ESP → red.
 
 ## AH (Authentication Header)
 
@@ -91,15 +87,11 @@ Hay SPD de entrada y de salida. La **PAD** asocia cada peer autorizado con su m�
 
 **Entrada**: se localiza la SA por SPI y destino, se comprueba la política, se valida la ventana antirreplay, se verifica el ICV, se descifra y se elimina la encapsulación. Después el paquete se entrega localmente o se reenvía.
 
-```mermaid
-flowchart LR
-    A["Paquete"] --> B["SPD de entrada"]
-    B -->|descartar| X["Drop"]
-    B -->|proteger| C["SAD por SPI"]
-    C --> D["Antirreplay + ICV"]
-    D --> E["Descifrar / desencapsular"]
-    E --> F["Entrega local o forwarding"]
-```
+**Procesamiento de entrada en IPsec:**
+
+1. Paquete → SPD de entrada.
+2. SPD decide: descartar o proteger.
+3. Si proteger: SAD por SPI → antirreplay + ICV → descifrar/desencapsular → entrega local o forwarding.
 
 ## IKEv2
 

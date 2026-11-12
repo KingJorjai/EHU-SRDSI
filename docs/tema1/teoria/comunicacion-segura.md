@@ -23,13 +23,11 @@ Con criptografía simétrica, \(C = Sim_{K_{AB}}(M)\) y \(M = Sim_{K_{AB}}(C)\).
 
 El emisor calcula el resumen del mensaje y lo envía junto al mensaje; el receptor recalcula el resumen y lo compara:
 
-```mermaid
-flowchart LR
-    A[Emisor] -->|M, H M| B[Receptor]
-    B --> C{H M recibido = H M calculado?}
-    C -->|Sí| D[Mensaje íntegro]
-    C -->|No| E[Mensaje alterado]
-```
+**Integridad con hash:**
+
+- Emisor → Receptor: envía `M` y `H(M)`.
+- Receptor calcula `H(M)` y lo compara con el recibido.
+- Si coinciden: mensaje íntegro. Si no: mensaje alterado.
 
 El hash por sí solo no autentica el origen: un atacante podría modificar el mensaje y su resumen. Para autenticar hacen falta una clave compartida (MAC) o una firma digital.
 
@@ -44,15 +42,12 @@ Se garantiza mediante **firmas digitales**.
 
 Permite al receptor validar la autenticidad del origen y la integridad del mensaje, y al emisor le impide negar la autoría. Tiene el mismo propósito que una firma manuscrita y **solo es posible con criptografía asimétrica**. Los protocolos de firma (DSS) comprenden siempre dos procesos: **generación** y **verificación**.
 
-```mermaid
-sequenceDiagram
-    participant A as Alice
-    participant B as Bob
-    A->>A: h = H(M)
-    A->>A: s = Priv_A(h)
-    A->>B: M, s
-    B->>B: Pub_A(s) == H(M)?
-```
+**Firma digital (esquema):**
+
+1. Alice calcula `h = H(M)`.
+2. Alice firma: `s = Priv_A(h)`.
+3. Alice envía `M, s`.
+4. Bob verifica: `Pub_A(s) == H(M)`?
 
 El protocolo básico puede firmar el mensaje directamente o, mejor, su resumen: \(C = [M, Priv_A(H(M))]\). Requisito imprescindible: **validar la clave pública** \(Pub_A\).
 
@@ -94,19 +89,12 @@ Las transparencias muestran varios protocolos de autenticación fallidos: no bas
 
 En el **ataque de intermediario** (*Man in the Middle*, MiM), Trudy se coloca entre Alice y Bob, presenta su propia clave a cada uno y descifra y reenvía el tráfico. Alice cree hablar con Bob y Bob con Alice, pero ambos hablan con Trudy.
 
-```mermaid
-sequenceDiagram
-    participant A as Alice
-    participant T as Trudy
-    participant B as Bob
-    A->>T: ¿Tu clave pública?
-    T-->>A: Pub_T (se hace pasar por Bob)
-    B->>T: ¿Tu clave pública?
-    T-->>B: Pub_T (se hace pasar por Alice)
-    A->>T: Datos cifrados con Pub_T
-    T->>T: Descifra y vuelve a cifrar
-    T->>B: Datos cifrados con Pub_B
-```
+**Ataque de intermediario (MiM):**
+
+1. Alice pregunta la clave pública de Bob → Trudy responde con `Pub_T` (suplantando a Bob).
+2. Bob pregunta la clave pública de Alice → Trudy responde con `Pub_T` (suplantando a Alice).
+3. Alice cifra datos con `Pub_T` → Trudy los descifra y reenvía cifrados con `Pub_B`.
+4. Bob recibe los datos, sin saber que Trudy los leyó.
 
 La defensa pasa por **autenticar la clave pública**: certificados, firmas o un canal previo de confianza. Este problema se retoma en la gestión de claves.
 

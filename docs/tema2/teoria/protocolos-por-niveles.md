@@ -13,14 +13,12 @@ Las transparencias de T2-1 sitúan la seguridad en cada nivel de TCP/IP. No hay 
 | **Interred** | Protege **datagramas IP**. En modo transporte solo el payload; en modo túnel, el datagrama completo. | IPsec (AH, ESP) |
 | **Enlace/Red** | Protege **tramas**: cifra y/o autentica el payload. | 802.1X, MACsec, MPPE, MS-CHAP, EAP, LEAP, PEAP, WEP, WPA, WPA2, WPA3, PPTP, L2TP |
 
-```mermaid
-flowchart TB
-    A["Aplicación<br/>PGP · S/MIME · SSH · Kerberos · RADIUS"]
-    B["Transporte<br/>TLS · DTLS · QUIC · SRTP"]
-    C["Red<br/>IPsec AH/ESP"]
-    D["Enlace<br/>802.1X · MACsec · WPA3 · EAP"]
-    A --> B --> C --> D
-```
+**Seguridad por niveles (de arriba a abajo):**
+
+- **Aplicación**: PGP, S/MIME, SSH, Kerberos, RADIUS.
+- **Transporte**: TLS, DTLS, QUIC, SRTP.
+- **Red**: IPsec (AH, ESP).
+- **Enlace**: 802.1X, MACsec, WPA3, EAP.
 
 ## Aplicación
 
