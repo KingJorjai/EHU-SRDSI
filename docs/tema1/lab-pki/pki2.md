@@ -411,6 +411,13 @@ En Wireshark se ve la consulta **de Apache al respondedor** por el puerto 4747, 
     `SSLOCSPNoVerify`; si aparece `root ca not trusted`, revisa el AIA y el
     almacén antes de desactivar la verificación.
 
+```bash
+# Confía en la raíz a nivel de sistema para verificar la firma del OCSP
+sudo cp ~/PKI_root/certificado-rootCA.crt \
+  /usr/local/share/ca-certificates/pki2-root.crt
+sudo update-ca-certificates
+```
+
 !!! warning "No uses los `.p12` de la actividad Apache"
     Los certificados de `certificados_Apache.zip` no llevan AIA (`OCSP;URI`) ni EKU. Para el extra E usa el certificado emitido por **tu** subCA con `user_ext`, que sí incluye la URL del respondedor.
 

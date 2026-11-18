@@ -339,6 +339,15 @@ $ openssl ocsp -issuer certificado-rootCA.crt -cert certificado-subCA.crt \
     Cert Status: good
 ```
 
+Para que Apache pueda verificar la firma de la respuesta OCSP (y no haga falta
+`SSLOCSPNoVerify`), la CA raíz se añadió al almacén del sistema:
+
+```bash
+sudo cp ~/PKI_root/certificado-rootCA.crt \
+  /usr/local/share/ca-certificates/pki2-root.crt
+sudo update-ca-certificates
+```
+
 Con el usuario válido, el acceso es correcto:
 
 ![Acceso a la zona privada con un certificado de usuario válido](img/09-usuario-ok.png){width=90%}
