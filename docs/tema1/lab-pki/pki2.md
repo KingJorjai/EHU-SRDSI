@@ -403,7 +403,8 @@ $ openssl ocsp -issuer subca.crt -cert serv.crt -url http://127.0.0.1:4780 -resp
 | `tlsfeature = status_request` en `[server_ext]` | El certificado muestra `TLS Feature: status_request`. |
 | Respondedor + cliente OCSP, certificado válido | `Cert Status: good`. |
 | Revocación + reinicio del respondedor | `Cert Status: revoked`. |
-| Apache, navegador y Wireshark | **Pendiente de la VM**: no se han simulado capturas. |
+| Sintaxis de los cuatro vhosts OCSP | `httpd -t` con Apache 2.4.71 en un contenedor: `Syntax OK` (rutas remapeadas). |
+| Apache en la VM, navegador y Wireshark | **Pendiente de la VM**: no se han simulado capturas. |
 
 ## Anexo: Wireshark con TLS 1.3
 

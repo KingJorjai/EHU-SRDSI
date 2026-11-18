@@ -388,6 +388,9 @@ subject=C=ES, ST=GI, L=SS, O=SRDSI, OU=FAKE, CN=Usuario2-SRDSI, ...
 | SAN del servidor | `www.srdsi.lab`, `srdsi.lab`. |
 | Contraseñas de los `.p12` | `abc` (`user`) y `abcd` (`user2`). |
 | `user` / `user2` | `OU=LABS` / `OU=FAKE`. |
+| Sintaxis de los cuatro vhosts | `httpd -t` con Apache 2.4.71 en un contenedor: `Syntax OK` (rutas de certificados y logs remapeadas). |
+
+La comprobación de sintaxis se ha hecho con el `httpd.conf` del contenedor y las mismas directivas (`SSLVerifyClient`, `SSLRequire`, `AuthType Digest`), sustituyendo solo las rutas absolutas de la VM. No valida el arranque real ni el navegador.
 
 !!! note "Pendiente de la VM"
     La instalación de Apache, la importación en Firefox, los códigos HTTP reales y las capturas de Wireshark no se han ejecutado en este entorno. No se han inventado resultados: se documenta el resultado esperado y el comando para obtenerlo.
