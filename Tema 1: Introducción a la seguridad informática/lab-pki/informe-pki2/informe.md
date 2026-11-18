@@ -105,9 +105,9 @@ openssl ocsp -port 4747 \
 Comprobación con el cliente de OpenSSL:
 
 ```console
-$ openssl ocsp -issuer certificado-subCA.crt \
-    -cert certs/certificado-www.bocata-jamon.srdsi.lab.crt \
-    -CAfile certificado-subCA.crt \
+$ openssl ocsp -issuer ~/PKI_root/PKI_sub/certificado-subCA.crt \
+    -cert ~/PKI_root/PKI_sub/certs/certificado-www.bocata-jamon.srdsi.lab.crt \
+    -CAfile ~/PKI_root/PKI_sub/certificado-subCA.crt \
     -url http://ocsp.bocata-jamon.srdsi.lab:4747 -resp_text
     OCSP Response Status: successful (0x0)
     Cert Status: good
@@ -131,7 +131,7 @@ CA_PASS='user1Sub_CA' ./emitir_cert.sh \
 ```
 
 ```console
-$ openssl x509 -in certs/certificado-www.bocata-jamon.srdsi.lab.crt \
+$ openssl x509 -in certs/servidor.crt \
     -noout -subject -ext subjectAltName,authorityInfoAccess
 subject=C=ES, ST=GP, O=Bocata de Jamon, OU=LABS,
         CN=www.bocata-jamon.srdsi.lab, emailAddress=webadmin@bocata-jamon.srdsi.lab
@@ -203,9 +203,9 @@ volvió a acceder. El respondedor devuelve `revoked` y el navegador bloquea la
 conexión:
 
 ```console
-$ openssl ocsp -issuer certificado-subCA.crt \
-    -cert certs/certificado-www.bocata-jamon.srdsi.lab.crt \
-    -CAfile certificado-subCA.crt \
+$ openssl ocsp -issuer certs/subCA.crt \
+    -cert certs/servidor-revocado.crt \
+    -CAfile certs/subCA.crt \
     -url http://ocsp.bocata-jamon.srdsi.lab:4747 -resp_text
     OCSP Response Status: successful (0x0)
     Cert Status: revoked
@@ -296,7 +296,7 @@ tlsfeature = status_request
 ```
 
 ```console
-$ openssl x509 -in certs-ms/certificado-www.bocata-jamon.srdsi.lab.crt -noout -text
+$ openssl x509 -in certs/servidor-must-staple.crt -noout -text
             TLS Feature:
                 status_request
 ```
