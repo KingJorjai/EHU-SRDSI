@@ -49,7 +49,7 @@ openssl rand -hex 16
 openssl speed -evp aes-128-gcm
 ```
 
-Contraseñas por entorno (`KEY_PASS`, `CA_PASS`, `P12_PASS`) para que no aparezcan en `ps` ni en el historial.
+Contraseñas por entorno (`KEY_PASS`, `CA_PASS`, `P12_PASS`, `OCSP_PASS`) para que no aparezcan en `ps` ni en el historial.
 
 ```bash
 KEY_PASS='...' bash scripts/gen_solicitud.sh -t usuario -n "Nombre" -e n@srdsi.lab -C ES -O "Bocata de Jamon"
@@ -131,14 +131,14 @@ openssl s_client -connect www.srdsi.lab:443 -servername www.srdsi.lab \
 
 # OCSP: respondedor, consulta y stapling
 openssl ocsp -port 4747 -index index.txt -CA subca.crt \
-  -rsigner ocsp.crt -rkey ocsp.key -text -out log-ocsp.txt
+  -rsigner ocsp.crt -rkey ocsp.key -passin env:OCSP_PASS -text -out log-ocsp.txt
 openssl ocsp -issuer subca.crt -cert servidor.crt \
   -url http://ocsp.bocata-jamon.srdsi.lab:4747 -resp_text
 echo | openssl s_client -connect www.bocata-jamon.srdsi.lab:443 \
   -servername www.bocata-jamon.srdsi.lab -status -CAfile cadena-cas.pem
 ```
 
-`Authorization: Basic ...` viaja en Base64 (no cifrado); Digest envía usuario y hash, no la contraseña. El respondedor OCSP lee `index.txt` al arrancar: **reinícialo tras revocar**. `s_client -status` muestra si el servidor envía el *staple*; `TLS Feature: status_request` en el certificado indica Must-Staple.
+`Authorization: Basic ...` viaja en Base64 (no cifrado); Digest envía usuario y hash, no la contraseña. La clave del respondedor OCSP está cifrada: usa `-passin env:OCSP_PASS` si no quieres el prompt (obligatorio en segundo plano). El respondedor lee `index.txt` al arrancar: **reinícialo tras revocar**. `s_client -status` muestra si el servidor envía el *staple*; `TLS Feature: status_request` en el certificado indica Must-Staple.
 
 [:octicons-arrow-right-24: Ver más — Teoría del servicio WWW](../tema3/teoria/servicio-www.md)
 [:octicons-arrow-right-24: Ver más — Actividad Apache](../tema3/actividades/apache.md)

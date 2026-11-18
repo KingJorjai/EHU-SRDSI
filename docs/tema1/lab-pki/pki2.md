@@ -42,11 +42,16 @@ echo "192.168.56.110 www.bocata-jamon.srdsi.lab ocsp.bocata-jamon.srdsi.lab" | \
 cd ~/PKI_root/PKI_sub
 rm -f log-subCA.txt
 
+# La clave del respondedor se generó cifrada con gen_solicitud.sh. -passin evita
+# el prompt y es obligatorio si el respondedor se lanza en segundo plano.
+export OCSP_PASS='pass_de_la_clave_ocsp'
+
 openssl ocsp -port 4747 \
   -index DB/index.txt \
   -CA certificado-subCA.crt \
   -rsigner certs/certificado-ocsp.bocata-jamon.srdsi.lab.crt \
   -rkey private/clave-privada-ocsp.bocata-jamon.srdsi.lab.key \
+  -passin env:OCSP_PASS \
   -text -out log-subCA.txt
 ```
 
@@ -57,9 +62,12 @@ nohup openssl ocsp -port 4747 \
   -index DB/index.txt -CA certificado-subCA.crt \
   -rsigner certs/certificado-ocsp.bocata-jamon.srdsi.lab.crt \
   -rkey private/clave-privada-ocsp.bocata-jamon.srdsi.lab.key \
-  -text -out log-subCA.txt >/dev/null 2>&1 &
+  -passin env:OCSP_PASS -text -out log-subCA.txt >/dev/null 2>&1 &
 ss -ltnp | grep 4747
 ```
+
+!!! warning "Clave del respondedor cifrada"
+    `gen_solicitud.sh` genera siempre la clave cifrada. Sin `-passin`, OpenSSL pide la contraseña por terminal; en segundo plano o con `nohup` el proceso no arranca. Comprueba el log (`log-subCA.txt`) y que el puerto 4747 está a la escucha antes de seguir.
 
 Comprueba con el cliente de OpenSSL antes de tocar el navegador:
 
@@ -379,7 +387,7 @@ Según el enunciado: informe con el análisis de los resultados de los ejercicio
 
 ## Verificado en local
 
-El flujo de línea de comandos se ha reproducido con **OpenSSL 4.1.0** en una PKI de prueba (subCA, certificado de servidor con SAN, certificado de firma OCSP y respondedor en el puerto 4780). No sustituye a la práctica en la VM, pero confirma los comandos y el comportamiento:
+El flujo completo se ha reproducido en un directorio temporal con los **scripts y la configuración del repositorio** (`gen_solicitud.sh`, `emitir_cert.sh`, `revocar_cert.sh` y `ca-sub_openssl.cnf`) sobre OpenSSL 4.1.0: certificado de servidor con SAN y AIA, certificado de firma OCSP, respondedor, consulta `good`, revocación, reinicio, `revoked`, reemisión con `tlsfeature = status_request` y emisión de un certificado de usuario con su `.p12`. No sustituye a la práctica en la VM, pero confirma los comandos y el comportamiento:
 
 ```console
 $ openssl x509 -in serv.crt -noout -text | grep -A1 "TLS Feature"
@@ -403,6 +411,8 @@ $ openssl ocsp -issuer subca.crt -cert serv.crt -url http://127.0.0.1:4780 -resp
 | `tlsfeature = status_request` en `[server_ext]` | El certificado muestra `TLS Feature: status_request`. |
 | Respondedor + cliente OCSP, certificado válido | `Cert Status: good`. |
 | Revocación + reinicio del respondedor | `Cert Status: revoked`. |
+| Emisión con los scripts del repositorio | Certificado de servidor con SAN y AIA; `.p12` con `clientAuth` y AIA. |
+| Clave del respondedor | Cifrada: hace falta `-passin env:OCSP_PASS` para arrancarlo sin prompt. |
 | Sintaxis de los cuatro vhosts OCSP | `httpd -t` con Apache 2.4.71 en un contenedor: `Syntax OK` (rutas remapeadas). |
 | Apache en la VM, navegador y Wireshark | **Pendiente de la VM**: no se han simulado capturas. |
 

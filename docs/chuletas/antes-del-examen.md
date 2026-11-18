@@ -65,6 +65,7 @@ openssl ocsp -issuer subca.crt -cert certificado.crt \
 - [ ] `apache2ctl configtest` pasa antes de `graceful`; `apache2ctl -S` lista los sitios esperados.
 - [ ] La cadena de CAs está en `SSLCACertificateFile` (`cat subca ca-root > cadena-cas.pem`).
 - [ ] Tras revocar, **reinicia el respondedor OCSP**: lee `index.txt` al arrancar.
+- [ ] La clave del respondedor está cifrada: `-passin env:OCSP_PASS` (obligatorio en segundo plano).
 - [ ] `s_client -status` muestra la respuesta OCSP cuando el *stapling* está activo; la primera conexión puede no llevarla.
 - [ ] Must-Staple: el certificado tiene `TLS Feature: status_request` y se ha emitido de nuevo.
 - [ ] Para pedir certificado de cliente solo en una zona: `SSLVerifyClient optional` + `Require ssl-verify-client`.
