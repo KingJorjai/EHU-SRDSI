@@ -1,0 +1,19 @@
+# Sección [server_ext] de ca-sub_openssl.cnf con OCSP Must-Staple.
+# Añade la última línea a la sección que ya existe en la configuración de la
+# subCA de la fase 1. Después hay que emitir un certificado NUEVO para el sitio
+# web: la extensión no se puede añadir a un certificado ya emitido.
+#
+# Comprobación:
+#   openssl x509 -in servidor.crt -noout -text | grep -A1 "TLS Feature"
+#   TLS Feature:
+#       status_request
+
+[server_ext]
+authorityInfoAccess = @issuer_info
+authorityKeyIdentifier = keyid:always
+basicConstraints = critical,CA:false
+crlDistributionPoints = @crl_info
+extendedKeyUsage = clientAuth,serverAuth
+keyUsage = critical,digitalSignature,keyEncipherment
+subjectKeyIdentifier = hash
+tlsfeature = status_request

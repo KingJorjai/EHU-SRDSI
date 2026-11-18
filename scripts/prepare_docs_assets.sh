@@ -14,7 +14,7 @@ T3="$ROOT/Tema 3: Seguridad en los servicios"
 G="$ROOT/General"
 
 rm -rf "$DEST"
-mkdir -p "$DEST"/{pdf,img/lab-pki,img/lab-openssh,img/lab-macsec,capturas/lab-ssl,capturas/lab-macsec,scripts,config,config/apache,config/pki2,codigo/lab-ssl,certs/lab-ssl,certs/lab-certs,certs/apache,benchmarks}
+mkdir -p "$DEST"/{pdf,img/lab-pki,img/lab-openssh,img/lab-macsec,img/lab-pki2,img/lab-lynis,capturas/lab-ssl,capturas/lab-macsec,capturas/lab-apache,capturas/lab-pki2,resultados/lynis,scripts,config,config/apache,config/pki2,codigo/lab-ssl,certs/lab-ssl,certs/lab-certs,certs/apache,benchmarks}
 
 copy() {
     local src=$1 dst=$2
@@ -64,6 +64,8 @@ copy "$T2/lab-ssl/Lab-ssl-actividad.pdf"     "$DEST/pdf/lab-ssl-actividad.pdf"
 copy "$T2/lab-ssl/Lab-ssl-teoria.pdf"        "$DEST/pdf/lab-ssl-teoria.pdf"
 copy "$T2/lab-ssl/GDB.pdf"                   "$DEST/pdf/gdb.pdf"
 copy "$T2/lab-ssl/informe/informe.pdf"       "$DEST/pdf/informe-ssl.pdf"
+copy "$T1/lab-pki/informe-pki2/informe.pdf"  "$DEST/pdf/informe-pki2.pdf"
+copy "$T1/lab-pki/informe-pki2/entrega-pki2.zip" "$DEST/pdf/entrega-pki2.zip"
 copy "$T2/lab-openssh/Lab_SSH.pdf"           "$DEST/pdf/lab-openssh.pdf"
 copy "$T2/lab-openssh/SSH_PORT-FORWARDING.pdf" "$DEST/pdf/lab-openssh-port-forwarding.pdf"
 copy "$T2/lab-openssh/informe_open_ssh.pdf"  "$DEST/pdf/informe-openssh.pdf"
@@ -80,6 +82,11 @@ done
 copy_dir "$T2/lab-ssl/capturas"      "$DEST/capturas/lab-ssl"
 copy_dir "$T2/actividad-macsec/informe/img" "$DEST/img/lab-macsec"
 copy_dir "$T2/actividad-macsec/capturas"   "$DEST/capturas/lab-macsec"
+copy_dir "$T3/actividad-apache/capturas"   "$DEST/capturas/lab-apache"
+copy_dir "$T3/actividad-lynis/capturas"    "$DEST/img/lab-lynis"
+copy_dir "$T3/actividad-lynis/resultados"  "$DEST/resultados/lynis"
+copy_dir "$T1/lab-pki/informe-pki2/img"    "$DEST/img/lab-pki2"
+copy_dir "$T1/lab-pki/informe-pki2/capturas" "$DEST/capturas/lab-pki2"
 
 # ------------------------------------------------------------------ scripts y configs
 for f in "$T1/lab-pki/scripts"/*.sh; do

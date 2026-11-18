@@ -1,0 +1,19 @@
+== Certificado Must-Staple ==
+            TLS Feature: 
+                status_request
+
+== OCSP del servidor revocado (primera emisión) ==
+    Cert Status: revoked
+    Revocation Time: Nov 18 09:53:38 2026 GMT
+	Revocation Time: Nov 18 09:53:38 2026 GMT
+
+== Usuario revocado: estado OCSP ==
+    Cert Status: revoked
+    Revocation Time: Nov 18 11:12:33 2026 GMT
+	Revocation Time: Nov 18 11:12:33 2026 GMT
+
+== Validación del certificado de usuario por Apache ==
+[Wed Nov 18 12:12:18.030331 2026] [ssl:info] [pid 90405:tid 90432] [client 127.0.0.1:37764] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=bocata_jamon_subCA,OU=PKI,O=Bocata de Jamon,ST=GP,C=ES / issuer: CN=bocata_jamon_rootCA,OU=PKI,O=Bocata de Jamon,ST=GP,C=ES / serial: 852AF8743232FAA94D14B2A15C61AFA7 / notbefore: Nov 18 10:12:31 2026 GMT / notafter: Nov 15 10:12:31 2036 GMT]
+[Wed Nov 18 12:12:18.045397 2026] [ssl:info] [pid 90405:tid 90432] [client 127.0.0.1:37764] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: emailAddress=usuario2@bocata-jamon.srdsi.lab,CN=Usuario-PKI2b,OU=LABS,O=Bocata de Jamon,C=ES / issuer: CN=bocata_jamon_subCA,OU=PKI,O=Bocata de Jamon,ST=GP,C=ES / serial: C9FB6826580D25B8E21F03354DD23181 / notbefore: Nov 18 11:11:38 2026 GMT / notafter: Nov 15 11:11:38 2036 GMT]
+[Wed Nov 18 12:17:34.263704 2026] [ssl:info] [pid 91726:tid 91746] [client 127.0.0.1:59200] AH03239: OCSP validation completed, certificate status: good (0, -1) [subject: CN=bocata_jamon_subCA,OU=PKI,O=Bocata de Jamon,ST=GP,C=ES / issuer: CN=bocata_jamon_rootCA,OU=PKI,O=Bocata de Jamon,ST=GP,C=ES / serial: 852AF8743232FAA94D14B2A15C61AFA7 / notbefore: Nov 18 10:12:31 2026 GMT / notafter: Nov 15 10:12:31 2036 GMT]
+[Wed Nov 18 12:17:34.298724 2026] [ssl:error] [pid 91726:tid 91746] [client 127.0.0.1:59200] AH03239: OCSP validation completed, certificate status: revoked (1, 5) [subject: emailAddress=usuario2@bocata-jamon.srdsi.lab,CN=Usuario-PKI2b,OU=LABS,O=Bocata de Jamon,C=ES / issuer: CN=bocata_jamon_subCA,OU=PKI,O=Bocata de Jamon,ST=GP,C=ES / serial: C9FB6826580D25B8E21F03354DD23181 / notbefore: Nov 18 11:11:38 2026 GMT / notafter: Nov 15 11:11:38 2036 GMT]

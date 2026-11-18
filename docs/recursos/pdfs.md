@@ -42,6 +42,8 @@ Los ficheros se copian a `docs/assets/pdf/` al construir el sitio. Puedes abrirl
 ## Informes resueltos
 
 - [Informe Lab PKI](../assets/pdf/informe-pki.pdf)
+- [Informe PKI — 2ª fase (OCSP)](../assets/pdf/informe-pki2.pdf)
+- [Entrega PKI — 2ª fase (ZIP)](../assets/pdf/entrega-pki2.zip)
 - [Informe Lab SSL](../assets/pdf/informe-ssl.pdf)
 - [Informe Lab OpenSSH](../assets/pdf/informe-openssh.pdf)
 - [Informe Actividad MACsec](../assets/pdf/informe-macsec.pdf)

@@ -4,6 +4,8 @@ La primera fase construyó la PKI y comprobó la revocación con `openssl` actua
 
 [:material-file-pdf-box: Enunciado de la 2ª fase (PDF)](../../assets/pdf/lab-pki2-enunciado.pdf){ .md-button }
 [:material-file-pdf-box: Enunciado de la 1ª fase (PDF)](../../assets/pdf/lab-pki-enunciado.pdf){ .md-button }
+[:material-file-pdf-box: Informe de la 2ª fase (PDF)](../../assets/pdf/informe-pki2.pdf){ .md-button }
+[:material-download: Entrega completa (ZIP)](../../assets/pdf/entrega-pki2.zip){ .md-button }
 
 !!! warning "Requiere la VM"
     El respondedor OCSP, Apache, el navegador y Wireshark se ejecutan en la VM Debian. Aquí están los comandos, las configuraciones y el análisis de cada ejercicio; las capturas y los resultados de navegador quedan marcados como **VM**. El flujo OCSP por línea de comandos sí se ha verificado en local.
@@ -80,8 +82,57 @@ openssl ocsp -issuer certificado-subCA.crt \
 
 Debe responder `Cert Status: good`. En el [apartado de verificación](#verificado-en-local) hay una salida real de este flujo.
 
-## 2. Certificado del sitio web
+### Certificado de la subCA y respondedor de la raíz
 
+En esta PKI el certificado de la subCA también lleva AIA
+(`OCSP - URI:http://ocsp.bocata-jamon.srdsi.lab:4747`). Cuando
+`SSLOCSPEnable` valida el certificado del usuario, Apache comprueba **toda la
+cadena**, incluida la subCA. El respondedor de la subCA no puede responder por
+ella misma (la emitió la raíz) y devuelve `unknown`, con lo que la verificación
+falla aunque el usuario sea válido.
+
+La solución es un segundo respondedor, el de la raíz, en el puerto 4748:
+
+```bash
+cd ~/PKI_root
+OCSP_ROOT_PASS='pass_ocsp_root'
+openssl ocsp -port 4748 -index DB/index.txt -CA certificado-rootCA.crt \
+  -rsigner certs/certificado-ocsp-root.bocata-jamon.srdsi.lab.crt \
+  -rkey ocsp-root/clave-privada-ocsp-root.bocata-jamon.srdsi.lab.key \
+  -passin env:OCSP_ROOT_PASS -text -out log-root.txt
+```
+
+Los comandos completos (emisión del certificado de firma OCSP con la raíz y
+re-firma de la subCA con AIA al 4748) están en
+[`root-ocsp.txt`](../../assets/config/pki2/root-ocsp.txt).
+
+Además, las URL de AIA deben resolver y servir los certificados:
+
+```apache
+# pki-aia.conf: publica subCA.crt y rootCA.crt en /var/www/pki/
+<VirtualHost *:80>
+    ServerName subCA.bocata-jamon.srdsi.lab
+    DocumentRoot /var/www/pki
+</VirtualHost>
+<VirtualHost *:80>
+    ServerName rootCA.bocata-jamon.srdsi.lab
+    DocumentRoot /var/www/pki
+</VirtualHost>
+```
+
+```bash
+sudo cp ~/PKI_root/PKI_sub/certificado-subCA.crt /var/www/pki/subCA.crt
+sudo cp ~/PKI_root/certificado-rootCA.crt        /var/www/pki/rootCA.crt
+echo "127.0.0.1 subCA.bocata-jamon.srdsi.lab rootCA.bocata-jamon.srdsi.lab" | \
+  sudo tee -a /etc/hosts
+```
+
+Fichero: [`pki-aia.conf`](../../assets/config/pki2/pki-aia.conf).
+
+Si tu subCA no lleva AIA, con el respondedor de la subCA es suficiente; si lo
+lleva, añade el de la raíz y apunta el AIA de la subCA al 4748.
+
+## 2. Certificado del sitio web
 **VM**. Pide un certificado de servicio con SAN y emítelo con `server_ext` (que incluye el AIA con la URL OCSP):
 
 ```bash
@@ -111,8 +162,12 @@ Prepara los ficheros de Apache:
 sudo mkdir -p /etc/apache2/ssl/pki2 /var/www/pki2/docs
 sudo install -m 644 ~/PKI_root/PKI_sub/certs/certificado-www.bocata-jamon.srdsi.lab.crt \
   /etc/apache2/ssl/pki2/servidor.crt
-sudo install -m 600 ~/PKI_root/PKI_sub/servidor/clave-privada-www.bocata-jamon.srdsi.lab.key \
-  /etc/apache2/ssl/pki2/servidor.key
+# La clave se genera cifrada: Apache no puede pedir la passphrase al arrancar
+# como servicio. Descífrala antes de instalarla.
+KEY_PASS='pass_de_la_clave' openssl pkey \
+  -in ~/PKI_root/PKI_sub/servidor/clave-privada-www.bocata-jamon.srdsi.lab.key \
+  -passin env:KEY_PASS -out /tmp/servidor-pki2.key
+sudo install -m 600 /tmp/servidor-pki2.key /etc/apache2/ssl/pki2/servidor.key
 sudo install -m 644 ~/PKI_root/PKI_sub/certificado-subCA.crt /etc/apache2/ssl/pki2/subCA.crt
 
 sudo sh -c 'cat /etc/apache2/ssl/pki2/subCA.crt \
@@ -278,8 +333,10 @@ Instala el certificado y la clave como `servidor-must-staple.crt`/`.key`:
 ```bash
 sudo install -m 644 ~/PKI_root/PKI_sub/certs-ms/certificado-www.bocata-jamon.srdsi.lab.crt \
   /etc/apache2/ssl/pki2/servidor-must-staple.crt
-sudo install -m 600 ~/PKI_root/PKI_sub/servidor-ms/clave-privada-www.bocata-jamon.srdsi.lab.key \
-  /etc/apache2/ssl/pki2/servidor-must-staple.key
+KEY_PASS='pass_de_la_clave' openssl pkey \
+  -in ~/PKI_root/PKI_sub/servidor-ms/clave-privada-www.bocata-jamon.srdsi.lab.key \
+  -passin env:KEY_PASS -out /tmp/servidor-ms.key
+sudo install -m 600 /tmp/servidor-ms.key /etc/apache2/ssl/pki2/servidor-must-staple.key
 ```
 
 Activa [`pki2-ocsp-must-staple.conf`](../../assets/config/pki2/pki2-ocsp-must-staple.conf) (misma configuración de *stapling*, distintos ficheros) y recarga Apache.
@@ -345,6 +402,15 @@ CA_PASS='pass_de_la_CA' ~/PKI_scripts/revocar_cert.sh \
 
 En Wireshark se ve la consulta **de Apache al respondedor** por el puerto 4747, no la del navegador. Si Apache cachea la respuesta, reinícialo para repetir la prueba.
 
+!!! warning "La cadena completa se valida"
+    `SSLOCSPEnable` comprueba el estado de **cada** certificado de la cadena del
+    cliente. Si el certificado de la subCA lleva AIA, Apache preguntará también
+    por él: hace falta el respondedor de la raíz en 4748 y que las URL de AIA
+    resuelvan (ver [Certificado de la subCA y respondedor de la raíz](#certificado-de-la-subca-y-respondedor-de-la-raiz)).
+    Con la cadena y la raíz en el almacén del sistema no se necesita
+    `SSLOCSPNoVerify`; si aparece `root ca not trusted`, revisa el AIA y el
+    almacén antes de desactivar la verificación.
+
 !!! warning "No uses los `.p12` de la actividad Apache"
     Los certificados de `certificados_Apache.zip` no llevan AIA (`OCSP;URI`) ni EKU. Para el extra E usa el certificado emitido por **tu** subCA con `user_ext`, que sí incluye la URL del respondedor.
 
@@ -352,14 +418,15 @@ En Wireshark se ve la consulta **de Apache al respondedor** por el puerto 4747, 
 
 Según el enunciado: informe con el análisis de los resultados de los ejercicios y pantallazos de los errores del navegador y de los accesos a los sitios virtuales, capturas de Wireshark, los certificados del sitio web y del servidor OCSP y los ficheros de configuración de los sitios virtuales para los tres casos OCSP.
 
-- [ ] Respondedor OCSP en marcha y consulta `openssl ocsp` con `good` y `revoked`.
-- [ ] Certificado del sitio con SAN y AIA; cadena instalada en Apache.
-- [ ] Ejercicio 1: tres escenarios (sin OCSP, con OCSP, revocado) con capturas.
-- [ ] Ejercicio 2: *stapling* activo; handshake TLS 1.2 y TLS 1.3 comparado.
-- [ ] Must-Staple: extensión en el certificado, denegación sin respondedor y acceso con respondedor.
-- [ ] Extra E: usuario válido y revocado, con y sin `SSLOCSPEnable`.
-- [ ] Certificados del sitio y del OCSP adjuntos.
-- [ ] Tres configuraciones de Apache (regular, *stapling*, *must-staple`) adjuntas.
+- [x] Respondedor OCSP en marcha y consulta `openssl ocsp` con `good` y `revoked`.
+- [x] Certificado del sitio con SAN y AIA; cadena instalada en Apache.
+- [x] Ejercicio 1: tres escenarios (sin OCSP, con OCSP, revocado) con capturas.
+- [x] Ejercicio 2: *stapling* activo; handshake TLS 1.2 y TLS 1.3 comparado.
+- [x] Must-Staple: extensión en el certificado, denegación sin respondedor y acceso con respondedor.
+- [x] Extra E: usuario válido y revocado, con y sin `SSLOCSPEnable`.
+- [x] Certificados del sitio y del OCSP adjuntos.
+- [x] Tres configuraciones de Apache (regular, *stapling*, *must-staple*) adjuntas.
+- [x] Informe completo en PDF.
 
 ### Guion de capturas para una sola sesión
 
@@ -385,9 +452,54 @@ Según el enunciado: informe con el análisis de los resultados de los ejercicio
 8. **Conclusiones**: soft-fail, *stapling* y Must-Staple; cuándo usar cada uno.
 9. **Anexos**: certificados del sitio y del OCSP y las tres configuraciones de Apache.
 
+## Resultados en la VM
+
+La práctica se ejecutó en la VM Debian 13 (Apache 2.4.71, OpenSSL 3.5.7,
+Firefox ESR). El informe completo está en
+[`informe-pki2.pdf`](../../assets/pdf/informe-pki2.pdf).
+
+| Escenario | Resultado |
+| --- | --- |
+| OCSP parado, sitio con OCSP regular | Página **cargada** (soft-fail); el navegador intenta el 4747 y recibe `RST`. |
+| OCSP en marcha | El navegador consulta al 4747 y recibe `good`; se ven las peticiones y respuestas en Wireshark. |
+| Servidor revocado | `Cert Status: revoked` y Firefox bloquea con `SEC_ERROR_REVOKED_CERTIFICATE`. |
+| Stapling | `s_client -status` devuelve `Cert Status: good` en TLS 1.2 y TLS 1.3; el navegador no consulta el 4747. |
+| Must-Staple sin respondedor | Acceso denegado con `SEC_ERROR_OCSP_TRY_SERVER_LATER`. |
+| Must-Staple con respondedor | Acceso correcto. |
+| Usuario válido | `200 OK`; Apache valida subCA (4748) y usuario (4747). |
+| Usuario revocado sin `SSLOCSPEnable` | **200 OK** por consola: Apache no consulta la revocación. |
+| Usuario revocado con `SSLOCSPEnable` | Alerta TLS `certificate revoked`; Firefox muestra `SSL_ERROR_REVOKED_CERT_ALERT`. |
+
+![OCSP regular sin respondedor: soft-fail](../../assets/img/lab-pki2/01-regular-sin-ocsp.png)
+
+![OCSP regular con el respondedor en marcha](../../assets/img/lab-pki2/02-regular-con-ocsp.png)
+
+![Wireshark: peticiones y respuestas OCSP](../../assets/img/lab-pki2/03-regular-wireshark.png)
+
+![Certificado del servidor revocado](../../assets/img/lab-pki2/04-servidor-revocado.png)
+
+![Sitio con OCSP stapling](../../assets/img/lab-pki2/05-stapling.png)
+
+![Respuesta OCSP en el handshake (TLS 1.2 y 1.3)](../../assets/img/lab-pki2/06-stapling-sclient.png)
+
+![Must-Staple sin respondedor: denegado](../../assets/img/lab-pki2/07-must-staple-sin-ocsp.png)
+
+![Must-Staple con respondedor: acceso correcto](../../assets/img/lab-pki2/08-must-staple-con-ocsp.png)
+
+![Usuario válido con SSLOCSPEnable](../../assets/img/lab-pki2/09-usuario-ok.png)
+
+![Usuario revocado sin SSLOCSPEnable: HTTP 200 por consola](../../assets/img/lab-pki2/10-usuario-revocado-sin-ocsp.png)
+
+![Usuario revocado con SSLOCSPEnable: SSL_ERROR_REVOKED_CERT_ALERT](../../assets/img/lab-pki2/11-usuario-revocado-con-ocsp.png)
+
+!!! note "OCSP del navegador en el extra E"
+    Para el extra E se desactivó la validación OCSP del navegador
+    (`security.OCSP.enabled = 0`) y así se observa solo la decisión de Apache.
+    Las capturas son de la configuración final, sin `SSLOCSPNoVerify`.
+
 ## Verificado en local
 
-El flujo completo se ha reproducido en un directorio temporal con los **scripts y la configuración del repositorio** (`gen_solicitud.sh`, `emitir_cert.sh`, `revocar_cert.sh` y `ca-sub_openssl.cnf`) sobre OpenSSL 4.1.0: certificado de servidor con SAN y AIA, certificado de firma OCSP, respondedor, consulta `good`, revocación, reinicio, `revoked`, reemisión con `tlsfeature = status_request` y emisión de un certificado de usuario con su `.p12`. No sustituye a la práctica en la VM, pero confirma los comandos y el comportamiento:
+El flujo completo se ha reproducido primero en un directorio temporal con los **scripts y la configuración del repositorio** (`gen_solicitud.sh`, `emitir_cert.sh`, `revocar_cert.sh` y `ca-sub_openssl.cnf`) sobre OpenSSL 4.1.0: certificado de servidor con SAN y AIA, certificado de firma OCSP, respondedor, consulta `good`, revocación, reinicio, `revoked`, reemisión con `tlsfeature = status_request` y emisión de un certificado de usuario con su `.p12`. Después se repitió en la VM; los resultados están en el apartado anterior.
 
 ```console
 $ openssl x509 -in serv.crt -noout -text | grep -A1 "TLS Feature"
@@ -414,7 +526,7 @@ $ openssl ocsp -issuer subca.crt -cert serv.crt -url http://127.0.0.1:4780 -resp
 | Emisión con los scripts del repositorio | Certificado de servidor con SAN y AIA; `.p12` con `clientAuth` y AIA. |
 | Clave del respondedor | Cifrada: hace falta `-passin env:OCSP_PASS` para arrancarlo sin prompt. |
 | Sintaxis de los cuatro vhosts OCSP | `httpd -t` con Apache 2.4.71 en un contenedor: `Syntax OK` (rutas remapeadas). |
-| Apache en la VM, navegador y Wireshark | **Pendiente de la VM**: no se han simulado capturas. |
+| Apache, navegador y Wireshark en la VM | Verificado; capturas y `.pcapng` en [Resultados en la VM](#resultados-en-la-vm). |
 
 ## Anexo: Wireshark con TLS 1.3
 

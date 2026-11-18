@@ -1,0 +1,11 @@
+$ openssl s_client -status -tls1_2
+OCSP response: 
+    OCSP Response Status: successful (0x0)
+    Produced At: Nov 18 10:43:57 2026 GMT
+    Cert Status: good
+
+$ openssl s_client -status -tls1_3
+OCSP response: 
+    OCSP Response Status: successful (0x0)
+    Produced At: Nov 18 10:43:57 2026 GMT
+    Cert Status: good

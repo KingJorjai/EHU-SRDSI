@@ -2,6 +2,7 @@
 
 [:material-file-pdf-box: Enunciado del laboratorio (PDF)](../../assets/pdf/lab-pki-enunciado.pdf){ .md-button }
 [:material-file-pdf-box: Informe completo (PDF)](../../assets/pdf/informe-pki.pdf){ .md-button }
+[:material-file-pdf-box: 2ª fase — informe OCSP (PDF)](../../assets/pdf/informe-pki2.pdf){ .md-button }
 
 ## Objetivo
 

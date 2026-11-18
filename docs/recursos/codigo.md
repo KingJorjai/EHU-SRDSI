@@ -117,6 +117,8 @@ Se copian a `/etc/apache2/sites-available/` y se activan con `a2ensite`. Los cer
 | [`pki2-ocsp-stapling.conf`](../assets/config/pki2/pki2-ocsp-stapling.conf) | OCSP stapling: consulta Apache y envía la respuesta. |
 | [`pki2-ocsp-must-staple.conf`](../assets/config/pki2/pki2-ocsp-must-staple.conf) | Must-Staple: exige certificado con `TLS Feature: status_request`. |
 | [`pki2-usuario-ocsp.conf`](../assets/config/pki2/pki2-usuario-ocsp.conf) | Validación OCSP del certificado de usuario (`SSLOCSPEnable on`). |
+| [`pki-aia.conf`](../assets/config/pki2/pki-aia.conf) | Publica los certificados de las CAs en las URL de AIA. |
+| [`root-ocsp.txt`](../assets/config/pki2/root-ocsp.txt) | Comandos del respondedor OCSP de la CA raíz (4748). |
 | [`server-ext-must-staple.txt`](../assets/config/pki2/server-ext-must-staple.txt) | Sección `[server_ext]` con `tlsfeature = status_request`. |
 
 El procedimiento completo está en [PKI — 2ª fase: validación OCSP](../tema1/lab-pki/pki2.md).

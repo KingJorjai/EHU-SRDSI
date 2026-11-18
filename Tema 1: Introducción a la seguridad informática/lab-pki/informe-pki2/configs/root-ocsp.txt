@@ -1,0 +1,29 @@
+# Respondedor OCSP de la CA raíz (puerto 4748)
+#
+# Hace falta cuando el certificado de la subCA lleva AIA y Apache valida toda
+# la cadena del certificado de cliente: el respondedor de la subCA (4747) no
+# puede responder por la propia subCA, porque la emitió la raíz.
+#
+# 1) Certificado de firma OCSP emitido por la raíz
+KEY_PASS='pass_ocsp_root' ~/PKI_scripts/gen_solicitud.sh -t servicio \
+  -n "ocsp-root.bocata-jamon.srdsi.lab" \
+  -d "ocsp-root.bocata-jamon.srdsi.lab" \
+  -e ocsp-root@bocata-jamon.srdsi.lab -C ES -S GP -L Donostia \
+  -O "Bocata de Jamon" -U PKI -o ~/PKI_root/ocsp-root
+
+cd ~/PKI_root
+CA_PASS='pass_root' openssl ca -batch -notext -config ca-root_openssl.cnf \
+  -extensions ocsp_ext -passin env:CA_PASS \
+  -in ocsp-root/solicitud-ocsp-root.bocata-jamon.srdsi.lab.csr \
+  -out certs/certificado-ocsp-root.bocata-jamon.srdsi.lab.crt
+
+# 2) Respondedor
+openssl ocsp -port 4748 -index DB/index.txt -CA certificado-rootCA.crt \
+  -rsigner certs/certificado-ocsp-root.bocata-jamon.srdsi.lab.crt \
+  -rkey ocsp-root/clave-privada-ocsp-root.bocata-jamon.srdsi.lab.key \
+  -passin env:OCSP_ROOT_PASS -text -out log-root.txt
+
+# 3) La subCA debe apuntar su AIA a este respondedor. Si el certificado actual
+#    apunta al 4747, vuelve a firmarlo desde la raíz con una sección
+#    [subca_ext] cuyo OCSP;URI.0 sea http://ocsp-root.bocata-jamon.srdsi.lab:4748
+#    (misma clave y mismo subject; los certificados emitidos siguen valiendo).

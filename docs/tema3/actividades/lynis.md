@@ -117,22 +117,12 @@ sudo grep '^hardening_index=' /var/log/lynis-report.dat
 
 ## Prueba 3: root frente a usuario normal
 
-Lynis funciona sin privilegios, pero **omite las pruebas que necesitan leer ficheros protegidos o consultar el estado del sistema**. En la ejecución local de comprobación (esta máquina, sin root, versión 3.1.7) la propia herramienta listó:
+Lynis funciona sin privilegios, pero **omite las pruebas que necesitan leer ficheros protegidos o consultar el estado del sistema**. En la VM, la ejecución como `user1` mostró el aviso `NON-PRIVILEGED SCAN MODE` («Some tests will be skipped») y dejó unas **250 pruebas sin ejecutar**. Entre las más relevantes:
 
 ```text
-Skipped tests due to non-privileged mode:
-  BOOT-5108 - Check Syslinux as bootloader
-  BOOT-5109 - Check rEFInd as bootloader
-  BOOT-5116 - Check if system is booted in UEFI mode
-  AUTH-9216 - Check group and shadow group files
-  AUTH-9229 - Check password hashing methods
-  AUTH-9252 - Check ownership and permissions for sudo configuration files
-  AUTH-9288 - Checking for expired passwords
-  FILE-6368 - Checking ACL support on root file system
-  FIRE-4540 - Check for empty nftables configuration
-  FIRE-4586 - Check firewall logging
-  CRYP-7930 - Determine if system uses LUKS block device encryption
-  CRYP-7931 - Determine if system uses encrypted swap
+tests_skipped=... SSH-7408 FIRE-4512 FIRE-4540 FIRE-4586
+             PKGS-7392 AUTH-9216 AUTH-9229 AUTH-9252 AUTH-9288
+             CRYP-7930 CRYP-7931 FILE-6368 BOOT-5116 BOOT-5108 ...
 ```
 
 | Como root | Como usuario |
@@ -153,6 +143,32 @@ Conclusión: para la entrega se ejecuta con `sudo`; el modo usuario sirve para u
 - [ ] Índice de endurecimiento inicial (y final, si se aplican correcciones).
 - [ ] Comparación razonada entre ejecución como root y como usuario.
 
+## Resultados en la VM
+
+La auditoría se ejecutó en la VM Debian 13 con Lynis 3.1.7 (descarga directa).
+Resumen:
+
+| Ejecución | Hardening index | Warnings | Suggestions | Pruebas omitidas |
+| --- | --- | --- | --- | --- |
+| `sudo ./lynis audit system --auditor "Jorge" --quick` | **63** | **1** (`PKGS-7392`) | 48 | las que faltan por herramientas |
+| `./lynis audit system --auditor "Jorge" --quick` (sin root) | 63 | 0 | 35 | ~250 (`non-privileged`) |
+
+El único aviso rojo con root fue `PKGS-7392` («Found one or more vulnerable
+packages»): el sistema tiene paquetes pendientes de actualización. Lynis
+recomienda `apt-get update`, `apt-get upgrade` y/o `unattended-upgrades`.
+Sin root no aparece ese aviso porque la prueba de paquetes se omite; es un
+ejemplo claro de por qué el índice y los avisos de una ejecución sin
+privilegios no son comparables.
+
+![Resumen de las dos ejecuciones de Lynis](../../assets/img/lab-lynis/01-lynis-resumen.png)
+
+Salidas completas:
+
+- [Auditoría como root](../../assets/resultados/lynis/lynis-root.txt)
+- [Auditoría como usuario](../../assets/resultados/lynis/lynis-user.txt)
+- [Informe de root (`lynis-report.dat`)](../../assets/resultados/lynis/lynis-report-root.dat)
+- [Informe de usuario (`lynis-report.dat`)](../../assets/resultados/lynis/lynis-report-user.dat)
+
 ## Comprobado en local
 
 ```console
@@ -172,4 +188,6 @@ This option (-c) is deprecated.
 Use: lynis audit system [options]
 ```
 
-La auditoría completa **no** se ha ejecutado sobre la VM desde este entorno; la ejecución local sin privilegios solo se ha usado para verificar los comandos y la lista de pruebas omitidas.
+La auditoría completa **sí** se ha ejecutado en la VM; los ficheros anteriores
+son la salida real. La comprobación local solo sirvió para verificar la versión,
+los comandos y la lista de pruebas omitidas sin privilegios.

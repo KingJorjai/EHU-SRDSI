@@ -355,6 +355,53 @@ En Wireshark: **Editar → Preferencias → Protocolos → TLS → (Pre)-Master-
 - [ ] Zona privada con `SSLRequire` y tabla de resultados.
 - [ ] Capturas de Wireshark (HTTP, Digest, handshake TLS y, opcionalmente, tráfico descifrado con *keylog*).
 
+## Resultados obtenidos en la VM
+
+Las pruebas se ejecutaron en la VM Debian 13 con Apache 2.4.71 y Firefox ESR,
+capturando la pantalla en un servidor X virtual para no interferir con el
+escritorio del anfitrión.
+
+| Prueba | Resultado |
+| --- | --- |
+| `http://www.srdsi.lab/` | `200` y página «Laboratorio SRDSI». |
+| Zona privada sin credenciales | `401` con petición de usuario y contraseña. |
+| Zona privada con `admin1:password` | `200`; en Wireshark, `Authorization: Basic YWRtaW4xOnBhc3N3b3Jk`. |
+| Digest con `admin1:password` | `200`; Wireshark muestra `username="admin1"`, nonce y `response` (hash), no la contraseña. |
+| HTTPS antes de importar la CA | Aviso «Cuidado. Parece que algo no está bien» (`SEC_ERROR_UNKNOWN_ISSUER`). |
+| HTTPS después de importar `ca_cert.pem` | Página con candado válido. |
+| HTTPS con `SSLVerifyClient require` y `user.p12` | Acceso correcto. |
+| HTTPS con `SSLVerifyClient require` sin certificado | `SSL_ERROR_RX_CERTIFICATE_REQUIRED_ALERT`. |
+| Zona privada con certificado: sin certificado | `403 Forbidden`. |
+| Zona privada con certificado: `user.p12` (`OU=LABS`) | `200 OK`. |
+| Zona privada con certificado: `user2.p12` (`OU=FAKE`) | `403 Forbidden`. |
+
+![Sitio HTTP con el contenido de prueba](../../assets/capturas/lab-apache/01-http-publico.png)
+
+![Petición de credenciales de la zona privada](../../assets/capturas/lab-apache/02-basic-prompt.png)
+
+![Acceso a la zona privada tras autenticarse](../../assets/capturas/lab-apache/03-basic-acceso.png)
+
+![Wireshark: cabecera Authorization Basic en claro](../../assets/capturas/lab-apache/04-wireshark-basic.png)
+
+![Wireshark: Authorization Digest con usuario y hash](../../assets/capturas/lab-apache/05-wireshark-digest.png)
+
+![Aviso de certificado antes de importar la CA](../../assets/capturas/lab-apache/06-https-aviso.png)
+
+![HTTPS con la CA importada](../../assets/capturas/lab-apache/07-https-ok.png)
+
+![Sitio con certificado de cliente obligatorio](../../assets/capturas/lab-apache/08-mutual.png)
+
+![Error al no presentar certificado de cliente](../../assets/capturas/lab-apache/09-sin-certificado.png)
+
+![Zona privada sin certificado: 403](../../assets/capturas/lab-apache/10-zona-sin-cert.png)
+
+![Zona privada con el usuario autorizado: 200](../../assets/capturas/lab-apache/11-zona-user.png)
+
+![Zona privada con user2 (OU=FAKE): 403](../../assets/capturas/lab-apache/12-zona-user2.png)
+
+Las capturas de tráfico están en `docs/assets/capturas/lab-apache/`
+(`13-basic.pcapng` y `14-digest.pcapng`).
+
 ## Comprobado en local
 
 Estas comprobaciones no necesitan la VM y se han ejecutado con OpenSSL 4.1.0 sobre los ficheros del paquete:
@@ -392,5 +439,8 @@ subject=C=ES, ST=GI, L=SS, O=SRDSI, OU=FAKE, CN=Usuario2-SRDSI, ...
 
 La comprobación de sintaxis se ha hecho con el `httpd.conf` del contenedor y las mismas directivas (`SSLVerifyClient`, `SSLRequire`, `AuthType Digest`), sustituyendo solo las rutas absolutas de la VM. No valida el arranque real ni el navegador.
 
-!!! note "Pendiente de la VM"
-    La instalación de Apache, la importación en Firefox, los códigos HTTP reales y las capturas de Wireshark no se han ejecutado en este entorno. No se han inventado resultados: se documenta el resultado esperado y el comando para obtenerlo.
+!!! note "Alcance de la comprobación"
+    La instalación, la importación en Firefox, los códigos HTTP y las capturas
+    de Wireshark se han ejecutado en la VM Debian 13 (Apache 2.4.71, Firefox
+    ESR). La comprobación de sintaxis de los cuatro vhosts se hizo además con
+    `httpd -t` de Apache 2.4.71 en un contenedor, con las rutas remapeadas.
