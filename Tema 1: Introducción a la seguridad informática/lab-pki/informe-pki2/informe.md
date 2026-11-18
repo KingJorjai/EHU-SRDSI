@@ -491,12 +491,12 @@ tshark -r capturas/06-tls13-stapling.pcapng -o tls.keylog_file:tls13.keys \
 | Requisito del enunciado | Dónde |
 | --- | --- |
 | Respondedor OCSP en marcha | Sección 3 |
-| Ejercicio 1: sin OCSP (soft-fail), con OCSP y revocado | Sección 5 y capturas 1–4 |
+| Ejercicio 1: sin OCSP (soft-fail), con OCSP y revocado | Sección 5 |
 | Ejercicio 2: *stapling*, quién consulta y cuándo | Sección 6 |
-| Ejercicio 2: comparación TLS 1.2 / TLS 1.3 | Sección 6 y capturas 12–13 |
+| Ejercicio 2: comparación TLS 1.2 / TLS 1.3 | Sección 6 |
 | Ejercicio 2: revocar y reintentar | Sección 6 |
-| Must-Staple: extensión, sin respondedor y con respondedor | Sección 7 y capturas 7–8 |
-| Ejercicio E: usuario válido y revocado | Sección 8 y capturas 9–11 |
+| Must-Staple: extensión, sin respondedor y con respondedor | Sección 7 |
+| Ejercicio E: usuario válido y revocado | Sección 8 |
 | Ejercicio E: `SSLOCSPEnable on` | Sección 8 |
 | Capturas de Wireshark | Secciones 5, 6 y 8; anexo C |
 | Certificados del sitio y del OCSP | Anexo B |
