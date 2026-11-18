@@ -464,6 +464,7 @@ Firefox ESR). El informe completo está en
 | OCSP en marcha | El navegador consulta al 4747 y recibe `good`; se ven las peticiones y respuestas en Wireshark. |
 | Servidor revocado | `Cert Status: revoked` y Firefox bloquea con `SEC_ERROR_REVOKED_CERTIFICATE`. |
 | Stapling | `s_client -status` devuelve `Cert Status: good` en TLS 1.2 y TLS 1.3; el navegador no consulta el 4747. |
+| Servidor revocado con stapling | `Cert Status: revoked` en el *staple*; Firefox bloquea con `SEC_ERROR_REVOKED_CERTIFICATE`. |
 | Must-Staple sin respondedor | Acceso denegado con `SEC_ERROR_OCSP_TRY_SERVER_LATER`. |
 | Must-Staple con respondedor | Acceso correcto. |
 | Usuario válido | `200 OK`; Apache valida subCA (4748) y usuario (4747). |
@@ -483,6 +484,8 @@ Firefox ESR). El informe completo está en
 ![Respuesta OCSP en el handshake (TLS 1.2 y 1.3)](../../assets/img/lab-pki2/06-stapling-sclient.png)
 
 ![Mensajes de la respuesta OCSP en TLS 1.2 y TLS 1.3](../../assets/img/lab-pki2/13-tls12-tls13-mensajes.png)
+
+![Servidor revocado con stapling activo](../../assets/img/lab-pki2/17-stapling-revocado.png)
 
 ![Must-Staple sin respondedor: denegado](../../assets/img/lab-pki2/07-must-staple-sin-ocsp.png)
 

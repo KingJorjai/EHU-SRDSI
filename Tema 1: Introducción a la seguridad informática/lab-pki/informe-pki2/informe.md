@@ -270,9 +270,20 @@ En la captura `04-stapling.pcapng` no hay ninguna conexión del navegador al
 puerto 4747: las consultas las hace Apache antes de enviar el *staple*.
 
 Al revocar el certificado del servidor y reiniciar el respondedor, el *staple*
-acaba conteniendo `revoked` y el navegador rechaza la conexión. Para verlo sin
-esperar a la caché se reinició Apache y se usó
-`SSLStaplingResponseMaxAge 90`.
+acaba conteniendo `revoked` y el navegador rechaza la conexión con
+`SEC_ERROR_REVOKED_CERTIFICATE`. Para verlo sin esperar a la caché se reinició
+Apache y se usó `SSLStaplingResponseMaxAge 90`.
+
+![Servidor revocado con stapling activo: Firefox bloquea la conexión](img/17-stapling-revocado.png){width=90%}
+
+La captura `09-stapling-revocado.pcapng` contiene la respuesta que Apache
+recibe del respondedor:
+
+```console
+$ tshark -r capturas/09-stapling-revocado.pcapng -d tcp.port==4747,http \
+    -Y 'ocsp' -V | grep certStatus
+    certStatus: revoked (1)
+```
 
 # 7. Must-Staple (RFC 7633)
 
@@ -459,6 +470,7 @@ bocata-jamon.srdsi.lab`; el de Must-Staple añade
 | `06-tls13-stapling.pcapng` | `status_request` en TLS 1.3 (requiere *keylog*). |
 | `07-extrae-good.pcapng` | Consultas de Apache por subCA (4748) y usuario (4747), `good`. |
 | `08-extrae-revoked.pcapng` | Igual, con el usuario `revoked`. |
+| `09-stapling-revocado.pcapng` | Respuesta `revoked` que recibe Apache con stapling. |
 
 Comandos de reproducción:
 
