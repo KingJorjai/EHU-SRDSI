@@ -185,11 +185,12 @@ OCSP. La captura muestra dos peticiones `POST` con contenido
 $ tshark -r capturas/02-regular-con-ocsp.pcapng \
     -d tcp.port==4747,http -Y 'http.request or http.response' \
     -T fields -e http.request.method -e http.response.code -e http.content_type
-POST        application/ocsp-request
-    200     application/ocsp-response
-POST        application/ocsp-request
-    200     application/ocsp-response
 ```
+
+| Petición | Respuesta |
+| --- | --- |
+| `POST` · `application/ocsp-request` | `200` · `application/ocsp-response` |
+| `POST` · `application/ocsp-request` | `200` · `application/ocsp-response` |
 
 Las dos peticiones corresponden a las conexiones que abrió el navegador en esa
 carga; cada una pide el estado del certificado del servidor.
@@ -385,11 +386,12 @@ $ tshark -r capturas/07-extrae-good.pcapng \
     -d tcp.port==4748,http -d tcp.port==4747,http \
     -Y 'http.request or http.response' \
     -T fields -e tcp.dstport -e http.request.method -e http.response.code
-4748  POST
-39190       200
-4747  POST
-55226       200
 ```
+
+| Consulta | Petición | Respuesta |
+| --- | --- | --- |
+| 4748 (subCA) | `POST` | `200` |
+| 4747 (usuario) | `POST` | `200` |
 
 ![Dos consultas OCSP de Apache: subCA (4748) y usuario (4747)](img/14-extrae-ocsp-good.png){width=90%}
 
@@ -445,17 +447,17 @@ En `certs/` se incluyen los certificados públicos del sitio (normal y
 Must-Staple), el de firma OCSP de la subCA, el de firma OCSP de la raíz, la
 subCA, la raíz y el certificado de usuario. Las claves privadas no se adjuntan.
 
-| Fichero | CN | Emisor | Serial | Validez |
-| --- | --- | --- | --- | --- |
-| `rootCA.crt` | `bocata_jamon_rootCA` | él mismo | `852A…A3` | 2026-10-10 → 2036-10-07 |
-| `subCA.crt` | `bocata_jamon_subCA` | rootCA | `852A…A7` | 2026-11-18 → 2036-11-15 |
-| `servidor.crt` | `www.bocata-jamon.srdsi.lab` | subCA | `C9FB…317E` | 2026-11-18 → 2036-11-15 |
-| `servidor-revocado.crt` | `www.bocata-jamon.srdsi.lab` | subCA | `C9FB…317D` | 2026-11-18 → 2036-11-15 |
-| `servidor-must-staple.crt` | `www.bocata-jamon.srdsi.lab` | subCA | `C9FB…317F` | 2026-11-18 → 2036-11-15 |
-| `ocsp-subCA.crt` | `ocsp.bocata-jamon.srdsi.lab` | subCA | `C9FB…317C` | 2026-10-10 → 2036-10-07 |
-| `ocsp-root.crt` | `ocsp-root.bocata-jamon.srdsi.lab` | rootCA | `852A…A6` | 2026-11-18 → 2036-11-15 |
-| `usuario.crt` | `Usuario-PKI2b` | subCA | `C9FB…3181` | 2026-11-18 → 2036-11-15 |
-| `usuario-pcap.crt` | `Usuario-PKI2c` | subCA | `C9FB…3182` | 2026-11-18 → 2036-11-15 |
+| Fichero | Certificado |
+| --- | --- |
+| `rootCA.crt` | CA raíz `bocata_jamon_rootCA`, autofirmada, serial `852A…A3`; 2026-10-10 → 2036-10-07 |
+| `subCA.crt` | SubCA `bocata_jamon_subCA`, emitida por rootCA, serial `852A…A7`; 2026-11-18 → 2036-11-15 |
+| `servidor.crt` | Sitio `www.bocata-jamon.srdsi.lab`, emitido por subCA, serial `C9FB…317E`; revocado en el Ejercicio 2 |
+| `servidor-revocado.crt` | Primera emisión del sitio, serial `C9FB…317D`; revocada en el Ejercicio 1 |
+| `servidor-must-staple.crt` | Sitio con `TLS Feature: status_request`, serial `C9FB…317F` |
+| `ocsp-subCA.crt` | Respondedor `ocsp.bocata-jamon.srdsi.lab`, emitido por subCA, serial `C9FB…317C` |
+| `ocsp-root.crt` | Respondedor `ocsp-root.bocata-jamon.srdsi.lab`, emitido por rootCA, serial `852A…A6` |
+| `usuario.crt` | Usuario `Usuario-PKI2b`, emitido por subCA, serial `C9FB…3181`; revocado en el Ejercicio E |
+| `usuario-pcap.crt` | Usuario `Usuario-PKI2c`, emitido por subCA, serial `C9FB…3182`; revocado en el Ejercicio E |
 
 El certificado del sitio lleva `subjectAltName = www.bocata-jamon.srdsi.lab,
 bocata-jamon.srdsi.lab`; el de Must-Staple añade
@@ -535,12 +537,7 @@ tshark -r capturas/06-tls13-stapling.pcapng -o tls.keylog_file:tls13.keys \
 
 # 14. Referencias
 
-- RFC 6960, *Online Certificate Status Protocol* (OCSP).
-- RFC 6066, *TLS Extensions*: extensión `status_request`.
-- RFC 7633, *TLS Feature Extension*: OCSP Must-Staple.
-- RFC 5280, *Internet X.509 Public Key Infrastructure Certificate and CRL Profile*.
-- Apache HTTP Server 2.4, `mod_ssl`: `SSLUseStapling`, `SSLStaplingCache`,
-  `SSLOCSPEnable`, `SSLOCSPNoVerify`.
-- OpenSSL, `ocsp(1)` y `s_client(1)`.
-- NIST SP 800-52 Rev. 2, *Guidelines for the Selection, Configuration, and Use
-  of TLS Implementations*.
+- Apuntes de SRDSI, Tema 2 (TLS) y Tema 3 (servicios seguros y servicio WWW).
+- RFC 6960 (OCSP), RFC 6066 (`status_request`) y RFC 7633 (Must-Staple).
+- Documentación de Apache HTTP Server 2.4, `mod_ssl` (`SSLUseStapling`,
+  `SSLStaplingCache`, `SSLOCSPEnable`).
