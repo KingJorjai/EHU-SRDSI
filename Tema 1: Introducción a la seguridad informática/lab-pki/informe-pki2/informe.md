@@ -462,6 +462,11 @@ bocata-jamon.srdsi.lab`; el de Must-Staple añade
 `TLS Feature: status_request`. Los certificados de firma OCSP tienen
 `extendedKeyUsage = OCSP Signing` y el de usuario, `clientAuth`.
 
+Estados en el momento de la entrega: `servidor-revocado.crt` (serial `…317D`) y
+`servidor.crt` (serial `…317E`) están revocados por los ejercicios 1 y 2;
+`usuario.crt` (`…3181`) y `usuario-pcap.crt` (`…3182`) por el ejercicio E. La
+raíz, la subCA, los dos certificados OCSP y el de Must-Staple son válidos.
+
 # 12. Anexo C — Capturas y evidencias
 
 - `img/`: capturas del navegador, de Wireshark y de las comprobaciones con
@@ -522,3 +527,15 @@ tshark -r capturas/06-tls13-stapling.pcapng -o tls.keylog_file:tls13.keys \
 | Capturas de Wireshark | Secciones 5, 6 y 8; anexo C |
 | Certificados del sitio y del OCSP | Anexo B |
 | Configuraciones de los tres casos OCSP | Anexo A |
+
+# 14. Referencias
+
+- RFC 6960, *Online Certificate Status Protocol* (OCSP).
+- RFC 6066, *TLS Extensions*: extensión `status_request`.
+- RFC 7633, *TLS Feature Extension*: OCSP Must-Staple.
+- RFC 5280, *Internet X.509 Public Key Infrastructure Certificate and CRL Profile*.
+- Apache HTTP Server 2.4, `mod_ssl`: `SSLUseStapling`, `SSLStaplingCache`,
+  `SSLOCSPEnable`, `SSLOCSPNoVerify`.
+- OpenSSL, `ocsp(1)` y `s_client(1)`.
+- NIST SP 800-52 Rev. 2, *Guidelines for the Selection, Configuration, and Use
+  of TLS Implementations*.
