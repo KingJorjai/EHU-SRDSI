@@ -518,15 +518,20 @@ tshark -r capturas/06-tls13-stapling.pcapng -o tls.keylog_file:tls13.keys \
 
 | Persona | Tarea | Horas |
 | --- | --- | --- |
-| Jon | Puesta en marcha del respondedor OCSP de la subCA y comprobación `good`/`revoked` | 0,5 h |
-| Jorge | Emisión de los certificados del sitio y del usuario; configuración de Apache, AIA y respondedor de la raíz | 1,5 h |
-| Jorge + Jon | Ejercicio 1: OCSP regular, escenarios soft-fail/con OCSP/revocado y capturas | 1,5 h |
-| Jorge | Ejercicio 2: *stapling*, comparación TLS 1.2/TLS 1.3 y revocación | 1,5 h |
-| Jorge | Must-Staple: extensión, reemisión y pruebas con y sin respondedor | 1 h |
-| Jorge + Jon | Ejercicio E: `SSLOCSPEnable`, usuarios válido y revocado, capturas | 1,5 h |
+| Jon | Preparación de la VM, revisión de la PKI de la fase 1 y respondedor OCSP de la subCA | 1 h |
+| Jon | Configuración de Apache, certificados del sitio y del usuario, cadena y AIA | 1,5 h |
+| Jon | Respondedor OCSP de la raíz y re-firma de la subCA con AIA al 4748 | 0,5 h |
+| Jon | Configuración de stapling y emisión del certificado del sitio | 0,5 h |
+| Jon | Must-Staple: extensión y reemisión del certificado | 0,5 h |
+| Jon | Extra E: respondedores, `SSLOCSPEnable` y certificado de usuario | 0,5 h |
+| Jorge | Ejercicio 2: comparación TLS 1.2/TLS 1.3, revocación y capturas | 1,5 h |
+| Jorge | Must-Staple: pruebas con y sin respondedor y capturas | 0,5 h |
 | Jorge | Redacción del informe, figuras, anexos y ZIP de entrega | 2,5 h |
-| Jorge + Jon | Revisión final y auditoría de la práctica | 1 h |
-| **Total** | | **11 h** |
+| Jorge + Jon | Ejercicio 1: escenarios OCSP, capturas y análisis | 1 h |
+| Jorge + Jon | Ejercicio E: pruebas, capturas y análisis | 1 h |
+| Jorge + Jon | Revisión final y auditoría | 1 h |
+| Jon | Apoyo a la revisión y documentación de comandos | 0,5 h |
+| **Total** | | **12,5 h** |
 
 # 14. Referencias
 
