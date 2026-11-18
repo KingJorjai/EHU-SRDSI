@@ -482,6 +482,8 @@ Firefox ESR). El informe completo está en
 
 ![Respuesta OCSP en el handshake (TLS 1.2 y 1.3)](../../assets/img/lab-pki2/06-stapling-sclient.png)
 
+![Mensajes de la respuesta OCSP en TLS 1.2 y TLS 1.3](../../assets/img/lab-pki2/13-tls12-tls13-mensajes.png)
+
 ![Must-Staple sin respondedor: denegado](../../assets/img/lab-pki2/07-must-staple-sin-ocsp.png)
 
 ![Must-Staple con respondedor: acceso correcto](../../assets/img/lab-pki2/08-must-staple-con-ocsp.png)
@@ -491,6 +493,16 @@ Firefox ESR). El informe completo está en
 ![Usuario revocado sin SSLOCSPEnable: HTTP 200 por consola](../../assets/img/lab-pki2/10-usuario-revocado-sin-ocsp.png)
 
 ![Usuario revocado con SSLOCSPEnable: SSL_ERROR_REVOKED_CERT_ALERT](../../assets/img/lab-pki2/11-usuario-revocado-con-ocsp.png)
+
+En el extra E, Apache consulta **dos veces** al OCSP: al respondedor de la raíz
+(4748) por la subCA y al de la subCA (4747) por el usuario. Las capturas
+`07-extrae-good.pcapng` y `08-extrae-revoked.pcapng` lo demuestran:
+
+![Apache consulta la subCA (4748) y el usuario (4747)](../../assets/img/lab-pki2/14-extrae-ocsp-good.png)
+
+![Con el usuario revocado, la respuesta del 4747 es revoked](../../assets/img/lab-pki2/15-extrae-ocsp-revoked.png)
+
+![Estados OCSP extraídos de las capturas](../../assets/img/lab-pki2/16-extrae-status.png)
 
 !!! note "OCSP del navegador en el extra E"
     Para el extra E se desactivó la validación OCSP del navegador

@@ -13,6 +13,21 @@ header-includes: |
   \floatplacement{figure}{H}
 ---
 
+# Resumen
+
+La práctica se ha completado y verificado sobre la PKI de la primera fase. Se
+ha montado un sitio HTTPS con Apache, un respondedor OCSP para la subCA y otro
+para la raíz, y se han analizado los tres modos de OCSP y la validación del
+certificado de usuario. Todas las pruebas se han ejecutado en la VM Debian 13;
+las capturas y los `.pcapng` acompañan al informe.
+
+| Bloque | Resultado |
+| --- | --- |
+| **Ejercicio 1 — OCSP regular** | Soft-fail sin respondedor; consulta del navegador con `good`; bloqueo con `SEC_ERROR_REVOKED_CERTIFICATE` al revocar. |
+| **Ejercicio 2 — Stapling** | Apache consulta el OCSP; `Cert Status: good` en TLS 1.2 y TLS 1.3; se documentan los mensajes de cada versión. |
+| **Must-Staple** | Extensión `status_request`; sin *staple* el acceso se deniega, con *staple* funciona. |
+| **Ejercicio E — Usuario** | `SSLOCSPEnable on` valida al usuario; revocado sin la directiva entra (200), con la directiva se rechaza. |
+
 # 1. Introducción y objetivo
 
 La primera fase de la práctica puso en marcha una PKI privada con una CA raíz y
@@ -44,7 +59,7 @@ usuario** por parte del servidor mediante OCSP.
 La PKI de la fase 1 conserva `index.txt`, los números de serie y los
 certificados de la subCA y de firma OCSP. Para esta fase se han emitido
 certificados nuevos para el sitio web y para un usuario, y se ha añadido un
-respondedor para la CA raíz (apartado 7).
+respondedor para la CA raíz (apartado 8).
 
 Resolución de nombres en la VM (`/etc/hosts`):
 
@@ -57,7 +72,16 @@ Resolución de nombres en la VM (`/etc/hosts`):
 
 Las URL de AIA (`CA Issuers` y `OCSP`) deben resolver y servir los
 certificados de las CAs; de lo contrario el navegador puede quedarse esperando
-la cadena. En la VM se publican con un *virtual host* HTTP en `/var/www/pki/`.
+la cadena. En la VM se publican con un *virtual host* HTTP en `/var/www/pki/`
+(`configs/pki-aia.conf`).
+
+El certificado de la subCA lleva AIA de tipo OCSP. Cuando Apache valida una
+cadena completa (`SSLOCSPEnable`), pregunta también por la subCA; el
+respondedor de la subCA no puede responder por el certificado que la propia
+subCA recibió de la raíz. Por eso se ejecuta un segundo respondedor en el
+4748 con el índice de la raíz, y la subCA se volvió a firmar con AIA a ese
+puerto (misma clave y mismo *subject*; los certificados ya emitidos siguen
+siendo válidos). Los comandos están en `configs/root-ocsp.txt`.
 
 # 3. Respondedor OCSP
 
@@ -167,6 +191,9 @@ POST        application/ocsp-request
     200     application/ocsp-response
 ```
 
+Las dos peticiones corresponden a las conexiones que abrió el navegador en esa
+carga; cada una pide el estado del certificado del servidor.
+
 ![Intercambio OCSP en Wireshark: peticiones y respuestas](img/03-regular-wireshark.png){width=90%}
 
 ## 5.3. Certificado del servidor revocado
@@ -187,10 +214,18 @@ $ openssl ocsp -issuer certificado-subCA.crt \
 
 ![Certificado del servidor revocado: Firefox bloquea el acceso](img/04-servidor-revocado.png){width=90%}
 
-!!! nota
-    El navegador guarda respuestas OCSP. Para repetir los escenarios se usó una
-    ventana privada o un perfil nuevo, y se reinició el respondedor tras cada
-    revocación.
+La captura de ese acceso contiene la respuesta OCSP que recibe el navegador;
+el estado es `revoked`, no solo en la consulta manual:
+
+```console
+$ tshark -r capturas/03-servidor-revocado.pcapng -d tcp.port==4747,http \
+    -Y 'ocsp' -V | grep certStatus
+    certStatus: revoked (1)
+```
+
+> **Nota.** El navegador guarda respuestas OCSP. Para repetir los escenarios se
+> usó una ventana privada o un perfil nuevo, y se reinició el respondedor tras
+> cada revocación.
 
 # 6. Ejercicio 2 — OCSP stapling
 
@@ -207,10 +242,21 @@ SSLStaplingCache "shmcb:/var/run/apache2/ssl_stapling(32768)"
 ```
 
 Ahora **es Apache** quien consulta al respondedor; el navegador recibe la
-respuesta firmada en el *handshake*. Se comprobó sin navegador con
+respuesta firmada en el *handshake*. Se emitió un certificado nuevo para el
+sitio (tras revocar el de la prueba anterior) y se comprobó sin navegador con
 `openssl s_client -status`, tanto en TLS 1.2 como en TLS 1.3:
 
 ![Respuesta OCSP enviada en el handshake (TLS 1.2 y TLS 1.3)](img/06-stapling-sclient.png){width=90%}
+
+La diferencia entre versiones está en **dónde viaja** la respuesta:
+
+| TLS 1.2 | TLS 1.3 |
+| --- | --- |
+| `ClientHello` con la extensión `status_request`. | `ClientHello` con la extensión `status_request`. |
+| `ServerHello`, `Certificate`, **`CertificateStatus` (respuesta OCSP)**, `ServerKeyExchange`, `ServerHelloDone`. | `ServerHello`, `EncryptedExtensions`, **`Certificate` con `status_request` dentro de la entrada de certificado**, `CertificateVerify`, `Finished`. |
+| `CertificateStatus` es un mensaje propio y viaja **antes** del `ChangeCipherSpec` (en claro en la captura). | Todo el handshake posterior al `ServerHello` va cifrado; hace falta el *keylog* para verlo en Wireshark. |
+
+![Mensajes de la respuesta OCSP en TLS 1.2 y TLS 1.3](img/13-tls12-tls13-mensajes.png){width=90%}
 
 ![Acceso al sitio con stapling activo](img/05-stapling.png){width=90%}
 
@@ -218,7 +264,10 @@ respuesta firmada en el *handshake*. Se comprobó sin navegador con
 | --- | --- |
 | ¿Quién contacta con el OCSP? | Apache, no el navegador. |
 | ¿Cuándo? | Al arrancar o en la primera conexión; después según la caché. La primera petición puede quedarse sin *staple*. |
-| TLS 1.2 frente a TLS 1.3 | En TLS 1.2 la respuesta va en el mensaje `CertificateStatus`, tras `Certificate`. En TLS 1.3 va como extensión `status_request` dentro de la entrada de certificado del mensaje `Certificate`. En ambos casos queda cifrada. |
+| TLS 1.2 frente a TLS 1.3 | TLS 1.2 usa el mensaje `CertificateStatus`; TLS 1.3 incluye `status_request` en la entrada de certificado. En TLS 1.2 la respuesta es visible sin descifrar; en TLS 1.3 requiere el *keylog*. |
+
+En la captura `04-stapling.pcapng` no hay ninguna conexión del navegador al
+puerto 4747: las consultas las hace Apache antes de enviar el *staple*.
 
 Al revocar el certificado del servidor y reiniciar el respondedor, el *staple*
 acaba conteniendo `revoked` y el navegador rechaza la conexión. Para verlo sin
@@ -250,7 +299,7 @@ Con el respondedor en marcha y el *staple* disponible, el acceso funciona:
 
 ![Must-Staple con el respondedor en marcha](img/08-must-staple-con-ocsp.png){width=90%}
 
-# 8. Extra E — validación del certificado de usuario
+# 8. Ejercicio E — validación del certificado de usuario
 
 Apache valida por defecto la firma y la cadena del certificado de cliente, pero
 **no consulta la revocación**. Para que lo haga se activa `SSLOCSPEnable on`.
@@ -287,8 +336,8 @@ Tras revocar el certificado del usuario y reiniciar el respondedor:
 
 | Configuración | Resultado | Evidencia |
 | --- | --- | --- |
-| Sin `SSLOCSPEnable` | **200 OK**: Apache no consulta la revocación | Captura 10 |
-| Con `SSLOCSPEnable on` | **Denegado**: alerta TLS `certificate revoked` | Captura 11 y log |
+| Sin `SSLOCSPEnable` | **200 OK**: Apache no consulta la revocación | Figura del usuario revocado sin `SSLOCSPEnable` |
+| Con `SSLOCSPEnable on` | **Denegado**: alerta TLS `certificate revoked` | Figura del usuario revocado con `SSLOCSPEnable` y log |
 
 ![Usuario revocado sin SSLOCSPEnable: comprobación por consola (HTTP 200)](img/10-usuario-revocado-sin-ocsp.png){width=90%}
 
@@ -306,14 +355,39 @@ AH03239: OCSP validation completed, certificate status: revoked (1, 5)
 AH02276: Certificate Verification: Error (23): certificate revoked
 ```
 
+La captura de tráfico de una validación completa muestra **dos consultas de
+Apache**: una al respondedor de la raíz (4748) por la subCA y otra al de la
+subCA (4747) por el usuario. Se repitió con un usuario nuevo (`Usuario-PKI2c`)
+para capturar el intercambio con el *sniffer*:
+
+```console
+$ tshark -r capturas/07-extrae-good.pcapng \
+    -d tcp.port==4748,http -d tcp.port==4747,http \
+    -Y 'http.request or http.response' \
+    -T fields -e tcp.dstport -e http.request.method -e http.response.code
+4748  POST
+39190       200
+4747  POST
+55226       200
+```
+
+![Dos consultas OCSP de Apache: subCA (4748) y usuario (4747)](img/14-extrae-ocsp-good.png){width=90%}
+
+Tras revocar el usuario, la segunda respuesta cambia a `revoked` y Apache
+deniega la conexión:
+
+![Usuario revocado: Apache recibe certStatus revoked en el 4747](img/15-extrae-ocsp-revoked.png){width=90%}
+
+![Estados OCSP extraídos de las capturas: good (válido) y revoked (revocado)](img/16-extrae-status.png){width=85%}
+
 Para aislar la validación del servidor se desactivó la comprobación OCSP del
 navegador (`security.OCSP.enabled = 0`) en el perfil de esta prueba. Así el
 navegador no bloquea por su cuenta la cadena del servidor y se observa
 exactamente la decisión de Apache. Las capturas corresponden a la
 configuración final, **sin** `SSLOCSPNoVerify`: Apache verifica la firma de la
-respuesta OCSP. La captura 10 muestra la comprobación por consola del caso sin
-`SSLOCSPEnable` (HTTP 200) y la 11 el rechazo en el navegador con
-`SSL_ERROR_REVOKED_CERT_ALERT`.
+respuesta OCSP. La figura del caso sin `SSLOCSPEnable` muestra la comprobación
+por consola (HTTP 200) y la del caso con `SSLOCSPEnable` el rechazo en el
+navegador con `SSL_ERROR_REVOKED_CERT_ALERT`.
 
 # 9. Conclusiones
 
@@ -341,6 +415,8 @@ Los ficheros completos están en `configs/`:
 | `pki2-ocsp-stapling.conf` | Stapling. |
 | `pki2-ocsp-must-staple.conf` | Must-Staple. |
 | `pki2-usuario-ocsp.conf` | Validación OCSP del usuario (`SSLOCSPEnable on`). |
+| `pki-aia.conf` | Publica los certificados de las CAs en las URL de AIA. |
+| `root-ocsp.txt` | Comandos del respondedor OCSP de la CA raíz (4748). |
 | `server-ext-must-staple.txt` | Sección `[server_ext]` con `tlsfeature`. |
 
 # 11. Anexo B — Certificados
@@ -349,12 +425,40 @@ En `certs/` se incluyen los certificados públicos del sitio (normal y
 Must-Staple), el de firma OCSP de la subCA, el de firma OCSP de la raíz, la
 subCA, la raíz y el certificado de usuario. Las claves privadas no se adjuntan.
 
+| Fichero | CN | Emisor | Serial | Validez |
+| --- | --- | --- | --- | --- |
+| `rootCA.crt` | `bocata_jamon_rootCA` | él mismo | `852A…A3` | 2026-10-10 → 2036-10-07 |
+| `subCA.crt` | `bocata_jamon_subCA` | rootCA | `852A…A7` | 2026-11-18 → 2036-11-15 |
+| `servidor.crt` | `www.bocata-jamon.srdsi.lab` | subCA | `C9FB…317E` | 2026-11-18 → 2036-11-15 |
+| `servidor-revocado.crt` | `www.bocata-jamon.srdsi.lab` | subCA | `C9FB…317D` | 2026-11-18 → 2036-11-15 |
+| `servidor-must-staple.crt` | `www.bocata-jamon.srdsi.lab` | subCA | `C9FB…317F` | 2026-11-18 → 2036-11-15 |
+| `ocsp-subCA.crt` | `ocsp.bocata-jamon.srdsi.lab` | subCA | `C9FB…317C` | 2026-10-10 → 2036-10-07 |
+| `ocsp-root.crt` | `ocsp-root.bocata-jamon.srdsi.lab` | rootCA | `852A…A6` | 2026-11-18 → 2036-11-15 |
+| `usuario.crt` | `Usuario-PKI2b` | subCA | `C9FB…3181` | 2026-11-18 → 2036-11-15 |
+| `usuario-pcap.crt` | `Usuario-PKI2c` | subCA | `C9FB…3182` | 2026-11-18 → 2036-11-15 |
+
+El certificado del sitio lleva `subjectAltName = www.bocata-jamon.srdsi.lab,
+bocata-jamon.srdsi.lab`; el de Must-Staple añade
+`TLS Feature: status_request`. Los certificados de firma OCSP tienen
+`extendedKeyUsage = OCSP Signing` y el de usuario, `clientAuth`.
+
 # 12. Anexo C — Capturas y evidencias
 
 - `img/`: capturas del navegador, de Wireshark y de las comprobaciones con
-  `openssl`.
+  `openssl`/`tshark`.
 - `capturas/`: ficheros `.pcapng` de los escenarios y salidas de texto
   (`evidencias.txt`, `stapling-sclient.txt`).
+
+| Captura | Contenido |
+| --- | --- |
+| `01-regular-sin-ocsp.pcapng` | Intentos al 4747 con el respondedor parado (`SYN`/`RST`). |
+| `02-regular-con-ocsp.pcapng` | Peticiones y respuestas OCSP del navegador. |
+| `03-servidor-revocado.pcapng` | Respuesta `revoked` al navegador. |
+| `04-stapling.pcapng` | Acceso con *stapling* (sin consulta del navegador). |
+| `05-tls12-stapling.pcapng` | `CertificateStatus` de TLS 1.2 en claro. |
+| `06-tls13-stapling.pcapng` | `status_request` en TLS 1.3 (requiere *keylog*). |
+| `07-extrae-good.pcapng` | Consultas de Apache por subCA (4748) y usuario (4747), `good`. |
+| `08-extrae-revoked.pcapng` | Igual, con el usuario `revoked`. |
 
 Comandos de reproducción:
 
@@ -373,4 +477,27 @@ openssl ocsp -issuer certificado-subCA.crt -cert servidor.crt \
 echo | openssl s_client -connect www.bocata-jamon.srdsi.lab:443 \
   -servername www.bocata-jamon.srdsi.lab -status \
   -CAfile /etc/apache2/ssl/pki2/cadena-cas.pem -tls1_2
+
+# TLS 1.3: el keylog permite ver status_request en Wireshark
+echo | openssl s_client -connect www.bocata-jamon.srdsi.lab:443 \
+  -servername www.bocata-jamon.srdsi.lab -status -tls1_3 \
+  -keylogfile tls13.keys -CAfile /etc/apache2/ssl/pki2/cadena-cas.pem
+tshark -r capturas/06-tls13-stapling.pcapng -o tls.keylog_file:tls13.keys \
+  -Y 'tls.handshake.type==11' -V | grep -E 'status_request|certStatus'
 ```
+
+# 13. Checklist de entrega
+
+| Requisito del enunciado | Dónde |
+| --- | --- |
+| Respondedor OCSP en marcha | Sección 3 |
+| Ejercicio 1: sin OCSP (soft-fail), con OCSP y revocado | Sección 5 y capturas 1–4 |
+| Ejercicio 2: *stapling*, quién consulta y cuándo | Sección 6 |
+| Ejercicio 2: comparación TLS 1.2 / TLS 1.3 | Sección 6 y capturas 12–13 |
+| Ejercicio 2: revocar y reintentar | Sección 6 |
+| Must-Staple: extensión, sin respondedor y con respondedor | Sección 7 y capturas 7–8 |
+| Ejercicio E: usuario válido y revocado | Sección 8 y capturas 9–11 |
+| Ejercicio E: `SSLOCSPEnable on` | Sección 8 |
+| Capturas de Wireshark | Secciones 5, 6 y 8; anexo C |
+| Certificados del sitio y del OCSP | Anexo B |
+| Configuraciones de los tres casos OCSP | Anexo A |

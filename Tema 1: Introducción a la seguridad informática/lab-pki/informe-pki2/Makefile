@@ -6,7 +6,7 @@ INF_PDF = informe.pdf
 informe: $(INF_PDF)
 
 $(INF_PDF): $(MD)
-	TEXINPUTS=../informe/iflatex: pandoc $(MD) -o $(INF_PDF) --pdf-engine=pdflatex -V documentclass=ifreport
+	TEXINPUTS=../informe/iflatex: pandoc $(MD) -o $(INF_PDF) --pdf-engine=pdflatex --toc --toc-depth=2 -V documentclass=ifreport
 
 check:
 	test -f $(INF_PDF)
