@@ -22,15 +22,15 @@
 
 - **[Documentación online](https://kingjorjai.github.io/EHU-SRDSI/)**: teoría, comandos y laboratorios con búsqueda.
 - **[Bundle offline](https://kingjorjai.github.io/EHU-SRDSI/recursos/EHU-SRDSI-docs-offline.zip)**: ZIP con el sitio y los PDFs para consultar sin internet.
-- **[Chuleta de comandos](https://kingjorjai.github.io/EHU-SRDSI/chuletas/comandos/)**: OpenSSL, SSH, TLS/DTLS, GnuPG y Wireshark.
+- **[Chuleta de comandos](https://kingjorjai.github.io/EHU-SRDSI/chuletas/comandos/)**: OpenSSL, Apache, SSH, TLS/DTLS, GnuPG y Wireshark.
 - **[PDFs originales](https://kingjorjai.github.io/EHU-SRDSI/recursos/pdfs/)**: enunciados, teoría e informes.
 
 ## Qué hay dentro
 
-- Teoría resumida de los temas 1 y 2.
-- Comandos de OpenSSL, GnuPG, SSH, TLS/DTLS, Wireshark y GDB.
-- Ejercicios resueltos de GnuPG, PGP, TLS/DTLS, OpenSSH y modelo de amenazas.
-- Laboratorios de PKI, SSL, OpenSSH y **MACsec**, con informes y capturas.
+- Teoría resumida de los temas 1, 2 y 3 (3.1 servicios seguros y 3.2 servicio WWW).
+- Comandos de OpenSSL, Apache, GnuPG, SSH, TLS/DTLS, Wireshark y GDB.
+- Ejercicios resueltos de GnuPG, PGP, TLS/DTLS, OpenSSH, Apache, Lynis y modelo de amenazas.
+- Laboratorios de PKI (incluida la 2ª fase OCSP), SSL, OpenSSH y **MACsec**, con informes y capturas.
 - Teoría de nivel de enlace: PPP, EAP, 802.1X, MACsec y WLAN.
 - Ataques de enlace y retos Wireshark: ARP spoofing, MAC flooding, ICV alterado y replay.
 - PDFs, chuletas y checklist para el examen.
@@ -38,7 +38,7 @@
 ## Cómo usarlo
 
 - Pulsa `/` o usa la lupa para buscar cualquier comando o concepto.
-- Navega con las pestañas: **Guía**, **Tema 1**, **Tema 2**, **Chuletas** y **Recursos**.
+- Navega con las pestañas: **Guía**, **Tema 1**, **Tema 2**, **Tema 3**, **Chuletas** y **Recursos**.
 - Para el examen, descarga el ZIP offline y descomprímelo en el USB. Si el navegador bloquea la búsqueda con `file://`, sirve la carpeta con `python3 -m http.server`.
 
 <details>
@@ -72,6 +72,7 @@ El sitio se publica automáticamente en GitHub Pages al hacer push a `main`.
 - `General/` — programa, anexo de laboratorios, entorno y bibliografía.
 - `Tema 1: Introducción a la seguridad informática/` — teoría, actividad de criptografía, estudio de CA y laboratorio PKI.
 - `Tema 2: Seguridad en la comunicación/` — teoría, laboratorio SSL, laboratorio OpenSSH, ejercicios TLS/DTLS y actividad MACsec.
+- `Tema 3: Seguridad en los servicios/` — teoría 3.1–3.2, actividad Apache con certificados y actividad Lynis.
 - `docs/` — fuente del sitio MkDocs publicado.
 - `mkdocs.yml`, `mkdocs.offline.yml`, `requirements.txt` y `scripts/` — construcción y bundle offline.
 - `.github/workflows/docs.yml` — construcción y despliegue en GitHub Pages.

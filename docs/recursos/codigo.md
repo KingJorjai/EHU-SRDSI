@@ -98,6 +98,29 @@ Los scripts exigen OpenSSL >= 1.1.1 (`-addext`) y usan `set -euo pipefail` y `um
 
 Se copian junto a la CA correspondiente y se ajusta `home`. La explicación sección a sección está en [Configuración OpenSSL](../chuletas/openssl-config.md).
 
+## Configuraciones de Apache
+
+| Fichero | Uso |
+| --- | --- |
+| [`srdsi-lab.conf`](../assets/config/apache/srdsi-lab.conf) | Sitio HTTP con zona privada Basic. |
+| [`srdsi-lab-digest.conf`](../assets/config/apache/srdsi-lab-digest.conf) | Variante con autenticación Digest. |
+| [`srdsi-ssl.conf`](../assets/config/apache/srdsi-ssl.conf) | HTTPS con certificado de servidor y zona privada con certificado de cliente (`SSLVerifyClient optional`). |
+| [`srdsi-ssl-mutual.conf`](../assets/config/apache/srdsi-ssl-mutual.conf) | HTTPS que exige certificado de cliente en todo el sitio. |
+
+Se copian a `/etc/apache2/sites-available/` y se activan con `a2ensite`. Los certificados que usan están en [certificados de Apache](certificados.md#apache-ca-subca-y-certificados-de-usuario).
+
+## Configuraciones de PKI2 (OCSP)
+
+| Fichero | Uso |
+| --- | --- |
+| [`pki2-ocsp-regular.conf`](../assets/config/pki2/pki2-ocsp-regular.conf) | OCSP regular: consulta el navegador. |
+| [`pki2-ocsp-stapling.conf`](../assets/config/pki2/pki2-ocsp-stapling.conf) | OCSP stapling: consulta Apache y envía la respuesta. |
+| [`pki2-ocsp-must-staple.conf`](../assets/config/pki2/pki2-ocsp-must-staple.conf) | Must-Staple: exige certificado con `TLS Feature: status_request`. |
+| [`pki2-usuario-ocsp.conf`](../assets/config/pki2/pki2-usuario-ocsp.conf) | Validación OCSP del certificado de usuario (`SSLOCSPEnable on`). |
+| [`server-ext-must-staple.txt`](../assets/config/pki2/server-ext-must-staple.txt) | Sección `[server_ext]` con `tlsfeature = status_request`. |
+
+El procedimiento completo está en [PKI — 2ª fase: validación OCSP](../tema1/lab-pki/pki2.md).
+
 ## Otros recursos de código
 
 - [Certificados y claves de laboratorio](certificados.md)

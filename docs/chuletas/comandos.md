@@ -107,6 +107,43 @@ openssl s_client -connect 127.0.0.1:4433 -tls1_2 -CAfile /tmp/ca-chain.pem -keyl
 [:octicons-arrow-right-24: Ver más — OpenSSL TLS/DTLS](../tema2/comandos/openssl-tls.md)
 [:octicons-arrow-right-24: Ver más — Ejercicios TLS y DTLS](../tema2/actividades/tls-dtls.md)
 
+## Apache, HTTPS y OCSP
+
+```bash
+# Servicio y sitios virtuales
+sudo apache2ctl configtest              # sintaxis
+sudo apache2ctl graceful                # recarga sin cortar conexiones
+sudo apache2ctl -S                      # sitios virtuales activos
+sudo a2ensite srdsi-lab && sudo a2dissite srdsi-lab
+sudo a2enmod ssl auth_basic auth_digest socache_shmcb
+
+# Usuarios de la zona privada
+sudo htpasswd -c /etc/apache2/usersweb admin1     # Basic (MD5 por defecto; -B bcrypt)
+sudo htdigest -c /etc/apache2/digest_users "Area privada" admin1
+curl -iu admin1:pass http://www.srdsi.lab/zona-privada/
+curl -i --digest -u admin1:pass http://www.srdsi.lab/zona-privada/
+
+# HTTPS y autenticación de cliente
+openssl verify -CAfile ca_cert.pem -untrusted subca_cert.pem serv_cert.pem
+cat subca_cert.pem ca_cert.pem > /etc/apache2/ssl/cadena-cas.pem
+openssl s_client -connect www.srdsi.lab:443 -servername www.srdsi.lab \
+  -CAfile ca_cert.pem -verify_return_error </dev/null
+
+# OCSP: respondedor, consulta y stapling
+openssl ocsp -port 4747 -index index.txt -CA subca.crt \
+  -rsigner ocsp.crt -rkey ocsp.key -text -out log-ocsp.txt
+openssl ocsp -issuer subca.crt -cert servidor.crt \
+  -url http://ocsp.bocata-jamon.srdsi.lab:4747 -resp_text
+echo | openssl s_client -connect www.bocata-jamon.srdsi.lab:443 \
+  -servername www.bocata-jamon.srdsi.lab -status -CAfile cadena-cas.pem
+```
+
+`Authorization: Basic ...` viaja en Base64 (no cifrado); Digest envía usuario y hash, no la contraseña. El respondedor OCSP lee `index.txt` al arrancar: **reinícialo tras revocar**. `s_client -status` muestra si el servidor envía el *staple*; `TLS Feature: status_request` en el certificado indica Must-Staple.
+
+[:octicons-arrow-right-24: Ver más — Teoría del servicio WWW](../tema3/teoria/servicio-www.md)
+[:octicons-arrow-right-24: Ver más — Actividad Apache](../tema3/actividades/apache.md)
+[:octicons-arrow-right-24: Ver más — PKI 2ª fase: OCSP](../tema1/lab-pki/pki2.md)
+
 ## SSH
 
 ```bash
@@ -238,6 +275,6 @@ Compila siempre con `-g`; `-O0` facilita seguir el código fuente. Para examinar
 - [Antes del examen](antes-del-examen.md)
 - [Alertas TLS](alertas-tls.md)
 - [Configuración OpenSSL](openssl-config.md)
-- [Código del laboratorio](../recursos/codigo.md)
+- [Código y configuraciones](../recursos/codigo.md)
 - [Certificados de laboratorio](../recursos/certificados.md)
 - [Benchmarks](../recursos/benchmarks.md)

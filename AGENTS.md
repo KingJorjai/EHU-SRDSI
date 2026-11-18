@@ -23,6 +23,7 @@ Repo público de prácticas de **Seguridad, Rendimiento y Disponibilidad de Serv
 - `Tema 1: Introducción a la seguridad informática/`
   - `SRDSI_T1-1..4.pdf` — teoría (image-based).
   - `lab-pki/` — PKI privada: `scripts/`, `pki-config-files/`, `docs/`, `informe/`.
+  - `lab-pki/docs/Enunciado-lab-PKI-2.pdf` — 2ª fase (OCSP) y `pki2-configs/` con los vhosts de Apache.
   - `actividad-criptografia/` — enunciados y `benchmark_*.txt`; **no hay fuentes de Ascon**.
   - `actividad-estudio-CAs/` — estudio de GlobalSign.
   - `Material extra/` — material de clase.
@@ -33,9 +34,15 @@ Repo público de prácticas de **Seguridad, Rendimiento y Disponibilidad de Serv
   - `ejercicio-tls-dtls/` — `Lab-TLS_y_DTLS.pdf` + `lab-certs/`.
   - `SRDSI_T2-5_parcial.pdf` — teoría 2.5, seguridad en el nivel de enlace (parcial).
   - `actividad-macsec/` — enunciado `Lab_macsec_comandos.pdf`, `capturas/`, `informe/` y `ataques/`.
+- `Tema 3: Seguridad en los servicios/`
+  - `SRDSI_T3-1-2.pdf` — teoría 3.1 (servicios seguros) y 3.2 (servicio WWW), image-based.
+  - `actividad-apache/` — `Actividad_Apache.pdf`, `certificados/` (CA, subCA, servidor y dos `.p12`) y `configs/` (vhosts HTTP/HTTPS/mTLS).
+  - `actividad-lynis/` — `Lynis-hardening-tool.pdf`.
 - `docs/` — fuente MkDocs del sitio:
-  - `guia/`, `tema1/{teoria,comandos,actividades,lab-pki}/`, `tema2/{teoria,comandos,actividades,lab-ssl}/`, `chuletas/`, `recursos/`.
+  - `guia/`, `tema1/{teoria,comandos,actividades,lab-pki}/`, `tema2/{teoria,comandos,actividades,lab-ssl}/`, `tema3/{teoria,actividades}/`, `chuletas/`, `recursos/`.
   - T2-5 y MACsec: `docs/tema2/teoria/nivel-enlace.md` y `docs/tema2/actividades/macsec.md`.
+  - Tema 3: `docs/tema3/teoria/{servicios-seguros,servicio-www}.md` y `docs/tema3/actividades/{apache,lynis}.md`.
+  - PKI 2ª fase: `docs/tema1/lab-pki/pki2.md`.
 - `assets/banner.svg`, `assets/preview.png` — solo para el README; no forman parte del sitio.
 - `mkdocs.yml`, `mkdocs.offline.yml`, `requirements.txt`, `scripts/prepare_docs_assets.sh`, `.github/workflows/docs.yml` — construcción, bundle offline y despliegue.
 - `docs/superpowers/` — planes internos excluidos del sitio con `exclude_docs`; no añadir a `nav`.
@@ -167,6 +174,15 @@ OpenSSH y TLS/DTLS:
 - Resultados: ARP spoofing tumba 10.0.3.x pero no 1.1.1.x; MAC flooding no interrumpe MACsec; ICV alterado suma errores RX y no obtiene reply; replay se descarta con `replay on` y se acepta con `replay off`.
 - La entrada ARP de la puerta de enlace 10.0.3.1 es **PERMANENTE**; para el ataque se usa la entrada dinámica de 10.0.3.11. La NAT Network no equivale a un switch físico para MAC flooding.
 - No hay `tcpdump` en las VM; se usa `dumpcap` y se analiza con `tshark` en el host.
+
+### Tema 3 y PKI 2ª fase
+
+- `SRDSI_T3-1-2.pdf` es image-based (como T1/T2): el texto se ha obtenido con OCR y las páginas `docs/tema3/teoria/` lo resumen. Cubre 3.1 y 3.2; 3.3 (DNS) y 3.4 (correo) no están.
+- Certificados de Apache: `CA-SRDSI` → `SubCA-SRDSI` → `serv_cert.pem` (SAN `www.srdsi.lab`, `srdsi.lab`). La raíz se llama igual que en `lab-certs` pero es **otra** (serial `248F…`); no mezclarlas.
+- `user.p12`/`user2.p12` (pass `abc`/`abcd`) no tienen extensiones ni AIA; `user2` se distingue por `OU=FAKE`. El certificado del servidor tampoco tiene AIA: para PKI2 hay que emitir uno con `server_ext`.
+- Lynis 3.1.7: sin root omite pruebas privilegiadas (lista en `docs/tema3/actividades/lynis.md`) y escribe los logs en `$HOME`; la auditoría real de la VM no se ha ejecutado.
+- PKI2: el respondedor OCSP lee `index.txt` al arrancar, hay que reiniciarlo tras revocar. Los vhosts están en `Tema 1 .../lab-pki/pki2-configs/` y se publican en `docs/assets/config/pki2/`. El flujo `openssl ocsp` (good/revoked) y `tlsfeature = status_request` se han verificado en local con OpenSSL 4.1.0; Apache, navegador y Wireshark son **VM**.
+- La actividad Apache y PKI2 comparten el sitio HTTPS, pero no los certificados: la actividad usa el paquete de `actividad-apache/`; PKI2, los de la PKI de la fase 1.
 
 ## Limitaciones y gotchas
 

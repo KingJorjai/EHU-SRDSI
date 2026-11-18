@@ -52,6 +52,49 @@ Claves privadas (sin passphrase):
 
 `ca-root.crt` y `subca.crt` no tienen clave privada en el repositorio: solo se publica la parte pública de la cadena.
 
+## `apache`: CA, subCA y certificados de usuario
+
+Paquete de la [actividad Apache](../tema3/actividades/apache.md). Jerarquía `CA-SRDSI` → `SubCA-SRDSI` → servidor y usuarios.
+
+| Fichero | CN | Emisor | Validez (GMT) | Serial |
+| --- | --- | --- | --- | --- |
+| [`ca_cert.pem`](../assets/certs/apache/ca_cert.pem) | `CA-SRDSI` | él mismo (autofirmado) | 2025-11-02 17:14:46 → 2031-04-25 17:14:46 | `248F08513F02518C45F5A79961E7452739AA89EC` |
+| [`subca_cert.pem`](../assets/certs/apache/subca_cert.pem) | `SubCA-SRDSI` | `CA-SRDSI` | 2025-11-02 17:14:46 → 2031-04-25 17:14:46 | `DF617461E9C0C30D` |
+| [`serv_cert.pem`](../assets/certs/apache/serv_cert.pem) | `www.srdsi.lab` | `SubCA-SRDSI` | 2025-11-02 17:14:46 → 2031-04-25 17:14:46 | `E03A6449C5E6C68B` |
+| `user.p12` | `Usuario-SRDSI` | `SubCA-SRDSI` | 2025-11-02 17:14:46 → 2031-04-25 17:14:46 | `E03A6449C5E6C68C` |
+| `user2.p12` | `Usuario2-SRDSI` | `SubCA-SRDSI` | 2025-11-02 17:14:46 → 2031-04-25 17:14:46 | `E03A6449C5E6C68D` |
+
+- `serv_cert.pem` usa RSA de 2048 bits y lleva `subjectAltName = www.srdsi.lab, srdsi.lab`.
+- [`serv_key.pem`](../assets/certs/apache/serv_key.pem) es la clave del servidor, **sin passphrase**, y coincide con el certificado.
+- `user.p12` y `user2.p12` se importan en el navegador con las contraseñas `abc` y `abcd` (están en el `README` del paquete).
+- `user` tiene `O=SRDSI, OU=LABS`; `user2` tiene `O=SRDSI, OU=FAKE`. Esa diferencia es la que usa la actividad para probar `SSLRequire`.
+
+Verificación:
+
+```bash
+openssl verify -CAfile ca_cert.pem -untrusted subca_cert.pem serv_cert.pem
+# serv_cert.pem: OK
+
+openssl x509 -in serv_cert.pem -noout -ext subjectAltName
+# X509v3 Subject Alternative Name:
+#     DNS:www.srdsi.lab, DNS:srdsi.lab
+
+openssl x509 -in serv_cert.pem -noout -pubkey | openssl md5
+openssl pkey -in serv_key.pem -pubout | openssl md5
+# el mismo MD5: la clave corresponde al certificado
+
+openssl pkcs12 -in user.p12 -passin pass:abc -nokeys -clcerts | \
+  openssl x509 -noout -subject
+```
+
+### Gotchas de `apache`
+
+- **No mezclar con `lab-certs`**: la CA raíz se llama igual (`CA-SRDSI`) pero es otro certificado, con otra clave y otro serial. Si importas la raíz de un paquete y usas el servidor del otro, la cadena no valida.
+- **Los certificados de usuario no tienen extensiones**: ni `extendedKeyUsage` ni `subjectAltName` ni AIA. El navegador los acepta como «cualquier propósito» y Apache no puede consultar su revocación por OCSP. Para el extra E de PKI2 hay que emitir un certificado de usuario con `user_ext` desde la PKI propia.
+- **El certificado del servidor tampoco tiene AIA**: solo SAN, SKI y AKI. No sirve para demostrar OCSP regular (el navegador no sabe a qué respondedor preguntar); para PKI2 usa el certificado emitido con `server_ext`.
+- **`user2` no es «inválido»**: su certificado es correcto; lo que falla es la condición `SSLRequire` sobre `OU`.
+- **Caducidad**: 2031-04-25. Si el reloj de la VM está mal, aparecerá `certificate_expired` o `certificate_not_yet_valid`.
+
 ## Inspeccionar y verificar
 
 ```bash
@@ -91,4 +134,6 @@ client.crt: OK
 - [OpenSSL TLS/DTLS](../tema2/comandos/openssl-tls.md)
 - [Ejercicios TLS y DTLS](../tema2/actividades/tls-dtls.md)
 - [Laboratorio SSL: certificados](../tema2/lab-ssl/codigo.md)
+- [Actividad Apache](../tema3/actividades/apache.md)
+- [PKI — 2ª fase: OCSP](../tema1/lab-pki/pki2.md)
 - [Alertas TLS](../chuletas/alertas-tls.md)

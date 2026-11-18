@@ -28,6 +28,8 @@ Puertos habituales del laboratorio:
 | --- | --- | --- |
 | `22` | TCP | SSH |
 | `23` | TCP | Telnet (solo demostración) |
+| `80` | TCP | Apache HTTP |
+| `443` | TCP | Apache HTTPS |
 | `1064` | TCP | `serv-infouser` / `cli-infouser` |
 | `4433` | TCP | `openssl s_server` TLS |
 | `4434` | UDP | `openssl s_server` DTLS |
@@ -57,6 +59,16 @@ openssl ocsp -issuer subca.crt -cert certificado.crt \
 
 !!! danger "Revocar no publica la CRL"
     `openssl ca -revoke` solo marca el certificado en `index.txt`. Si no ejecutas `openssl ca -gencrl`, la CRL publicada sigue diciendo que es válido. El OCSP refleja el cambio en cuanto lee `index.txt`.
+
+### Apache y OCSP
+
+- [ ] `apache2ctl configtest` pasa antes de `graceful`; `apache2ctl -S` lista los sitios esperados.
+- [ ] La cadena de CAs está en `SSLCACertificateFile` (`cat subca ca-root > cadena-cas.pem`).
+- [ ] Tras revocar, **reinicia el respondedor OCSP**: lee `index.txt` al arrancar.
+- [ ] `s_client -status` muestra la respuesta OCSP cuando el *stapling* está activo; la primera conexión puede no llevarla.
+- [ ] Must-Staple: el certificado tiene `TLS Feature: status_request` y se ha emitido de nuevo.
+- [ ] Para pedir certificado de cliente solo en una zona: `SSLVerifyClient optional` + `Require ssl-verify-client`.
+- [ ] Para validar el certificado del usuario por OCSP: `SSLOCSPEnable on`.
 
 [:octicons-arrow-right-24: Ver más — OpenSSL y PKI](../tema1/comandos/openssl.md)
 [:octicons-arrow-right-24: Ver más — Scripts PKI](../tema1/lab-pki/scripts.md)

@@ -25,3 +25,4 @@ Conceptos básicos, criptografía, comunicación segura y gestión de claves.
 ## Laboratorio
 
 - [Lab PKI](lab-pki/index.md): guía rápida, scripts, informe y diseño web.
+- [PKI — 2ª fase: validación OCSP](lab-pki/pki2.md): respondedor, *stapling* y Must-Staple.

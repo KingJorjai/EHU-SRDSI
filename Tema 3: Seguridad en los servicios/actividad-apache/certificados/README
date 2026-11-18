@@ -1,0 +1,6 @@
+ca_cert.pem     Certificado de la CA: CA-SRDSI
+subca_cert.pem  Certificado de la CA: CA-SRDSI
+serv_cert.pem   Certificado del servidor: www.srdsi.lab (SAN)
+serv_key.pem    Clave privada del servidor (sin contraseña)
+user.p12        Certificado y clave privada del usuario: Usuario-SRDSI (pass:”abc”)
+user2.p12	    Certificado y clave privada del usuario (no autorizado): Usuario2-SRDSI (pass:”abcd”)

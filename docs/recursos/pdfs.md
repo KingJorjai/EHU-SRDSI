@@ -20,10 +20,14 @@ Los ficheros se copian a `docs/assets/pdf/` al construir el sitio. Puedes abrirl
 - [Tema 2 — Comunicación (3)](../assets/pdf/SRDSI_T2-3.pdf)
 - [Tema 2 — Comunicación (4)](../assets/pdf/SRDSI_T2-4.pdf)
 - [Tema 2 — Nivel de enlace (T2-5, parcial)](../assets/pdf/SRDSI_T2-5.pdf)
+- [Tema 3 — Servicios seguros y WWW (3.1 y 3.2)](../assets/pdf/SRDSI_T3-1-2.pdf)
 
 ## Enunciados y actividades
 
 - [Enunciado Lab PKI](../assets/pdf/lab-pki-enunciado.pdf)
+- [Enunciado Lab PKI — 2ª fase (OCSP)](../assets/pdf/lab-pki2-enunciado.pdf)
+- [Actividad Apache](../assets/pdf/lab-apache-actividad.pdf)
+- [Actividad Lynis](../assets/pdf/lab-lynis.pdf)
 - [Actividad de criptografía](../assets/pdf/actividad-criptografia.pdf)
 - [Informe Ascon](../assets/pdf/actividad-ascon.pdf)
 - [Estudio de una CA: GlobalSign](../assets/pdf/actividad-estudio-ca.pdf)

@@ -41,9 +41,14 @@ El laboratorio se ejecuta en la VM Debian (`user1`, `/home/user1`) y usa OpenSSL
 - [ ] `.p12` inspeccionado y extraído (certificado y clave por separado).
 - [ ] Diseño web con roles, pantallas y mapeo a operaciones de la PKI.
 
+## 2ª fase: validación OCSP
+
+La [2ª fase del laboratorio](pki2.md) reutiliza esta PKI para montar un sitio HTTPS y analizar **OCSP regular**, **OCSP stapling** y **Must-Staple**, además de la validación del certificado de usuario mediante OCSP. Añade la extensión `tlsfeature = status_request` a `server_ext` y usa las configuraciones de Apache incluidas en el repositorio.
+
 ## Contenido
 
 - [Guía rápida](guia.md): flujo completo y verificable, desde los directorios hasta OCSP y PKCS#12.
+- [2ª fase: validación OCSP](pki2.md): respondedor, sitio HTTPS, *stapling*, Must-Staple y validación de usuario.
 - [Scripts](scripts.md): uso, opciones, variables de entorno, códigos de salida y errores típicos.
 - [Informe completo](informe.md): documento entregado, con salidas de comandos y capturas.
 - [Diseño web](web.md): interfaz de la subCA, roles y mapeo UI → operación.

@@ -47,4 +47,4 @@ La asignatura refuerza y complementa los conocimientos sobre servicios e infraes
 El material está disponible en la plataforma Moodle ([egela.ehu.eus](https://egela.ehu.eus)) y las entregas se realizan a través de ella en los plazos establecidos.
 
 !!! warning "Alcance de este repositorio"
-    En el repositorio solo están los materiales de los **Temas 1 y 2** (teoría, actividades y laboratorios). Los Temas 3 y 4 no se incluyen; consulta el material oficial en eGela.
+    Están los materiales de los **Temas 1 y 2** y, del Tema 3, los apartados **3.1 (servicios seguros)** y **3.2 (servicio WWW)** con sus actividades. Los apartados **3.3 (DNS)**, **3.4 (correo electrónico)** y el **Tema 4** no se incluyen; consulta el material oficial en eGela.

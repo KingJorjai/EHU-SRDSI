@@ -10,10 +10,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST="$ROOT/docs/assets"
 T1="$ROOT/Tema 1: Introducción a la seguridad informática"
 T2="$ROOT/Tema 2: Seguridad en la comunicación"
+T3="$ROOT/Tema 3: Seguridad en los servicios"
 G="$ROOT/General"
 
 rm -rf "$DEST"
-mkdir -p "$DEST"/{pdf,img/lab-pki,img/lab-openssh,img/lab-macsec,capturas/lab-ssl,capturas/lab-macsec,scripts,config,codigo/lab-ssl,certs/lab-ssl,certs/lab-certs,benchmarks}
+mkdir -p "$DEST"/{pdf,img/lab-pki,img/lab-openssh,img/lab-macsec,capturas/lab-ssl,capturas/lab-macsec,scripts,config,config/apache,config/pki2,codigo/lab-ssl,certs/lab-ssl,certs/lab-certs,certs/apache,benchmarks}
 
 copy() {
     local src=$1 dst=$2
@@ -47,8 +48,12 @@ done
 for f in "$T2"/SRDSI_T2-*.pdf; do
     [ -e "$f" ] && cp -a "$f" "$DEST/pdf/"
 done
+copy "$T3/SRDSI_T3-1-2.pdf" "$DEST/pdf/SRDSI_T3-1-2.pdf"
 
 copy "$T1/lab-pki/docs/Enunciado-lab-PKI-1.pdf"              "$DEST/pdf/lab-pki-enunciado.pdf"
+copy "$T1/lab-pki/docs/Enunciado-lab-PKI-2.pdf"              "$DEST/pdf/lab-pki2-enunciado.pdf"
+copy "$T3/actividad-apache/Actividad_Apache.pdf"             "$DEST/pdf/lab-apache-actividad.pdf"
+copy "$T3/actividad-lynis/Lynis-hardening-tool.pdf"          "$DEST/pdf/lab-lynis.pdf"
 copy "$T1/lab-pki/informe/informe.pdf"                       "$DEST/pdf/informe-pki.pdf"
 copy "$T1/actividad-criptografia/Actividad-criptografia.pdf" "$DEST/pdf/actividad-criptografia.pdf"
 copy "$T1/actividad-criptografia/[SRDSI] ASCON.pdf"          "$DEST/pdf/actividad-ascon.pdf"
@@ -92,6 +97,11 @@ done
 # ------------------------------------------------------------------ certificados y claves (sintéticos)
 copy_dir "$T2/lab-ssl/source_files/certificados" "$DEST/certs/lab-ssl"
 copy_dir "$T2/ejercicio-tls-dtls/lab-certs"      "$DEST/certs/lab-certs"
+copy_dir "$T3/actividad-apache/certificados"     "$DEST/certs/apache"
+
+# ------------------------------------------------------------------ configuraciones de Apache
+copy_dir "$T3/actividad-apache/configs" "$DEST/config/apache"
+copy_dir "$T1/lab-pki/pki2-configs"     "$DEST/config/pki2"
 
 # ------------------------------------------------------------------ benchmarks
 copy "$T1/actividad-criptografia/benchmark_ascon.txt" "$DEST/benchmarks/benchmark_ascon.txt"

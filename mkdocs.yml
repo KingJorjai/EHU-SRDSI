@@ -112,6 +112,7 @@ nav:
           - Scripts: tema1/lab-pki/scripts.md
           - Informe completo: tema1/lab-pki/informe.md
           - Diseño web: tema1/lab-pki/web.md
+          - 2ª fase (OCSP): tema1/lab-pki/pki2.md
   - Tema 2:
       - tema2/index.md
       - Teoría:
@@ -137,6 +138,14 @@ nav:
           - Código: tema2/lab-ssl/codigo.md
           - Capturas y alertas: tema2/lab-ssl/capturas.md
           - Informe completo: tema2/lab-ssl/informe.md
+  - Tema 3:
+      - tema3/index.md
+      - Teoría:
+          - Servicios seguros: tema3/teoria/servicios-seguros.md
+          - Servicio WWW: tema3/teoria/servicio-www.md
+      - Actividades:
+          - Apache: tema3/actividades/apache.md
+          - Lynis: tema3/actividades/lynis.md
   - Chuletas:
       - Comandos: chuletas/comandos.md
       - Antes del examen: chuletas/antes-del-examen.md
