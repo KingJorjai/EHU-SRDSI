@@ -26,7 +26,7 @@ las capturas y los `.pcapng` acompañan al informe.
 | **Ejercicio 1 — OCSP regular** | Soft-fail sin respondedor; consulta del navegador con `good`; bloqueo con `SEC_ERROR_REVOKED_CERTIFICATE` al revocar. |
 | **Ejercicio 2 — Stapling** | Apache consulta el OCSP; `Cert Status: good` en TLS 1.2 y TLS 1.3; se documentan los mensajes de cada versión. |
 | **Must-Staple** | Extensión `status_request`; sin *staple* el acceso se deniega, con *staple* funciona. |
-| **Ejercicio E — Usuario** | `SSLOCSPEnable on` valida al usuario; revocado sin la directiva entra (200), con la directiva se rechaza. |
+| **Ejercicio Extra — Usuario** | `SSLOCSPEnable on` valida al usuario; revocado sin la directiva entra (200), con la directiva se rechaza. |
 
 # 1. Introducción y objetivo
 
@@ -225,8 +225,7 @@ $ tshark -r capturas/03-servidor-revocado.pcapng -d tcp.port==4747,http \
 ```
 
 > **Nota.** El navegador guarda respuestas OCSP. Para repetir los escenarios se
-> usó una ventana privada o un perfil nuevo, y se reinició el respondedor tras
-> cada revocación.
+> usó una ventana privada y se reinició el respondedor tras cada revocación.
 
 # 6. Ejercicio 2 — OCSP stapling
 
@@ -311,7 +310,7 @@ Con el respondedor en marcha y el *staple* disponible, el acceso funciona:
 
 ![Must-Staple con el respondedor en marcha](img/08-must-staple-con-ocsp.png){width=90%}
 
-# 8. Ejercicio E — validación del certificado de usuario
+# 8. Ejercicio Extra — validación del certificado de usuario
 
 Apache valida por defecto la firma y la cadena del certificado de cliente, pero
 **no consulta la revocación**. Para que lo haga se activa `SSLOCSPEnable on`.
@@ -456,8 +455,8 @@ subCA, la raíz y el certificado de usuario. Las claves privadas no se adjuntan.
 | `servidor-must-staple.crt` | Sitio con `TLS Feature: status_request`, serial `C9FB…317F` |
 | `ocsp-subCA.crt` | Respondedor `ocsp.bocata-jamon.srdsi.lab`, emitido por subCA, serial `C9FB…317C` |
 | `ocsp-root.crt` | Respondedor `ocsp-root.bocata-jamon.srdsi.lab`, emitido por rootCA, serial `852A…A6` |
-| `usuario.crt` | Usuario `Usuario-PKI2b`, emitido por subCA, serial `C9FB…3181`; revocado en el Ejercicio E |
-| `usuario-pcap.crt` | Usuario `Usuario-PKI2c`, emitido por subCA, serial `C9FB…3182`; revocado en el Ejercicio E |
+| `usuario.crt` | Usuario `Usuario-PKI2b`, emitido por subCA, serial `C9FB…3181`; revocado en el Ejercicio Extra |
+| `usuario-pcap.crt` | Usuario `Usuario-PKI2c`, emitido por subCA, serial `C9FB…3182`; revocado en el Ejercicio Extra |
 
 El certificado del sitio lleva `subjectAltName = www.bocata-jamon.srdsi.lab,
 bocata-jamon.srdsi.lab`; el de Must-Staple añade
@@ -525,12 +524,12 @@ tshark -r capturas/06-tls13-stapling.pcapng -o tls.keylog_file:tls13.keys \
 | Jon | Respondedor OCSP de la raíz y re-firma de la subCA con AIA al 4748 | 0,5 h |
 | Jon | Configuración de stapling y emisión del certificado del sitio | 0,5 h |
 | Jon | Must-Staple: extensión y reemisión del certificado | 0,5 h |
-| Jon | Extra E: respondedores, `SSLOCSPEnable` y certificado de usuario | 0,5 h |
+| Jon | Ejercicio Extra: respondedores, `SSLOCSPEnable` y certificado de usuario | 0,5 h |
 | Jorge | Ejercicio 2: comparación TLS 1.2/TLS 1.3, revocación y capturas | 1,5 h |
 | Jorge | Must-Staple: pruebas con y sin respondedor y capturas | 0,5 h |
 | Jorge | Redacción del informe, figuras, anexos y ZIP de entrega | 2,5 h |
 | Jorge + Jon | Ejercicio 1: escenarios OCSP, capturas y análisis | 1 h |
-| Jorge + Jon | Ejercicio E: pruebas, capturas y análisis | 1 h |
+| Jorge + Jon | Ejercicio Extra: pruebas, capturas y análisis | 1 h |
 | Jorge + Jon | Revisión final y auditoría | 1 h |
 | Jon | Apoyo a la revisión y documentación de comandos | 0,5 h |
 | **Total** | | **12,5 h** |

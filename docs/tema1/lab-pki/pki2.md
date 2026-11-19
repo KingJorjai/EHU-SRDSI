@@ -352,7 +352,7 @@ Activa [`pki2-ocsp-must-staple.conf`](../../assets/config/pki2/pki2-ocsp-must-st
 !!! note "Usa Firefox para esta prueba"
     Firefox aplica Must-Staple. Algunos navegadores basados en Chromium no lo exigen y aceptarían la conexión sin *staple*, lo que falsearía el resultado del ejercicio.
 
-## 6. Extra E: validación del certificado de usuario
+## 6. Ejercicio Extra: validación del certificado de usuario
 
 El servidor también puede comprobar si el certificado **del usuario** está revocado. Por defecto Apache valida la firma y la cadena, pero **no consulta CRL ni OCSP**: un usuario revocado sigue entrando. `SSLOCSPEnable on` activa la consulta.
 
@@ -430,7 +430,7 @@ Según el enunciado: informe con el análisis de los resultados de los ejercicio
 - [x] Ejercicio 1: tres escenarios (sin OCSP, con OCSP, revocado) con capturas.
 - [x] Ejercicio 2: *stapling* activo; handshake TLS 1.2 y TLS 1.3 comparado.
 - [x] Must-Staple: extensión en el certificado, denegación sin respondedor y acceso con respondedor.
-- [x] Extra E: usuario válido y revocado, con y sin `SSLOCSPEnable`.
+- [x] Ejercicio Extra: usuario válido y revocado, con y sin `SSLOCSPEnable`.
 - [x] Certificados del sitio y del OCSP adjuntos.
 - [x] Tres configuraciones de Apache (regular, *stapling*, *must-staple*) adjuntas.
 - [x] Informe completo en PDF.
@@ -445,7 +445,7 @@ Según el enunciado: informe con el análisis de los resultados de los ejercicio
 | 4 | Activar *stapling*, `s_client -status` | Respuesta OCSP en el handshake |
 | 5 | Certificado Must-Staple sin respondedor | Error del navegador |
 | 6 | Must-Staple con respondedor | Acceso correcto |
-| 7 | Extra E con usuario revocado | Antes y después de `SSLOCSPEnable` |
+| 7 | Ejercicio Extra con usuario revocado | Antes y después de `SSLOCSPEnable` |
 
 ### Estructura del informe
 
@@ -455,7 +455,7 @@ Según el enunciado: informe con el análisis de los resultados de los ejercicio
 4. **Ejercicio 1 (OCSP regular)**: los tres escenarios con capturas del navegador y de Wireshark, y el análisis del soft-fail.
 5. **Ejercicio 2 (stapling)**: quién consulta, cuándo, y comparación TLS 1.2/TLS 1.3.
 6. **Must-Staple**: extensión, denegación sin respondedor y acceso con respondedor.
-7. **Extra E**: validación del certificado de usuario, antes y después de `SSLOCSPEnable`.
+7. **Ejercicio Extra**: validación del certificado de usuario, antes y después de `SSLOCSPEnable`.
 8. **Conclusiones**: soft-fail, *stapling* y Must-Staple; cuándo usar cada uno.
 9. **Anexos**: certificados del sitio y del OCSP y las tres configuraciones de Apache.
 
