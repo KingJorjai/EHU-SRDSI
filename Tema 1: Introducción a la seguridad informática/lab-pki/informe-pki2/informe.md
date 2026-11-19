@@ -3,7 +3,7 @@ title: "PKI — Fase 2: Validación OCSP (SRDSI)"
 author:
   - Jorge Arévalo
   - Jon González
-date: "Noviembre 2026"
+date: "Donostia, noviembre de 2026"
 lang: es
 header-includes: |
   \name{Jorge Arévalo \\ Jon González}
@@ -16,9 +16,9 @@ header-includes: |
 # Resumen
 
 La práctica se ha completado y verificado sobre la PKI de la primera fase. Se
-ha montado un sitio HTTPS con Apache, un respondedor OCSP para la subCA y otro
+ha desplegado un sitio HTTPS con Apache, un respondedor OCSP para la subCA y otro
 para la raíz, y se han analizado los tres modos de OCSP y la validación del
-certificado de usuario. Todas las pruebas se han ejecutado en la VM Debian 13;
+certificado de usuario. Todas las pruebas se han ejecutado en la máquina virtual Debian 13;
 las capturas y los `.pcapng` acompañan al informe.
 
 | Bloque | Resultado |
@@ -29,6 +29,11 @@ las capturas y los `.pcapng` acompañan al informe.
 | **Ejercicio Extra — Usuario** | `SSLOCSPEnable on` valida al usuario; revocado sin la directiva entra (200), con la directiva se rechaza. |
 
 # 1. Introducción y objetivo
+
+Esta memoria documenta la segunda fase de la práctica de PKI de la asignatura
+Seguridad, Rendimiento y Disponibilidad de Servicios e Infraestructuras
+(SRDSI), del Grado en Ingeniería Informática de la Universidad del País
+Vasco/Euskal Herriko Unibertsitatea (UPV/EHU), en el curso 2026/27.
 
 La primera fase de la práctica puso en marcha una PKI privada con una CA raíz y
 una subCA, emitió certificados para usuarios y servicios y comprobó la
@@ -44,11 +49,14 @@ analizan los tres modos de operación de OCSP:
 Además se resuelve el apartado extra: la validación del certificado **del
 usuario** por parte del servidor mediante OCSP.
 
+El informe y el ZIP de entrega se suben a eGela, junto con el resto de la
+documentación de la práctica.
+
 # 2. Entorno y punto de partida
 
 | Elemento | Valor |
 | --- | --- |
-| VM | Debian GNU/Linux 13 (trixie), `bocata-jamon.srdsi.lab` |
+| Máquina virtual (VM) | Debian GNU/Linux 13 (trixie), `bocata-jamon.srdsi.lab` |
 | Apache | 2.4.71 (Debian) |
 | OpenSSL | 3.5.7 |
 | PKI | `~/PKI_root` (raíz) y `~/PKI_root/PKI_sub` (subCA) de la fase 1 |
@@ -224,7 +232,7 @@ $ tshark -r capturas/03-servidor-revocado.pcapng -d tcp.port==4747,http \
     certStatus: revoked (1)
 ```
 
-> **Nota.** El navegador guarda respuestas OCSP. Para repetir los escenarios se
+> **Nota.** El navegador almacena respuestas OCSP. Para repetir los escenarios se
 > usó una ventana privada y se reinició el respondedor tras cada revocación.
 
 # 6. Ejercicio 2 — OCSP stapling
