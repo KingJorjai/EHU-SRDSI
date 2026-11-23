@@ -1,0 +1,15 @@
+### Prueba POP3 desde la VPN de la UPV/EHU (tun0, 2026-11-23)
+
+Ruta: 158.227.0.94 y 158.227.82.20 vía tun0 (10.254.65.91).
+
+mailin.ehu.es:110   -> timeout
+mailin.ehu.es:995   -> timeout
+ikasle.ehu.eus:110  -> timeout
+ikasle.ehu.eus:995  -> timeout
+
+mailin.ehu.es:143   -> OK
+mailin.ehu.es:993   -> OK
+ikasle.ehu.eus:143  -> OK
+ikasle.ehu.eus:993  -> OK
+
+Conclusion: el servidor no expone POP3 (110/995); solo IMAP.

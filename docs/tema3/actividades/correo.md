@@ -5,7 +5,7 @@ Práctica de protocolos de correo: sesión manual con `telnet`, comprobación de
 [:material-file-pdf-box: Enunciado de la actividad (PDF)](../../assets/pdf/actividad-correo.pdf){ .md-button }
 
 !!! warning "Requiere la VM"
-    La actividad se ejecuta desde la VM Debian (`user1`). Los pasos que dependen de ella están marcados como **VM**. Las capturas de SMTP sí están incluidas; POP3 no era accesible desde la red usada. Las de IMAP están en la [actividad IMAPv4](imap.md).
+    La actividad se ejecuta desde la VM Debian (`user1`). Los pasos que dependen de ella están marcados como **VM**. Las capturas de SMTP sí están incluidas. POP3 no está disponible en `mailin.ehu.es` (110/995), ni siquiera por la VPN; IMAP sí (143/993) y está en la [actividad IMAPv4](imap.md).
 
 ## 1. SMTP manual con `telnet`
 
@@ -113,7 +113,7 @@ Ejecutado desde `bocata-jamon`:
 | --- | --- |
 | SMTP 25 | `220 smtp-1 ESMTP Postfix`; `EHLO` anuncia `PIPELINING`, `SIZE`, `VRFY`, `ETRN`, `STARTTLS`, `8BITMIME`, `DSN` y `CHUNKING` |
 | STARTTLS SMTP | `220 2.0.0 Ready to start TLS`; TLS 1.3 con `TLS_AES_256_GCM_SHA384`; certificado `CN=*.ehu.eus`; `Verification: OK` |
-| POP3 110/995 | **No accesible** desde la red usada; no se pudo probar |
+| POP3 110/995 | **No disponible** en `mailin.ehu.es` ni desde la VPN; 143/993 sí responden |
 
 ![SMTP: saludo y EHLO en claro](../../assets/capturas/lab-correo/01-wireshark-smtp.png)
 
@@ -121,10 +121,11 @@ Ejecutado desde `bocata-jamon`:
 
 - [Salida SMTP](../../assets/resultados/correo/smtp.txt)
 - [Salida STARTTLS](../../assets/resultados/correo/smtp-starttls.txt)
+- [Prueba POP3 por VPN](../../assets/resultados/correo/pop3-vpn.txt)
 - Script: [`probe_smtp.py`](../../assets/codigo/lab-correo/probe_smtp.py)
 
 !!! note "POP3"
-    `mailin.ehu.es` no acepta conexiones en 110 ni 995 desde esta red. El guion de POP3 queda documentado, pero no ejecutado.
+    Probado también con la VPN de la UPV/EHU (`tun0`): `mailin.ehu.es` e `ikasle.ehu.eus` no responden en 110 ni 995, mientras que 143/993 sí. El servidor solo publica IMAP; el guion de POP3 queda documentado, pero no ejecutado.
 
 ## Teoría relacionada
 
