@@ -143,9 +143,14 @@ nav:
       - Teoría:
           - Servicios seguros: tema3/teoria/servicios-seguros.md
           - Servicio WWW: tema3/teoria/servicio-www.md
+          - Seguridad en DNS: tema3/teoria/dns.md
+          - Correo electrónico: tema3/teoria/correo.md
       - Actividades:
           - Apache: tema3/actividades/apache.md
           - Lynis: tema3/actividades/lynis.md
+          - DNS con BIND: tema3/actividades/dns.md
+          - Correo (SMTP y POP3): tema3/actividades/correo.md
+          - IMAPv4: tema3/actividades/imap.md
   - Chuletas:
       - Comandos: chuletas/comandos.md
       - Antes del examen: chuletas/antes-del-examen.md

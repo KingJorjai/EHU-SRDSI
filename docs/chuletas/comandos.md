@@ -144,6 +144,51 @@ echo | openssl s_client -connect www.bocata-jamon.srdsi.lab:443 \
 [:octicons-arrow-right-24: Ver más — Actividad Apache](../tema3/actividades/apache.md)
 [:octicons-arrow-right-24: Ver más — PKI 2ª fase: OCSP](../tema1/lab-pki/pki2.md)
 
+## DNS y correo
+
+```bash
+# BIND9: configuración y zonas
+sudo apt-get install bind9 bind9-utils bind9-dnsutils
+sudo named-checkconf /etc/bind/named.conf
+sudo named-checkzone srdsi.lab /etc/bind/db.srdsi.lab
+sudo systemctl restart bind9
+sudo rndc status
+sudo rndc reload
+sudo rndc flush
+sudo rndc dumpdb -cache
+
+# Consultas
+dig @172.16.0.136 dns1.srdsi.lab
+dig +short MX dominio
+dig -x 172.16.0.136
+dig @172.16.0.136 srdsi.lab AXFR
+dig +dnssec srdsi.lab DNSKEY
+delv @localhost -a trustanchor.key +root=srdsi.lab srdsi.lab NS
+
+# DNSSEC (KSK + ZSK)
+sudo dnssec-keygen -a RSASHA256 -b 1024 -f KSK -n ZONE srdsi.lab.
+sudo dnssec-keygen -a RSASHA256 -b 1024 -n ZONE srdsi.lab.
+sudo dnssec-signzone -t -o srdsi.lab. db.srdsi.lab
+
+# SMTP y POP3 manuales
+telnet smtp.ehu.es 25
+telnet mailin.ehu.es 110
+openssl s_client -starttls smtp -crlf -connect smtp.ehu.es:25
+openssl s_client -connect mailin.ehu.es:pop3s
+openssl s_client -starttls pop3 -crlf -connect mailin.ehu.es:110
+
+# IMAP
+openssl s_client -connect ikasle.ehu.eus:993 -servername ikasle.ehu.eus -brief
+openssl s_client -starttls imap -connect ikasle.ehu.eus:143 -servername ikasle.ehu.eus -brief
+```
+
+`named-checkzone` valida la zona antes de recargar; `rndc reload` aplica cambios sin reiniciar. En SMTP, `EHLO` muestra las extensiones (`STARTTLS`, `AUTH`…). Un `250` a un `RCPT TO` externo sin autenticarte indica *open relay*: debe rechazarse.
+
+[:octicons-arrow-right-24: Ver más — Seguridad en DNS](../tema3/teoria/dns.md)
+[:octicons-arrow-right-24: Ver más — Actividad DNS con BIND](../tema3/actividades/dns.md)
+[:octicons-arrow-right-24: Ver más — Correo electrónico](../tema3/teoria/correo.md)
+[:octicons-arrow-right-24: Ver más — Actividad de correo](../tema3/actividades/correo.md)
+
 ## SSH
 
 ```bash

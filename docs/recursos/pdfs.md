@@ -21,6 +21,8 @@ Los ficheros se copian a `docs/assets/pdf/` al construir el sitio. Puedes abrirl
 - [Tema 2 — Comunicación (4)](../assets/pdf/SRDSI_T2-4.pdf)
 - [Tema 2 — Nivel de enlace (T2-5, parcial)](../assets/pdf/SRDSI_T2-5.pdf)
 - [Tema 3 — Servicios seguros y WWW (3.1 y 3.2)](../assets/pdf/SRDSI_T3-1-2.pdf)
+- [Tema 3 — Seguridad en DNS (3.3)](../assets/pdf/SRDSI_T3-3.pdf)
+- [Tema 3 — Correo electrónico (3.4)](../assets/pdf/SRDSI_T3-4.pdf)
 
 ## Enunciados y actividades
 
@@ -28,6 +30,8 @@ Los ficheros se copian a `docs/assets/pdf/` al construir el sitio. Puedes abrirl
 - [Enunciado Lab PKI — 2ª fase (OCSP)](../assets/pdf/lab-pki2-enunciado.pdf)
 - [Actividad Apache](../assets/pdf/lab-apache-actividad.pdf)
 - [Actividad Lynis](../assets/pdf/lab-lynis.pdf)
+- [Actividad DNS con BIND](../assets/pdf/lab-dns-actividad.pdf)
+- [Actividad de correo (SMTP y POP3)](../assets/pdf/actividad-correo.pdf)
 - [Actividad de criptografía](../assets/pdf/actividad-criptografia.pdf)
 - [Informe Ascon](../assets/pdf/actividad-ascon.pdf)
 - [Estudio de una CA: GlobalSign](../assets/pdf/actividad-estudio-ca.pdf)
@@ -47,6 +51,7 @@ Los ficheros se copian a `docs/assets/pdf/` al construir el sitio. Puedes abrirl
 - [Informe Lab SSL](../assets/pdf/informe-ssl.pdf)
 - [Informe Lab OpenSSH](../assets/pdf/informe-openssh.pdf)
 - [Informe Actividad MACsec](../assets/pdf/informe-macsec.pdf)
+- [Informe Actividad IMAPv4](../assets/pdf/informe-imap.pdf)
 
 ## Referencia
 
