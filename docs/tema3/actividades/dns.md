@@ -279,6 +279,7 @@ Ejecutado en `bocata-jamon` (BIND 9.20.30) con `bocata-jamon2` como secundario:
 | Secundario | `dns2` (`192.168.56.111`) resuelve y transfiere la zona |
 | TSIG | AXFR sin clave falla; con `-k` funciona |
 | NSEC3 | `NSEC3PARAM` y `NSEC3` en la respuesta negativa |
+| Delegación | `sub.srdsi.lab` firmada y `DS` en el padre; `delv` valida la cadena |
 
 ![Consultas DNS en Wireshark](../../assets/capturas/lab-dns/01-wireshark-dns.png)
 
@@ -287,10 +288,20 @@ Ejecutado en `bocata-jamon` (BIND 9.20.30) con `bocata-jamon2` como secundario:
 Resultados completos y scripts:
 
 - [`dig.txt`](../../assets/resultados/dns/dig.txt) y [`secundario-tsig.txt`](../../assets/resultados/dns/secundario-tsig.txt)
-- [`setup-dns.sh`](../../assets/scripts/dns/setup-dns.sh), [`setup-tsig-primary.sh`](../../assets/scripts/dns/setup-tsig-primary.sh), [`setup-tsig-secondary.sh`](../../assets/scripts/dns/setup-tsig-secondary.sh) y [`setup-nsec3.sh`](../../assets/scripts/dns/setup-nsec3.sh)
+- [`setup-dns.sh`](../../assets/scripts/dns/setup-dns.sh), [`setup-tsig-primary.sh`](../../assets/scripts/dns/setup-tsig-primary.sh), [`setup-tsig-secondary.sh`](../../assets/scripts/dns/setup-tsig-secondary.sh), [`setup-nsec3.sh`](../../assets/scripts/dns/setup-nsec3.sh) y [`setup-delegation.sh`](../../assets/scripts/dns/setup-delegation.sh)
 
-!!! note "Pendiente"
-    La delegación segura (§6) no se ha ejecutado; el resto de bloques sí.
+### Delegación segura (§6)
+
+Subzona `sub.srdsi.lab` creada en el mismo servidor, firmada con DNSSEC y publicada en el padre con `NS`, `A` (glue) y `DS`. La cadena se valida de extremo a extremo:
+
+```bash
+dig @127.0.0.1 host1.sub.srdsi.lab A +short      # 172.16.145.45
+dig @127.0.0.1 sub.srdsi.lab DS +dnssec +short   # DS 61846 ...
+delv @127.0.0.1 -a /etc/bind/trustanchor.key \
+  +root=srdsi.lab host1.sub.srdsi.lab A          # ; fully validated
+```
+
+- [Resultados de la delegación](../../assets/resultados/dns/delegacion.txt)
 
 ## Entrega
 
