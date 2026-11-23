@@ -266,6 +266,32 @@ dig @localhost 0.16.172.in-addr.arpa NSEC3 +dnssec
 dig @localhost 0.16.172.in-addr.arpa NSEC3PARAM +dnssec
 ```
 
+## 8. Resultados en la VM
+
+Ejecutado en `bocata-jamon` (BIND 9.20.30) con `bocata-jamon2` como secundario:
+
+| Prueba | Resultado |
+| --- | --- |
+| `named-checkzone` | `loaded serial 2026112301`, `OK` |
+| Zona directa | `dns1` → `172.16.0.136`; `www` → `CNAME host1` |
+| Zona inversa | `136.0.16.172.in-addr.arpa` → `PTR dns1.srdsi.lab` |
+| DNSSEC | `DNSKEY` (KSK/ZSK), `RRSIG` y `NSEC` |
+| Secundario | `dns2` (`192.168.56.111`) resuelve y transfiere la zona |
+| TSIG | AXFR sin clave falla; con `-k` funciona |
+| NSEC3 | `NSEC3PARAM` y `NSEC3` en la respuesta negativa |
+
+![Consultas DNS en Wireshark](../../assets/capturas/lab-dns/01-wireshark-dns.png)
+
+![AXFR con TSIG entre dns1 y dns2](../../assets/capturas/lab-dns/02-wireshark-axfr-tsig.png)
+
+Resultados completos y scripts:
+
+- [`dig.txt`](../../assets/resultados/dns/dig.txt) y [`secundario-tsig.txt`](../../assets/resultados/dns/secundario-tsig.txt)
+- [`setup-dns.sh`](../../assets/scripts/dns/setup-dns.sh), [`setup-tsig-primary.sh`](../../assets/scripts/dns/setup-tsig-primary.sh), [`setup-tsig-secondary.sh`](../../assets/scripts/dns/setup-tsig-secondary.sh) y [`setup-nsec3.sh`](../../assets/scripts/dns/setup-nsec3.sh)
+
+!!! note "Pendiente"
+    La delegación segura (§6) no se ha ejecutado; el resto de bloques sí.
+
 ## Entrega
 
 Resolución de los ejercicios con capturas de pantalla, ejemplos de configuración, pruebas de consultas a los NS y análisis de resultados. Adjunta un comprimido del directorio `/etc/bind` e indica el tiempo empleado.

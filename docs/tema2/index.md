@@ -28,4 +28,3 @@ Protocolos y esquemas de seguridad en la comunicación: SSH, PGP, TLS/DTLS e IPs
 ## Laboratorios
 
 - [Lab SSL](lab-ssl/index.md): guía rápida, código, capturas e informe.
-- [Ejercicio TLS/DTLS](actividades/tls-dtls.md): los 9 ejercicios resueltos.

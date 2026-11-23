@@ -6,7 +6,7 @@ Documentación de **Seguridad, Rendimiento y Disponibilidad de Servicios e Infra
 
 - :material-console: **Chuleta de comandos**
 
-    Todos los comandos de la asignatura agrupados por tarea: PKI, TLS/DTLS, SSH, GnuPG y Wireshark.
+    Todos los comandos de la asignatura agrupados por tarea: PKI, TLS/DTLS, SSH, GnuPG, DNS, correo y Wireshark.
 
     [:octicons-arrow-right-24: Ir a la chuleta](chuletas/comandos.md)
 
@@ -24,13 +24,13 @@ Documentación de **Seguridad, Rendimiento y Disponibilidad de Servicios e Infra
 
 - :material-server: **Tema 3 — Servicios seguros**
 
-    Apache, HTTPS, validación OCSP y auditoría con Lynis.
+    Apache/HTTPS, OCSP, auditoría con Lynis, DNS con BIND y correo (SMTP, POP3 e IMAP).
 
     [:octicons-arrow-right-24: Tema 3](tema3/index.md)
 
 - :material-clipboard-check: **Ejercicios resueltos**
 
-    GnuPG, PGP, TLS/DTLS, OpenSSH, Apache, Lynis y modelo de amenazas, con comandos y resultados esperados.
+    GnuPG, PGP, TLS/DTLS, OpenSSH, Apache, Lynis, DNS, correo e IMAP, con comandos y resultados esperados.
 
     [:octicons-arrow-right-24: Ejercicios](tema3/index.md)
 

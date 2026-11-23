@@ -1,0 +1,12 @@
+### SOA resuelto por dns2 (192.168.56.111)
+dns1.srdsi.lab. admin.srdsi.lab. 2026112301 604800 86400 2419200 604800
+### A dns1 resuelto por dns2
+172.16.0.136
+### PTR resuelto por dns2
+dns1.srdsi.lab.
+### AXFR al primario SIN TSIG
+; Transfer failed.
+### AXFR al primario CON TSIG
+srdsi.lab.		7200	IN	SOA	dns1.srdsi.lab. admin.srdsi.lab. 2026112301 604800 86400 2419200 604800
+srdsi.lab.		7200	IN	RRSIG	SOA 8 2 7200 20261223144457 20261123144457 53866 srdsi.lab. v8bPL/QbdrH11MBNDa2SU+A/ttagBgqaavykJYwAE8vHymg1D/EfplRv 00PaC6XAj+hczIg86V+XJscF1WXaisNXS8GjvFN5SRhUo1cbM7j1ifX/ yBu+ngOELKuEEA7Gr6Za0KTUA7nt2gfuaJS0Mf6HmvN2C2wzpMTXpqIV f94=
+srdsi.lab.		7200	IN	NS	dns1.srdsi.lab.

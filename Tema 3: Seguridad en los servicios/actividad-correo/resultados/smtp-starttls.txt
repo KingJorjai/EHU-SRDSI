@@ -1,0 +1,11 @@
+Connecting to 158.227.0.66
+CONNECTION ESTABLISHED
+Protocol version: TLSv1.3
+Ciphersuite: TLS_AES_256_GCM_SHA384
+Peer certificate: CN=*.ehu.eus
+Hash used: SHA256
+Signature type: rsa_pss_rsae_sha256
+Verification: OK
+Peer Temp Key: X25519, 253 bits
+250 CHUNKING
+DONE

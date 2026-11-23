@@ -89,6 +89,11 @@ copy_dir "$T2/actividad-macsec/informe/img" "$DEST/img/lab-macsec"
 copy_dir "$T2/actividad-macsec/capturas"   "$DEST/capturas/lab-macsec"
 copy_dir "$T3/actividad-apache/capturas"   "$DEST/capturas/lab-apache"
 copy_dir "$T3/actividad-imap/informe/img"  "$DEST/img/lab-imap"
+copy_dir "$T3/actividad-dns/capturas"      "$DEST/capturas/lab-dns"
+copy_dir "$T3/actividad-dns/resultados"    "$DEST/resultados/dns"
+copy_dir "$T3/actividad-correo/capturas"   "$DEST/capturas/lab-correo"
+copy_dir "$T3/actividad-correo/resultados" "$DEST/resultados/correo"
+copy_dir "$T3/actividad-correo/lab"        "$DEST/codigo/lab-correo"
 copy_dir "$T3/actividad-lynis/capturas"    "$DEST/img/lab-lynis"
 copy_dir "$T3/actividad-lynis/resultados"  "$DEST/resultados/lynis"
 copy_dir "$T1/lab-pki/informe-pki2/img"    "$DEST/img/lab-pki2"
@@ -97,6 +102,9 @@ copy_dir "$T1/lab-pki/informe-pki2/capturas" "$DEST/capturas/lab-pki2"
 # ------------------------------------------------------------------ scripts y configs
 for f in "$T1/lab-pki/scripts"/*.sh; do
     [ -e "$f" ] && cp -a "$f" "$DEST/scripts/"
+done
+for f in "$T3/actividad-dns"/*.sh; do
+    [ -e "$f" ] && copy "$f" "$DEST/scripts/dns/$(basename "$f")"
 done
 for f in "$T1/lab-pki/pki-config-files"/*.cnf; do
     [ -e "$f" ] && cp -a "$f" "$DEST/config/"

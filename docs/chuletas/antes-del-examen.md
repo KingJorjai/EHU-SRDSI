@@ -28,7 +28,11 @@ Puertos habituales del laboratorio:
 | --- | --- | --- |
 | `22` | TCP | SSH |
 | `23` | TCP | Telnet (solo demostración) |
+| `25` / `587` | TCP | SMTP / submission |
+| `53` | TCP/UDP | BIND9 (DNS) |
 | `80` | TCP | Apache HTTP |
+| `110` / `995` | TCP | POP3 / POP3S |
+| `143` / `993` | TCP | IMAP / IMAPS |
 | `443` | TCP | Apache HTTPS |
 | `1064` | TCP | `serv-infouser` / `cli-infouser` |
 | `4433` | TCP | `openssl s_server` TLS |
@@ -145,7 +149,33 @@ gpg --list-packets mensaje.gpg
 [:octicons-arrow-right-24: Ver más — GnuPG](../tema1/comandos/gpg.md)
 [:octicons-arrow-right-24: Ver más — PGP con GnuPG](../tema2/comandos/pgp.md)
 
-## 6. Errores típicos y diagnóstico
+## 6. DNS y correo
+
+- [ ] `named-checkconf` y `named-checkzone` pasan antes de recargar (`rndc reload`).
+- [ ] La zona directa y la inversa resuelven con `dig @servidor`.
+- [ ] Las transferencias están limitadas (`allow-transfer`) y, si aplica, firmadas con TSIG (`-k`).
+- [ ] DNSSEC: `dig +dnssec` devuelve `RRSIG`; la consulta negativa trae `NSEC`/`NSEC3`.
+- [ ] SMTP: `EHLO` anuncia `STARTTLS`; `openssl s_client -starttls smtp -crlf` valida el certificado.
+- [ ] IMAP: el servidor anuncia `LOGINDISABLED` y `STARTTLS`; IMAPS usa 993.
+- [ ] POP3: `+OK` al conectar; `STLS` o POP3S en 995.
+- [ ] En Wireshark se distingue el tramo en claro del cifrado tras STARTTLS.
+
+```bash
+named-checkconf /etc/bind/named.conf
+named-checkzone srdsi.lab /etc/bind/db.srdsi.lab
+dig @192.168.56.110 dns1.srdsi.lab
+dig @192.168.56.110 srdsi.lab AXFR -k Kdns1-dns2_tsigkey
+dig +dnssec srdsi.lab DNSKEY
+openssl s_client -starttls smtp -crlf -connect smtp.ehu.es:25 -brief
+openssl s_client -starttls imap -connect ikasle.ehu.eus:143 \
+  -servername ikasle.ehu.eus -brief
+```
+
+[:octicons-arrow-right-24: Ver más — Seguridad en DNS](../tema3/teoria/dns.md)
+[:octicons-arrow-right-24: Ver más — Actividad DNS con BIND](../tema3/actividades/dns.md)
+[:octicons-arrow-right-24: Ver más — Correo electrónico](../tema3/teoria/correo.md)
+
+## 7. Errores típicos y diagnóstico
 
 | Síntoma | Causa probable | Cómo diagnosticarlo / arreglarlo |
 | --- | --- | --- |

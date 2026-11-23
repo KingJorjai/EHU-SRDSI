@@ -5,7 +5,7 @@ Práctica de protocolos de correo: sesión manual con `telnet`, comprobación de
 [:material-file-pdf-box: Enunciado de la actividad (PDF)](../../assets/pdf/actividad-correo.pdf){ .md-button }
 
 !!! warning "Requiere la VM"
-    La actividad se ejecuta desde la VM Debian (`user1`). Los pasos que dependen de ella están marcados como **VM**. No se han incluido capturas propias de SMTP/POP3 en este repositorio; las de IMAP están en la [actividad IMAPv4](imap.md).
+    La actividad se ejecuta desde la VM Debian (`user1`). Los pasos que dependen de ella están marcados como **VM**. Las capturas de SMTP sí están incluidas; POP3 no era accesible desde la red usada. Las de IMAP están en la [actividad IMAPv4](imap.md).
 
 ## 1. SMTP manual con `telnet`
 
@@ -104,6 +104,27 @@ Diferencias que debes observar:
 - **SMTP/POP3 en claro**: usuario, contraseña y contenido del mensaje son legibles.
 - **STARTTLS**: el saludo y los comandos iniciales van en claro; tras el `OK` empieza TLS.
 - **SMTPS/POP3S**: TLS desde el primer byte; solo se ven metadatos TCP y tráfico cifrado.
+
+## 6. Resultados en la VM
+
+Ejecutado desde `bocata-jamon`:
+
+| Prueba | Resultado |
+| --- | --- |
+| SMTP 25 | `220 smtp-1 ESMTP Postfix`; `EHLO` anuncia `PIPELINING`, `SIZE`, `VRFY`, `ETRN`, `STARTTLS`, `8BITMIME`, `DSN` y `CHUNKING` |
+| STARTTLS SMTP | `220 2.0.0 Ready to start TLS`; TLS 1.3 con `TLS_AES_256_GCM_SHA384`; certificado `CN=*.ehu.eus`; `Verification: OK` |
+| POP3 110/995 | **No accesible** desde la red usada; no se pudo probar |
+
+![SMTP: saludo y EHLO en claro](../../assets/capturas/lab-correo/01-wireshark-smtp.png)
+
+![SMTP: STARTTLS y handshake TLS 1.3](../../assets/capturas/lab-correo/02-wireshark-smtp-starttls.png)
+
+- [Salida SMTP](../../assets/resultados/correo/smtp.txt)
+- [Salida STARTTLS](../../assets/resultados/correo/smtp-starttls.txt)
+- Script: [`probe_smtp.py`](../../assets/codigo/lab-correo/probe_smtp.py)
+
+!!! note "POP3"
+    `mailin.ehu.es` no acepta conexiones en 110 ni 995 desde esta red. El guion de POP3 queda documentado, pero no ejecutado.
 
 ## Teoría relacionada
 
