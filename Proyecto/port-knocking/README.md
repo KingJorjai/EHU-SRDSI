@@ -5,6 +5,8 @@
 
 Proyecto sobre **Port Knocking** y **Single Packet Authorization** con `fwknop`, con una demostración real en dos VM Debian 13.
 
+**Presentación:** 10 minutos, sin demostración online.
+
 ## Estructura
 
 ```text
