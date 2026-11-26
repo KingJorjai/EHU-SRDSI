@@ -1,0 +1,62 @@
+### Entorno
+jeu. 26 nov. 2026 10:35:52 CET
+bocata-jamon
+enp0s8           UP             192.168.56.110/24 fe80::38df:19f2:3e5b:4c4c/64 
+bocata-jamon2
+enp0s8           UP             192.168.56.111/24 fe80::a00:27ff:fe5d:f016/64 
+
+### Reset de reglas
+[sudo] contraseña para user1: [sudo] contraseña para user1: -N PROTECTED
+-A PROTECTED -j DROP
+--- FWKNOP ---
+-N FWKNOP_INPUT
+
+### 1. Sin knock: HTTP debe fallar
+FAIL
+
+### 2. Secuencia knockd 7000,8000,9000
+HTTP: 200
+[sudo] contraseña para user1: -N PROTECTED
+-A PROTECTED -s 192.168.56.111/32 -p tcp -m tcp --dport 8080 -j ACCEPT
+-A PROTECTED -j DROP
+--- FWKNOP ---
+-N FWKNOP_INPUT
+
+### 3. Timeout de knockd (10 s)
+HTTP: FAIL
+[sudo] contraseña para user1: -N PROTECTED
+-A PROTECTED -j DROP
+--- FWKNOP ---
+-N FWKNOP_INPUT
+
+### 4. SPA fwknop correcta
+HTTP: 200
+[sudo] contraseña para user1: -N PROTECTED
+-A PROTECTED -j DROP
+--- FWKNOP ---
+-N FWKNOP_INPUT
+-A FWKNOP_INPUT -s 192.168.56.111/32 -p tcp -m tcp --dport 8080 -m comment --comment _exp_1795685785 -j ACCEPT
+[sudo] contraseña para user1:                                             RULES LIST: Chain FWKNOP_INPUT (1 references)
+                                            num  target     prot opt source               destination         
+                                            1    ACCEPT     tcp  --  192.168.56.111       0.0.0.0/0            tcp dpt:8080 /* _exp_1795685785 */
+
+### 5. Timeout de fwknop (10 s)
+HTTP: FAIL
+[sudo] contraseña para user1: -N PROTECTED
+-A PROTECTED -j DROP
+--- FWKNOP ---
+-N FWKNOP_INPUT
+
+### 6. SPA con HMAC incorrecta
+HTTP: FAIL
+[sudo] contraseña para user1: nov 26 10:36:34 bocata-jamon fwknopd[3674]: RES=0, CMD_BUF: /usr/sbin/iptables -t filter -L FWKNOP_INPUT --line-numbers -n
+                                            RULES LIST: Chain FWKNOP_INPUT (1 references)
+                                            num  target     prot opt source               destination
+nov 26 10:36:34 bocata-jamon fwknopd[3674]: Did not find expire comment in rules list 0
+
+### 7. Replay: SPA nueva y reenvío inmediato
+[sudo] contraseña para user1: nov 26 10:36:39 bocata-jamon fwknopd[3674]: Replay detected from source IP: 192.168.56.111, Destination proto/port: 17/62201, Original source IP: 192.168.56.111, Original dst proto/port: 17/62201, Entry created: 11/26/26 10:36:39
+HTTP (solo con la primera SPA): 200
+=== HMAC incorrecta (evidencia) ===
+nov 26 10:36:51 bocata-jamon fwknopd[3674]: [192.168.56.111] (stanza #1) Error creating fko context: Args contain invalid data: FKO_ERROR_INVALID_DATA_HMAC_COMPAREFAIL
+nov 26 10:36:51 bocata-jamon fwknopd[3674]: (stanza #1) Non-corresponding HMAC for this stanza
